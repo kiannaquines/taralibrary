@@ -45,6 +45,9 @@ flutter:
     - assets/icons/user.svg
     - assets/icons/search.svg
     - assets/icons/arrow-trend-up.svg
+    - assets/icons/ellipse.png
+    - assets/icons/small-ellipse.png
+
 
     - assets/images/avatar.jpg
     - assets/images/1.jfif

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:taralibrary/utils/colors.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});

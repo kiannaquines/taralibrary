@@ -3,24 +3,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:taralibrary/utils/colors.dart';
 
 class BottomNavbar extends StatefulWidget {
-  const BottomNavbar({super.key});
+
+  final int selectedIndex;
+  final Function(int) selectedIndexFunc;
+
+  const BottomNavbar({super.key, required this.selectedIndex, required this.selectedIndexFunc});
 
   @override
   State<BottomNavbar> createState() => _BottomNavbarState();
 }
 
 class _BottomNavbarState extends State<BottomNavbar> {
-  int currentSelectedIndex = 0;
-
-  // Icon paths
-  final String _homeIcon = 'assets/icons/home.svg';
-  final String _homeIconSelected = 'assets/icons/home-solid.svg';
-  final String _mapIcon = 'assets/icons/map-marker.svg';
-  final String _mapIconSelected = 'assets/icons/map-marker-solid.svg';
-  final String _userIcon = 'assets/icons/user.svg';
-  final String _userIconSelected = 'assets/icons/user-solid.svg';
-  final String _visitorsIcon = 'assets/icons/chart-histogram.svg';
-  final String _visitorsIconSelected = 'assets/icons/chart-histogram-solid.svg';
 
   final List<Map<String, String>> _navDestinations = [
     {
@@ -67,12 +60,11 @@ class _BottomNavbarState extends State<BottomNavbar> {
   @override
   Widget build(BuildContext context) {
     return NavigationBar(
-      selectedIndex: currentSelectedIndex,
+      selectedIndex: widget.selectedIndex,
       labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
       onDestinationSelected: (int index) {
         setState(() {
-          currentSelectedIndex = index;
-          // Implement navigation logic here
+          widget.selectedIndexFunc(index);
         });
       },
       indicatorColor: AppColors.primary.withOpacity(0.1),
