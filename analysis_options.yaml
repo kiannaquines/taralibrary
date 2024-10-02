@@ -1,0 +1,9 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  
+  # `// ignore: name_of_lint`
+  # `// ignore_for_file: name_of_lint`
+  rules:
+    # avoid_print: false 
+    # prefer_single_quotes: true
