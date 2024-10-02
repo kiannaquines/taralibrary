@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:taralibrary/screens/home.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -51,7 +52,12 @@ class _ProfileScreenState extends State<ProfileScreen>
                     left: 20,
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.of(context).pop();
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HomeScreen(), maintainState: true,
+                            ),
+                          );
                       },
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
@@ -77,7 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                     ),
                   ),
                   Positioned(
-                    bottom: 0, // Adjusted position for better visibility
+                    bottom: 0,
                     child: Container(
                       padding: const EdgeInsets.all(5),
                       decoration: const BoxDecoration(
@@ -91,7 +97,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                     ),
                   ),
                   Positioned(
-                    bottom: -10,
+                    bottom: -5,
                     right: -10,
                     child: Container(
                       width: 120,

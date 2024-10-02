@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:taralibrary/utils/colors.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
-  final String greetingMessage; 
-  final String libraryName; 
-  final String avatarImagePath; 
+  final String greetingMessage;
+  final String libraryName;
+  final String avatarImagePath;
 
   const CustomAppBar({
     super.key,

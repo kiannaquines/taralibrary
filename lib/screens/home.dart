@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
         });
         break;
       case 1:
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => const NavigationScreen(),
@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
         );
         break;
       case 2:
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => const ProfileScreen(),
@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
         );
         break;
       case 3:
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => const HomeScreen(),
@@ -64,7 +64,8 @@ class _HomeScreenState extends State<HomeScreen> {
       body: bodyWidget,
       bottomNavigationBar: BottomNavbar(
         selectedIndex: selectedIndex,
-        selectedIndexFunc: _onDestinationSelected, // Use the callback for navigation
+        selectedIndexFunc:
+            _onDestinationSelected, // Use the callback for navigation
       ),
     );
   }

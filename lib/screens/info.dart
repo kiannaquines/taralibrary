@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:taralibrary/screens/home.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -37,7 +38,12 @@ class InfoScreen extends StatelessWidget {
                       left: 10,
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.of(context).pop();
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HomeScreen(), maintainState: true,
+                            ),
+                          );
                         },
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
@@ -208,8 +214,7 @@ class InfoScreen extends StatelessWidget {
               height: 10,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color:
-                    AppColors.primary,
+                color: AppColors.primary,
               ),
             ),
             Container(

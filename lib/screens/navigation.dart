@@ -13,7 +13,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     return const Scaffold(
       body: Center(
         child: Text('Navigation Screen'),
-      )
+      ),
     );
   }
 }

@@ -3,18 +3,20 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:taralibrary/utils/colors.dart';
 
 class BottomNavbar extends StatefulWidget {
-
   final int selectedIndex;
   final Function(int) selectedIndexFunc;
 
-  const BottomNavbar({super.key, required this.selectedIndex, required this.selectedIndexFunc});
+  const BottomNavbar({
+    super.key,
+    required this.selectedIndex,
+    required this.selectedIndexFunc,
+  });
 
   @override
   State<BottomNavbar> createState() => _BottomNavbarState();
 }
 
 class _BottomNavbarState extends State<BottomNavbar> {
-
   final List<Map<String, String>> _navDestinations = [
     {
       'icon': 'home',
@@ -32,14 +34,14 @@ class _BottomNavbarState extends State<BottomNavbar> {
       'label': 'Profile',
     },
     {
-      'icon': 'chart-histogram',
-      'selectedIcon': 'chart-histogram-solid',
-      'label': 'Visitors',
+      'icon': 'sign-out-alt-outline',
+      'selectedIcon': 'sign-out-alt-solid',
+      'label': 'Logout',
     },
   ];
 
   NavigationDestination _buildNavigationDestination(
-    String icon, String selectedIcon, String label) {
+      String icon, String selectedIcon, String label) {
     return NavigationDestination(
       icon: SvgPicture.asset(
         'assets/icons/$icon.svg',
