@@ -39,12 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
         );
         break;
       case 3:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const HomeScreen(),
-          ),
-        );
+        _openLoggedoutDialog();
         break;
       default:
         break;
@@ -65,8 +60,22 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavbar(
         selectedIndex: selectedIndex,
         selectedIndexFunc:
-            _onDestinationSelected, // Use the callback for navigation
+            _onDestinationSelected,
       ),
     );
+  }
+
+  void _openLoggedoutDialog(BuildContext context) {
+    showDialog(context: context, builder: (BuildContext context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+        child: const SizedBox(
+           height: 200,
+           child: Text('Are you sure you want to log out?'),
+        ),
+      );
+    });
   }
 }
