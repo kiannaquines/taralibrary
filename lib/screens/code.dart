@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:taralibrary/screens/forgot.dart';
 import 'package:taralibrary/screens/login.dart';
+import 'package:taralibrary/screens/register.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:taralibrary/screens/home.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+class CodeScreen extends StatefulWidget {
+  const CodeScreen({super.key});
 
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  _CodeScreenState createState() => _CodeScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen>
+class _CodeScreenState extends State<CodeScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
+  List<TextEditingController> _controllers =
+      List.generate(6, (_) => TextEditingController());
 
   @override
   void initState() {
@@ -24,7 +27,25 @@ class _RegisterScreenState extends State<RegisterScreen>
   @override
   void dispose() {
     _tabController.dispose();
+    for (var focusNode in _focusNodes) {
+      focusNode.dispose();
+    }
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
     super.dispose();
+  }
+
+  void _onChanged(String value, int index) {
+    if (value.isNotEmpty) {
+      // Move to the next field
+      if (index < _focusNodes.length - 1) {
+        FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
+      } else {
+        // Dismiss keyboard on last input
+        FocusScope.of(context).unfocus();
+      }
+    }
   }
 
   @override
@@ -60,9 +81,9 @@ class _RegisterScreenState extends State<RegisterScreen>
                         top: 100,
                         left: 25,
                         child: Text(
-                          "Sign Up",
+                          "Confirmation Code",
                           style: TextStyle(
-                            fontSize: 35,
+                            fontSize: 32,
                             fontWeight: FontWeight.bold,
                             color: AppColors.black,
                           ),
@@ -72,7 +93,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                         top: 150,
                         left: 25,
                         child: Text(
-                          "Start by creating your new account\nhere",
+                          "Enter your confirmation code\nsent to email address.",
                           softWrap: true,
                           maxLines: 2,
                           style: TextStyle(
@@ -91,102 +112,37 @@ class _RegisterScreenState extends State<RegisterScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TextField(
-                        maxLines: 1,
-                        decoration: InputDecoration(
-                          labelText: 'Username',
-                          labelStyle: TextStyle(
-                              color: AppColors.black.withOpacity(0.5)),
-                          prefixIcon: const Icon(
-                            Icons.person,
-                            color: AppColors.primary,
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          fillColor: AppColors.primary.withOpacity(0.1),
-                          filled: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.auto,
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 15,
-                            horizontal: 20,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 25),
-                      TextField(
-                        maxLines: 1,
-                        decoration: InputDecoration(
-                          labelText: 'Email Address',
-                          labelStyle: TextStyle(
-                              color: AppColors.black.withOpacity(0.5)),
-                          prefixIcon: const Icon(
-                            Icons.email_rounded,
-                            color: AppColors.primary,
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          fillColor: AppColors.primary.withOpacity(0.1),
-                          filled: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.auto,
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 15,
-                            horizontal: 20,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 25),
-                      TextField(
-                        obscureText: true,
-                        maxLines: 1,
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                          labelStyle: TextStyle(
-                              color: AppColors.black.withOpacity(0.5)),
-                          prefixIcon: const Icon(
-                            Icons.lock,
-                            color: AppColors.primary,
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          fillColor: AppColors.primary.withOpacity(0.1),
-                          filled: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.auto,
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 15,
-                            horizontal: 20,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 25),
-                      TextField(
-                        obscureText: true,
-                        maxLines: 1,
-                        decoration: InputDecoration(
-                          labelText: 'Confirm Password',
-                          labelStyle: TextStyle(
-                              color: AppColors.black.withOpacity(0.5)),
-                          prefixIcon: const Icon(
-                            Icons.lock,
-                            color: AppColors.primary,
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          fillColor: AppColors.primary.withOpacity(0.1),
-                          filled: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.auto,
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 15,
-                            horizontal: 20,
-                          ),
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: List.generate(6, (index) {
+                          return SizedBox(
+                            width: 40,
+                            child: TextField(
+                              controller: _controllers[index],
+                              focusNode: _focusNodes[index],
+                              obscureText: false,
+                              maxLines: 1,
+                              keyboardType: TextInputType.phone,
+                              textAlign: TextAlign.center,
+                              onChanged: (value) => _onChanged(value, index),
+                              decoration: InputDecoration(
+                                labelText: '',
+                                labelStyle: TextStyle(
+                                    color: AppColors.black.withOpacity(0.5)),
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                fillColor: AppColors.primary.withOpacity(0.1),
+                                filled: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 15,
+                                  horizontal: 0,
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
                       ),
                       const SizedBox(height: 10),
                       Align(
@@ -196,13 +152,11 @@ class _RegisterScreenState extends State<RegisterScreen>
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    const ForgotPasswordScreen(),
-                              ),
+                                  builder: (context) => const LoginScreen()),
                             );
                           },
                           child: const Text(
-                            'Forgot Password?',
+                            'Remembered your password?',
                             style: TextStyle(
                               color: AppColors.primary,
                               fontWeight: FontWeight.bold,
@@ -240,7 +194,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                             ),
                             SizedBox(width: 8),
                             Text(
-                              'Sign Up',
+                              'Submit Code',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -254,7 +208,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text(
-                            "Are you already registered ? ",
+                            "Are you not registered yet? ",
                             style: TextStyle(
                               fontSize: 14,
                               color: AppColors.black,
@@ -265,12 +219,12 @@ class _RegisterScreenState extends State<RegisterScreen>
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const LoginScreen(),
+                                  builder: (context) => const RegisterScreen(),
                                 ),
                               );
                             },
                             child: const Text(
-                              'Login',
+                              'Register',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: AppColors.primary,

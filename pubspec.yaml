@@ -50,6 +50,7 @@ flutter:
 
     - assets/icons/sign-out-alt-outline.svg
     - assets/icons/sign-out-alt-solid.svg
+    - assets/icons/lock.svg
 
 
     - assets/images/avatar.jpg

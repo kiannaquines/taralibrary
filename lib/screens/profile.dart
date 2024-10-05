@@ -98,7 +98,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                   ),
                   Positioned(
                     bottom: -5,
-                    right: -10,
+                    right: -15,
                     child: Container(
                       width: 120,
                       height: 120,
