@@ -25,6 +25,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: AppColors.white,
+      automaticallyImplyLeading: false,
       elevation: 4,
       flexibleSpace: SafeArea(
         child: Container(

@@ -162,14 +162,13 @@ class _HomePageState extends State<HomePage> {
                 const Text(
                   'Popular Sections',
                   style: TextStyle(
-                    fontSize: 17, // Slightly larger for better emphasis
+                    fontSize: 17,
                     fontWeight: FontWeight.bold,
                     color: AppColors.black,
                   ),
                 ),
                 GestureDetector(
                   onTap: () {
-                    // Handle navigation or action for "See more"
                     print('See more tapped');
                   },
                   child: const Row(
@@ -177,14 +176,14 @@ class _HomePageState extends State<HomePage> {
                       Text(
                         'See more',
                         style: TextStyle(
-                          fontSize: 16, // Adjusted size for consistency
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: AppColors.primary,
                         ),
                       ),
-                      SizedBox(width: 5), // Space between text and icon
+                      SizedBox(width: 5),
                       Icon(
-                        Icons.arrow_forward, // Add an arrow icon
+                        Icons.arrow_forward,
                         color: AppColors.primary,
                         size: 16,
                       ),

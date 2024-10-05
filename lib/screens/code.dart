@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:taralibrary/screens/change_password.dart';
 import 'package:taralibrary/screens/login.dart';
 import 'package:taralibrary/screens/register.dart';
 import 'package:taralibrary/utils/colors.dart';
-import 'package:taralibrary/screens/home.dart';
 
 class CodeScreen extends StatefulWidget {
   const CodeScreen({super.key});
@@ -22,6 +22,10 @@ class _CodeScreenState extends State<CodeScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    // Automatically focus the first TextField when the screen loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).requestFocus(_focusNodes[0]);
+    });
   }
 
   @override
@@ -56,216 +60,227 @@ class _CodeScreenState extends State<CodeScreen>
 
     return Scaffold(
       body: SingleChildScrollView(
-        child: Stack(
-          clipBehavior: Clip.none,
-          alignment: Alignment.topCenter,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  height: 300,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/icons/ellipse.png'),
-                      alignment: Alignment.topLeft,
-                      fit: BoxFit.contain,
+        child: AnimatedPadding(
+          padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom),
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.topCenter,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    height: 300,
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/icons/ellipse.png'),
+                        alignment: Alignment.topLeft,
+                        fit: BoxFit.contain,
+                      ),
                     ),
-                  ),
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    alignment: Alignment.topCenter,
-                    children: [
-                      const Positioned(
-                        top: 100,
-                        left: 25,
-                        child: Text(
-                          "Confirmation Code",
-                          style: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.black,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        top: 150,
-                        left: 25,
-                        child: Text(
-                          "Enter your confirmation code\nsent to email address.",
-                          softWrap: true,
-                          maxLines: 2,
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.normal,
-                            color: AppColors.black.withOpacity(0.5),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: List.generate(6, (index) {
-                          return SizedBox(
-                            width: 40,
-                            child: TextField(
-                              controller: _controllers[index],
-                              focusNode: _focusNodes[index],
-                              obscureText: false,
-                              maxLines: 1,
-                              keyboardType: TextInputType.phone,
-                              textAlign: TextAlign.center,
-                              onChanged: (value) => _onChanged(value, index),
-                              decoration: InputDecoration(
-                                labelText: '',
-                                labelStyle: TextStyle(
-                                    color: AppColors.black.withOpacity(0.5)),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                fillColor: AppColors.primary.withOpacity(0.1),
-                                filled: true,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 15,
-                                  horizontal: 0,
-                                ),
-                              ),
-                            ),
-                          );
-                        }),
-                      ),
-                      const SizedBox(height: 10),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const LoginScreen()),
-                            );
-                          },
-                          child: const Text(
-                            'Remembered your password?',
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      alignment: Alignment.topCenter,
+                      children: [
+                        const Positioned(
+                          top: 100,
+                          left: 25,
+                          child: Text(
+                            "Confirmation Code",
                             style: TextStyle(
-                              color: AppColors.primary,
+                              fontSize: 32,
                               fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 25),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const HomeScreen(),
-                              maintainState: false,
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary.withOpacity(0.1),
-                          foregroundColor: AppColors.primary,
-                          shadowColor: Colors.transparent,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 14.0, horizontal: 32.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                        ),
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.login,
-                              color: AppColors.primary,
-                            ),
-                            SizedBox(width: 8),
-                            Text(
-                              'Submit Code',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            "Are you not registered yet? ",
-                            style: TextStyle(
-                              fontSize: 14,
                               color: AppColors.black,
                             ),
                           ),
-                          TextButton(
+                        ),
+                        Positioned(
+                          top: 150,
+                          left: 25,
+                          child: Text(
+                            "Enter your confirmation code\nsent to email address.",
+                            softWrap: true,
+                            maxLines: 2,
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.normal,
+                              color: AppColors.black.withOpacity(0.5),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: List.generate(6, (index) {
+                            return SizedBox(
+                              width: 40,
+                              child: TextField(
+                                controller: _controllers[index],
+                                focusNode: _focusNodes[index],
+                                obscureText: false,
+                                maxLines: 1,
+                                keyboardType: TextInputType.phone, // Keep this for phone input
+                                textAlign: TextAlign.center,
+                                onChanged: (value) => _onChanged(value, index),
+                                decoration: InputDecoration(
+                                  labelText: '',
+                                  labelStyle: TextStyle(
+                                      color: AppColors.black.withOpacity(0.5)),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  fillColor: AppColors.primary.withOpacity(0.1),
+                                  filled: true,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 15,
+                                    horizontal: 0,
+                                  ),
+                                ),
+                                // Set focus on this field when tapped
+                                onTap: () {
+                                  FocusScope.of(context).requestFocus(_focusNodes[index]);
+                                },
+                              ),
+                            );
+                          }),
+                        ),
+                        const SizedBox(height: 10),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
                             onPressed: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const RegisterScreen(),
-                                ),
+                                    builder: (context) => const LoginScreen()),
                               );
                             },
                             child: const Text(
-                              'Register',
+                              'Remembered your password?',
                               style: TextStyle(
-                                fontSize: 14,
                                 color: AppColors.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 40),
-                      Center(
-                        child: Text(
-                          '© 2024 TaraLibrary. All rights reserved.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: copyrightFontSize,
-                            color: Colors.black54,
+                        ),
+                        const SizedBox(height: 25),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const ChangePasswordScreen(),
+                                maintainState: false,
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary.withOpacity(0.1),
+                            foregroundColor: AppColors.primary,
+                            shadowColor: Colors.transparent,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 14.0, horizontal: 32.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                          ),
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.login,
+                                color: AppColors.primary,
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                'Submit Code',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                    ],
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              "Are you not registered yet? ",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: AppColors.black,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const RegisterScreen(),
+                                  ),
+                                );
+                              },
+                              child: const Text(
+                                'Register',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 40),
+                        Center(
+                          child: Text(
+                            '© 2024 TaraLibrary. All rights reserved.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: copyrightFontSize,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            Positioned(
-              bottom: -60,
-              right: -20,
-              child: Container(
-                width: 155,
-                height: 155,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/icons/small-ellipse.png'),
-                    fit: BoxFit.contain,
+                ],
+              ),
+              Positioned(
+                bottom: -60,
+                right: -20,
+                child: Container(
+                  width: 155,
+                  height: 155,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/icons/small-ellipse.png'),
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

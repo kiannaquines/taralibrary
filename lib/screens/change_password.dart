@@ -4,14 +4,14 @@ import 'package:taralibrary/screens/register.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:taralibrary/screens/home.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class ChangePasswordScreen extends StatefulWidget {
+  const ChangePasswordScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _ChangePasswordScreenState createState() => _ChangePasswordScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen>
+class _ChangePasswordScreenState extends State<ChangePasswordScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
@@ -60,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen>
                         top: 100,
                         left: 25,
                         child: Text(
-                          "Sign In",
+                          "Change Password",
                           style: TextStyle(
                             fontSize: 35,
                             fontWeight: FontWeight.bold,
@@ -72,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen>
                         top: 150,
                         left: 25,
                         child: Text(
-                          "Start using the app by signing in with\nyour username.",
+                          "Enter your new password",
                           softWrap: true,
                           maxLines: 2,
                           style: TextStyle(
@@ -93,12 +93,13 @@ class _LoginScreenState extends State<LoginScreen>
                     children: [
                       TextField(
                         maxLines: 1,
+                        obscureText: true,
                         decoration: InputDecoration(
-                          labelText: 'Username',
+                          labelText: 'New Password',
                           labelStyle: TextStyle(
                               color: AppColors.black.withOpacity(0.5)),
                           prefixIcon: const Icon(
-                            Icons.person,
+                            Icons.lock,
                             color: AppColors.primary,
                           ),
                           border: OutlineInputBorder(
@@ -119,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen>
                         obscureText: true,
                         maxLines: 1,
                         decoration: InputDecoration(
-                          labelText: 'Password',
+                          labelText: 'Confirm Password',
                           labelStyle: TextStyle(
                               color: AppColors.black.withOpacity(0.5)),
                           prefixIcon: const Icon(
@@ -168,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen>
                             context,
                             MaterialPageRoute(
                               builder: (context) => const HomeScreen(),
-                              maintainState: true,
+                              maintainState: false,
                             ),
                           );
                         },
@@ -186,12 +187,12 @@ class _LoginScreenState extends State<LoginScreen>
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              Icons.login,
+                              Icons.lock_open,
                               color: AppColors.primary,
                             ),
                             SizedBox(width: 8),
                             Text(
-                              'Sign In',
+                              'Change Password',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
