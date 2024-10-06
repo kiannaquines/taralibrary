@@ -263,7 +263,7 @@ class _InfoScreenState extends State<InfoScreen>
               ),
               const SizedBox(height: 20),
               const Text(
-                'Real-Time Data Chart',
+                'Real-Time Visitor Chart',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -325,7 +325,7 @@ class _InfoScreenState extends State<InfoScreen>
                                   child: Text(
                                     value.toInt().toString(),
                                     style: const TextStyle(
-                                      color: Colors.black, // Make text visible
+                                      color: Colors.black,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14,
                                     ),
@@ -344,27 +344,27 @@ class _InfoScreenState extends State<InfoScreen>
                               showTitles: true,
                               reservedSize: 25,
                               getTitlesWidget: (value, meta) {
-                                int index = value.toInt(); // Get the index
+                                int index = value.toInt();
                                 if (index >= 0 && index < barValues.length) {
                                   double actualValue =
-                                      barValues[index]; // Get the actual value
+                                      barValues[index];
                                   return Container(
                                     padding: const EdgeInsets.only(
                                       bottom: 8.0,
                                     ),
                                     child: Text(
                                       actualValue
-                                          .toString(), // Display actual value
+                                          .toString(),
                                       style: const TextStyle(
                                         color:
-                                            Colors.black, // Make text visible
+                                            Colors.black,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14,
                                       ),
                                     ),
                                   );
                                 }
-                                return Container(); // Return empty container if out of bounds
+                                return Container();
                               },
                             ),
                           ),

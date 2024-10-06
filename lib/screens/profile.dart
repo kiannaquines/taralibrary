@@ -124,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(height: 20),
             TextButton.icon(
               onPressed: () {
-                // Add edit profile functionality
+                // TODO: Add edit profile functionality
               },
               label: const Text('Edit Profile'),
               icon: const Icon(
@@ -164,7 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       itemBuilder: (BuildContext ctx, index) {
                         return GestureDetector(
                           onTap: () {
-                            // Add navigation or functionality for each section
+                            // TODO: Add functionality to navigate to the selected section
                           },
                           child: Stack(
                             children: [

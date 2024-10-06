@@ -14,15 +14,14 @@ class CodeScreen extends StatefulWidget {
 class _CodeScreenState extends State<CodeScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
-  List<TextEditingController> _controllers =
+  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
+  final List<TextEditingController> _controllers =
       List.generate(6, (_) => TextEditingController());
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    // Automatically focus the first TextField when the screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_focusNodes[0]);
     });
@@ -42,11 +41,9 @@ class _CodeScreenState extends State<CodeScreen>
 
   void _onChanged(String value, int index) {
     if (value.isNotEmpty) {
-      // Move to the next field
       if (index < _focusNodes.length - 1) {
         FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
       } else {
-        // Dismiss keyboard on last input
         FocusScope.of(context).unfocus();
       }
     }
@@ -131,7 +128,7 @@ class _CodeScreenState extends State<CodeScreen>
                                 focusNode: _focusNodes[index],
                                 obscureText: false,
                                 maxLines: 1,
-                                keyboardType: TextInputType.phone, // Keep this for phone input
+                                keyboardType: TextInputType.phone,
                                 textAlign: TextAlign.center,
                                 onChanged: (value) => _onChanged(value, index),
                                 decoration: InputDecoration(
@@ -149,7 +146,6 @@ class _CodeScreenState extends State<CodeScreen>
                                     horizontal: 0,
                                   ),
                                 ),
-                                // Set focus on this field when tapped
                                 onTap: () {
                                   FocusScope.of(context).requestFocus(_focusNodes[index]);
                                 },
