@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:taralibrary/screens/info.dart';
+import 'package:taralibrary/screens/sections.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -169,7 +170,12 @@ class _HomePageState extends State<HomePage> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    print('See more tapped');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SectionScreen(),
+                      ),
+                    );
                   },
                   child: const Row(
                     children: [
@@ -310,42 +316,13 @@ class _HomePageState extends State<HomePage> {
           child: Container(
             padding:
                 const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text(
-                  'Recommended Sections',
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.black,
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    debugPrint('See more tapped');
-                  },
-                  child: const Row(
-                    children: [
-                      Text(
-                        'See more',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                      SizedBox(width: 5),
-                      Icon(
-                        Icons.arrow_forward,
-                        color: AppColors.primary,
-                        size: 16,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+            child: const Text(
+              'Recommended Sections',
+              style: TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+                color: AppColors.black,
+              ),
             ),
           ),
         ),
@@ -361,8 +338,7 @@ class _HomePageState extends State<HomePage> {
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
                 double screenWidth = MediaQuery.of(context).size.width;
-                double baseFontSize = screenWidth *
-                    0.03;
+                double baseFontSize = screenWidth * 0.03;
 
                 return GestureDetector(
                   onTap: () {
@@ -424,21 +400,19 @@ class _HomePageState extends State<HomePage> {
                                         Text(
                                           'Trending Now',
                                           style: TextStyle(
-                                            fontSize:
-                                                baseFontSize,
+                                            fontSize: baseFontSize,
                                             fontWeight: FontWeight.bold,
                                             color: AppColors.white,
                                           ),
                                         ),
                                         SvgPicture.asset(
-                                          'assets/icons/arrow-trend-up.svg',
-                                          colorFilter: const ColorFilter.mode(
-                                            Colors.yellow,
-                                            BlendMode.srcIn,
-                                          ),
-                                          width: 10,
-                                          height: 10
-                                        ),
+                                            'assets/icons/arrow-trend-up.svg',
+                                            colorFilter: const ColorFilter.mode(
+                                              Colors.yellow,
+                                              BlendMode.srcIn,
+                                            ),
+                                            width: 10,
+                                            height: 10),
                                       ],
                                     ),
                                   ),
