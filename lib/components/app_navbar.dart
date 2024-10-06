@@ -10,7 +10,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
     super.key,
     this.greetingMessage = 'Good Morning, Kian!',
     this.libraryName = 'KEPLRC Library',
-    this.avatarImagePath = 'assets/images/avatar.jpg',
+    this.avatarImagePath = 'assets/images/avatar-1.jpg',
   });
 
   @override

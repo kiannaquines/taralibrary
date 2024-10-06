@@ -117,8 +117,10 @@ class _RegisterScreenState extends State<RegisterScreen>
                       const SizedBox(height: 25),
                       TextField(
                         maxLines: 1,
+                        keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           labelText: 'Email Address',
+                          
                           labelStyle: TextStyle(
                               color: AppColors.black.withOpacity(0.5)),
                           prefixIcon: const Icon(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taralibrary/screens/code.dart';
+import 'package:taralibrary/screens/login.dart';
 import 'package:taralibrary/screens/register.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:taralibrary/screens/home.dart';
@@ -121,7 +122,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           onPressed: () {
-                            // Add action for forgot password
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LoginScreen(),
+                                maintainState: false,
+                              ),
+                            );
                           },
                           child: const Text(
                             'Remembered your password?',

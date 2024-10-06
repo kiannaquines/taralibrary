@@ -215,7 +215,8 @@ class _HomePageState extends State<HomePage> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const InfoScreen(), maintainState: false,
+                          builder: (context) => const InfoScreen(),
+                          maintainState: false,
                         ),
                       );
                     },
@@ -359,12 +360,17 @@ class _HomePageState extends State<HomePage> {
             ),
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
+                double screenWidth = MediaQuery.of(context).size.width;
+                double baseFontSize = screenWidth *
+                    0.03;
+
                 return GestureDetector(
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const InfoScreen(), maintainState: false,
+                        builder: (context) => const InfoScreen(),
+                        maintainState: false,
                       ),
                     );
                   },
@@ -413,25 +419,25 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     child: Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const Text(
+                                        Text(
                                           'Trending Now',
                                           style: TextStyle(
-                                            fontSize: 10,
+                                            fontSize:
+                                                baseFontSize,
                                             fontWeight: FontWeight.bold,
                                             color: AppColors.white,
                                           ),
                                         ),
-                                        const SizedBox(width: 5),
                                         SvgPicture.asset(
                                           'assets/icons/arrow-trend-up.svg',
                                           colorFilter: const ColorFilter.mode(
                                             Colors.yellow,
                                             BlendMode.srcIn,
                                           ),
-                                          width: 15,
-                                          height: 15,
+                                          width: 10,
+                                          height: 10
                                         ),
                                       ],
                                     ),
@@ -457,8 +463,8 @@ class _HomePageState extends State<HomePage> {
                                     sectionName[index],
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontSize: 13,
+                                    style: TextStyle(
+                                      fontSize: baseFontSize, // Responsive size
                                       fontWeight: FontWeight.bold,
                                       color: AppColors.black,
                                     ),
@@ -466,29 +472,31 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                                 const SizedBox(height: 4),
-                                const Text(
+                                Text(
                                   'Spacious and well-equipped spaces.',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    fontSize: 10,
+                                    fontSize:
+                                        baseFontSize * 0.9, // Responsive size
                                     color: AppColors.dark,
                                   ),
                                   textAlign: TextAlign.left,
                                 ),
                                 const SizedBox(height: 4),
-                                const Row(
+                                Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.star,
                                       color: Colors.yellow,
                                       size: 15,
                                     ),
-                                    SizedBox(width: 5),
+                                    const SizedBox(width: 5),
                                     Text(
                                       '4.5',
                                       style: TextStyle(
-                                        fontSize: 10,
+                                        fontSize: baseFontSize *
+                                            0.9, // Responsive size
                                         color: AppColors.black,
                                       ),
                                     ),

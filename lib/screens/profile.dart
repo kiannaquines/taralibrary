@@ -10,21 +10,13 @@ class ProfileScreen extends StatefulWidget {
   _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
+class _ProfileScreenState extends State<ProfileScreen> {
+  final List<String> recentSections = [
+    'Information Technology',
+    'References',
+    'Filipiniana',
+    'Publication',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -53,11 +45,12 @@ class _ProfileScreenState extends State<ProfileScreen>
                     child: GestureDetector(
                       onTap: () {
                         Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const HomeScreen(), maintainState: true,
-                            ),
-                          );
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomeScreen(),
+                            maintainState: true,
+                          ),
+                        );
                       },
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
@@ -92,7 +85,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                       ),
                       child: const CircleAvatar(
                         radius: 60,
-                        backgroundImage: AssetImage('assets/images/avatar.jpg'),
+                        backgroundImage: AssetImage('assets/images/avatar-1.jpg'),
                       ),
                     ),
                   ),
@@ -139,53 +132,160 @@ class _ProfileScreenState extends State<ProfileScreen>
                 size: 15,
               ),
             ),
-            const SizedBox(height: 20),
-            TabBar(
-              overlayColor: WidgetStateColor.transparent,
-              controller: _tabController,
-              tabs: const [
-                Tab(text: 'Likes'),
-                Tab(text: 'Reviews'),
-                Tab(text: 'Logs'),
-              ],
-            ),
-            SizedBox(
-              height: 300,
-              child: TabBarView(
-                controller: _tabController,
+            const SizedBox(height: 15),
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildPostsTab(),
-                  _buildFollowersTab(),
-                  _buildFollowingTab(),
+                  const Text(
+                    'Recent Viewed Sections',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.25,
+                    child: GridView.builder(
+                      reverse: true,
+                      scrollDirection: Axis.horizontal,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 1,
+                        childAspectRatio: 2 / 2,
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 20,
+                      ),
+                      itemCount: recentSections.length,
+                      itemBuilder: (BuildContext ctx, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            // Add navigation or functionality for each section
+                          },
+                          child: Stack(
+                            children: [
+                              Container(
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary.withOpacity(0.3),
+                                  borderRadius: BorderRadius.circular(15),
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                        'assets/images/${index + 2}.jfif'),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 10,
+                                left: 10,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    color: AppColors.imagebackgroundOverlay
+                                        .withOpacity(0.6),
+                                    child: Text(
+                                      recentSections[index],
+                                      style: const TextStyle(
+                                        color: AppColors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Trending Sections',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.25,
+                    child: GridView.builder(
+                      scrollDirection: Axis.horizontal,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 1,
+                        childAspectRatio: 2 / 2,
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 20,
+                      ),
+                      itemCount: recentSections.length,
+                      itemBuilder: (BuildContext ctx, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            // Add navigation or functionality for each section
+                          },
+                          child: Stack(
+                            children: [
+                              Container(
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary.withOpacity(0.3),
+                                  borderRadius: BorderRadius.circular(15),
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                        'assets/images/${index + 1}.jfif'),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 10,
+                                left: 10,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    color: AppColors.imagebackgroundOverlay
+                                        .withOpacity(0.6),
+                                    child: Text(
+                                      recentSections[index],
+                                      style: const TextStyle(
+                                        color: AppColors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildPostsTab() {
-    return const Center(
-      child: Text(
-        'Posts: 255',
-      ),
-    );
-  }
-
-  Widget _buildFollowersTab() {
-    return const Center(
-      child: Text(
-        'Followers: 12k',
-      ),
-    );
-  }
-
-  Widget _buildFollowingTab() {
-    return const Center(
-      child: Text(
-        'Following: 321',
       ),
     );
   }

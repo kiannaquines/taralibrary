@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: const CustomAppBar(
         greetingMessage: 'Good Evening, Kian!',
         libraryName: 'KEPLRC Library',
-        avatarImagePath: 'assets/images/avatar.jpg',
+        avatarImagePath: 'assets/images/avatar-1.jpg',
       ),
       body: bodyWidget,
       bottomNavigationBar: BottomNavbar(
@@ -83,14 +83,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   const Text(
-                    'Are you sure?',
+                    'Logout?',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const Text(
-                    'You are about to log out.',
+                    'You are about to leave this page.',
                     style: TextStyle(fontSize: 15),
                     textAlign: TextAlign.center,
                   ),
