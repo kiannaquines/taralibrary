@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:taralibrary/screens/edit_profile.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:taralibrary/screens/home.dart';
@@ -85,7 +86,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       child: const CircleAvatar(
                         radius: 60,
-                        backgroundImage: AssetImage('assets/images/avatar-1.jpg'),
+                        backgroundImage:
+                            AssetImage('assets/images/avatar-1.jpg'),
                       ),
                     ),
                   ),
@@ -124,7 +126,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(height: 20),
             TextButton.icon(
               onPressed: () {
-                // TODO: Add edit profile functionality
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const EditProfileScreen(),
+                    maintainState: true,
+                  ),
+                );
               },
               label: const Text('Edit Profile'),
               icon: const Icon(

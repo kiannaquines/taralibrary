@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:taralibrary/screens/forgot.dart';
 import 'package:taralibrary/screens/login.dart';
+import 'package:taralibrary/screens/verification.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:taralibrary/screens/home.dart';
 
@@ -218,7 +219,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const HomeScreen(),
+                              builder: (context) => const VerificationScreen(),
                               maintainState: false,
                             ),
                           );

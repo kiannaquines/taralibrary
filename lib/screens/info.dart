@@ -346,18 +346,15 @@ class _InfoScreenState extends State<InfoScreen>
                               getTitlesWidget: (value, meta) {
                                 int index = value.toInt();
                                 if (index >= 0 && index < barValues.length) {
-                                  double actualValue =
-                                      barValues[index];
+                                  double actualValue = barValues[index];
                                   return Container(
                                     padding: const EdgeInsets.only(
                                       bottom: 8.0,
                                     ),
                                     child: Text(
-                                      actualValue
-                                          .toString(),
+                                      actualValue.toString(),
                                       style: const TextStyle(
-                                        color:
-                                            Colors.black,
+                                        color: Colors.black,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14,
                                       ),
@@ -544,9 +541,11 @@ class _InfoScreenState extends State<InfoScreen>
   }
 
   void _showCommentForm(BuildContext context) {
-    double finalRating = 3;
-    final TextEditingController commentController = TextEditingController();
+    double finalRating = 3; // Initialize the rating with a default value
+    final TextEditingController commentController =
+        TextEditingController(); // Controller for comment input
 
+    // Show a dialog for submitting comments
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -555,14 +554,24 @@ class _InfoScreenState extends State<InfoScreen>
             borderRadius: BorderRadius.circular(15.0),
           ),
           alignment: Alignment.center,
-          icon: const Icon(Icons.face, color: AppColors.primary),
           backgroundColor: AppColors.white,
-          title: const Text(
-            'Leave a Comment',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Leave a Comment',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
           ),
           content: SizedBox(
             height: 200,
@@ -585,7 +594,9 @@ class _InfoScreenState extends State<InfoScreen>
                     finalRating = rating;
                   },
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(
+                  height: 10,
+                ),
                 TextField(
                   controller: commentController,
                   maxLines: 3,
@@ -593,7 +604,9 @@ class _InfoScreenState extends State<InfoScreen>
                     hintText: 'Write your comment',
                     border: OutlineInputBorder(
                       borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(
+                        10,
+                      ),
                     ),
                     fillColor: AppColors.primary.withOpacity(0.1),
                     filled: true,
@@ -612,7 +625,8 @@ class _InfoScreenState extends State<InfoScreen>
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                              'Comment submitted: "$comment" with $finalRating star${finalRating > 1 ? 's' : ''}'),
+                            'Comment submitted: "$comment" with $finalRating star${finalRating > 1 ? 's' : ''}',
+                          ),
                         ),
                       );
                       commentController.clear();
