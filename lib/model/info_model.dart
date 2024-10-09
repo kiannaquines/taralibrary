@@ -29,17 +29,20 @@ class RealTimeChartModel {
 class ZoneImagesModel {
   final int imageZoneID;
   final int zoneID;
+  final String dateComment;
   final String imageName;
 
   ZoneImagesModel({
     required this.imageZoneID,
     required this.zoneID,
+    required this.dateComment,
     required this.imageName,
   });
 
   factory ZoneImagesModel.fromJson(Map<String, dynamic> json) {
     return ZoneImagesModel(
       imageZoneID: json['imageZoneID'],
+      dateComment: json['dateComment'],
       zoneID: json['zoneID'],
       imageName: json['imageName'],
     );
@@ -49,6 +52,7 @@ class ZoneImagesModel {
     return {
       'imageZoneID': imageZoneID,
       'zoneID': zoneID,
+      'dateComment': dateComment,
       'imageName': imageName,
     };
   }
