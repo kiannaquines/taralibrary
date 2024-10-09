@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:taralibrary/screens/change_password.dart';
 import 'package:taralibrary/screens/login.dart';
 import 'package:taralibrary/screens/register.dart';
 import 'package:taralibrary/utils/colors.dart';
@@ -9,6 +8,7 @@ class VerificationScreen extends StatefulWidget {
   const VerificationScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _VerificationScreenState createState() => _VerificationScreenState();
 }
 

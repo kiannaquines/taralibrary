@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:taralibrary/screens/profile.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:taralibrary/screens/home.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _EditProfileScreenState createState() => _EditProfileScreenState();
 }
 
@@ -113,6 +113,35 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               padding: const EdgeInsets.all(15.0),
               child: Column(
                 children: [
+                  TextField(
+                    maxLines: 1,
+                    decoration: InputDecoration(
+                      labelText: 'User Name',
+                      labelStyle: TextStyle(
+                        color: AppColors.black.withOpacity(
+                          0.5,
+                        ),
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.person,
+                        color: AppColors.primary,
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      fillColor: AppColors.primary.withOpacity(0.1),
+                      filled: true,
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 15,
+                        horizontal: 20,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   TextField(
                     maxLines: 1,
                     decoration: InputDecoration(

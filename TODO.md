@@ -1,4 +1,3 @@
 ## Crowd Todos
 
-1. Login Screen
-2. Register Screen
+1. API Integration - IN PROGRESS
