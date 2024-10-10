@@ -3,9 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:taralibrary/screens/login.dart';
 import 'package:taralibrary/screens/register.dart';
 import 'package:taralibrary/utils/colors.dart';
+import 'package:taralibrary/model/auth_models.dart';
+import 'package:taralibrary/service/auth_service.dart';
 
 class VerificationScreen extends StatefulWidget {
-  const VerificationScreen({super.key});
+  final int userId;
+  const VerificationScreen({super.key, required this.userId});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -47,6 +50,45 @@ class _VerificationScreenState extends State<VerificationScreen>
       } else {
         FocusScope.of(context).unfocus();
       }
+    }
+  }
+
+  void verifyAccount() async {
+    AuthService authService = AuthService();
+
+    var code = _controllers.map((controller) => controller.text).join('');
+
+    AccountVerification verificationData = AccountVerification(
+      code: code,
+      userId: widget.userId,
+    );
+
+    Map<String, dynamic> result = await authService.verificationAccount(
+      verificationData,
+    );
+
+    String message = result['message'];
+    int statusCode = result['status_code'];
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        showCloseIcon: true,
+        duration: const Duration(seconds: 5),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+
+    if (statusCode == 200) {
+      await Future.delayed(const Duration(seconds: 5));
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const LoginScreen(),
+        ),
+        (Route<dynamic> route) => false,
+      );
     }
   }
 
@@ -210,14 +252,7 @@ class _VerificationScreenState extends State<VerificationScreen>
                         const SizedBox(height: 25),
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const LoginScreen(),
-                                maintainState: false,
-                              ),
-                            );
+                            verifyAccount();
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary.withOpacity(0.1),

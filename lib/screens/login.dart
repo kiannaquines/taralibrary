@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:taralibrary/model/auth_models.dart';
 import 'package:taralibrary/screens/forgot.dart';
 import 'package:taralibrary/screens/register.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:taralibrary/screens/home.dart';
+import 'package:taralibrary/service/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,6 +17,9 @@ class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -25,6 +30,31 @@ class _LoginScreenState extends State<LoginScreen>
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  void loginProcess() async {
+    AuthService authService = AuthService();
+
+    Login loginDetail = Login(
+      username: _usernameController.text,
+      password: _passwordController.text,
+    );
+
+    Map<String, dynamic> result = await authService.login(loginDetail);
+
+    // String accessToken = result['access_token'];
+    // String type = result['type'];
+    int statusCode = result['status_code'];
+
+    if (statusCode == 200) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+        ),
+        (Route<dynamic> route) => false,
+      );
+    }
   }
 
   @override
@@ -92,6 +122,7 @@ class _LoginScreenState extends State<LoginScreen>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextField(
+                        controller: _usernameController,
                         maxLines: 1,
                         decoration: InputDecoration(
                           labelText: 'Username',
@@ -116,6 +147,7 @@ class _LoginScreenState extends State<LoginScreen>
                       ),
                       const SizedBox(height: 25),
                       TextField(
+                        controller: _passwordController,
                         obscureText: true,
                         maxLines: 1,
                         decoration: InputDecoration(
@@ -144,11 +176,12 @@ class _LoginScreenState extends State<LoginScreen>
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           onPressed: () {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
                                     const ForgotPasswordScreen(),
+                                maintainState: true,
                               ),
                             );
                           },
@@ -164,13 +197,7 @@ class _LoginScreenState extends State<LoginScreen>
                       const SizedBox(height: 25),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const HomeScreen(),
-                              maintainState: true,
-                            ),
-                          );
+                          loginProcess();
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary.withOpacity(0.1),
