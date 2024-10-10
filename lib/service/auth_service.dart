@@ -79,16 +79,22 @@ class AuthService {
         'status_code': 500,
       };
     }
-  }
+  } 
 
 
-  Future<Map<String, dynamic>> login(Login loginDetails) async {
+  Future<Map<String, dynamic>> login() async{
+
+
+    String endpoint = "/auth/login";
+    final uri = Uri.parse('$baseUrl$endpoint');
+
+    
     try {
       return {
         'access_token': 'this is the JWT token',
         'type': 'bearer',
         'status_code': 200,
-      };
+      }
     } catch (e) {
       return {
         'access_token': '',
@@ -96,4 +102,34 @@ class AuthService {
       };
     }
   }
+
+
+
+
+
+
+
+
+
+
+
+
+  // Future<Map<String, dynamic>> login(Login loginDetails) async {
+  //   String endpoint = "/auth/login";
+  //   final uri = Uri.parse('$baseUrl$endpoint');
+
+
+  //   try {
+  //     return {
+  //       'access_token': 'this is the JWT token',
+  //       'type': 'bearer',
+  //       'status_code': 200,
+  //     };
+  //   } catch (e) {
+  //     return {
+  //       'access_token': '',
+  //       'status_code': 500,
+  //     };
+  //   }
+  // }
 }
