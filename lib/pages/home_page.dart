@@ -251,7 +251,7 @@ class _HomePageState extends State<HomePage> {
                                 vertical: 4.0,
                               ),
                               decoration: BoxDecoration(
-                                color: AppColors.imagebackgroundOverlay,
+                                color: AppColors.imagebackgroundOverlay.withOpacity(0.7),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: const Text(
@@ -278,7 +278,7 @@ class _HomePageState extends State<HomePage> {
                                 vertical: 4.0,
                               ),
                               decoration: BoxDecoration(
-                                color: AppColors.imagebackgroundOverlay,
+                                color: AppColors.imagebackgroundOverlay.withOpacity(0.7),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: const Row(
@@ -386,7 +386,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      color: AppColors.imagebackgroundOverlay,
+                                      color: AppColors.imagebackgroundOverlay.withOpacity(0.7),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     padding: const EdgeInsets.symmetric(

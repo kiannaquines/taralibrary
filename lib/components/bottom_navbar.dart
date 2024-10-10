@@ -24,19 +24,14 @@ class _BottomNavbarState extends State<BottomNavbar> {
       'label': 'Home',
     },
     {
-      'icon': 'map-marker',
-      'selectedIcon': 'map-marker-solid',
-      'label': 'Navigation',
+      'icon': 'building-solid',
+      'selectedIcon': 'building-solid',
+      'label': 'Facilities',
     },
     {
       'icon': 'user',
       'selectedIcon': 'user-solid',
       'label': 'Profile',
-    },
-    {
-      'icon': 'sign-out-alt-outline',
-      'selectedIcon': 'sign-out-alt-solid',
-      'label': 'Logout',
     },
   ];
 
@@ -45,13 +40,19 @@ class _BottomNavbarState extends State<BottomNavbar> {
     return NavigationDestination(
       icon: SvgPicture.asset(
         'assets/icons/$icon.svg',
-        colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+        colorFilter: const ColorFilter.mode(
+          AppColors.primary,
+          BlendMode.srcIn,
+        ),
         width: 20,
         height: 20,
       ),
       selectedIcon: SvgPicture.asset(
         'assets/icons/$selectedIcon.svg',
-        colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+        colorFilter: const ColorFilter.mode(
+          AppColors.primary,
+          BlendMode.srcIn,
+        ),
         width: 20,
         height: 20,
       ),

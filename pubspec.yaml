@@ -18,7 +18,8 @@ dependencies:
   fl_chart: ^0.69.0
   flutter_carousel_widget: ^3.0.1
   flutter_rating_bar: ^4.0.1
-  mapbox_maps_flutter: ^2.3.0
+  http: ^1.2.2
+  # mapbox_maps_flutter: ^1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -51,10 +52,11 @@ flutter:
     - assets/icons/arrow-trend-up.svg
     - assets/icons/ellipse.png
     - assets/icons/small-ellipse.png
-
     - assets/icons/sign-out-alt-outline.svg
     - assets/icons/sign-out-alt-solid.svg
     - assets/icons/lock.svg
+    - assets/icons/building-solid.svg
+    - assets/icons/building-outline.svg
 
 
     - assets/images/avatar-1.jpg

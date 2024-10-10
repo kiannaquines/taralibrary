@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:taralibrary/screens/home.dart';
+import 'package:taralibrary/screens/profile.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:taralibrary/screens/info.dart';
@@ -37,7 +39,7 @@ class _SectionScreenState extends State<SectionScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Library Section',
+          'Library Facilities',
           style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
@@ -186,7 +188,7 @@ class _SectionScreenState extends State<SectionScreen> {
                 padding: const EdgeInsets.symmetric(
                     vertical: 10.0, horizontal: 20.0),
                 child: const Text(
-                  'Facilities',
+                  'Sections',
                   style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
@@ -365,6 +367,79 @@ class _SectionScreenState extends State<SectionScreen> {
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: 1,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+        onDestinationSelected: (int index) {
+          setState(() {
+            if (index == 0) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const HomeScreen(),
+                  maintainState: false,
+                ),
+              );
+            }
+
+            if (index == 1) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SectionScreen(),
+                  maintainState: false,
+                ),
+              );
+            }
+
+            if (index == 2) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfileScreen(),
+                  maintainState: false,
+                ),
+              );
+            }
+          });
+        },
+        indicatorColor: AppColors.primary.withOpacity(0.1),
+        backgroundColor: AppColors.white,
+        shadowColor: AppColors.primary.withOpacity(0.5),
+        elevation: 20,
+        destinations: [
+          NavigationDestination(
+            icon: SvgPicture.asset(
+              'assets/icons/home.svg',
+              colorFilter:
+                  const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+              width: 20,
+              height: 20,
+            ),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: SvgPicture.asset(
+              'assets/icons/building-solid.svg',
+              colorFilter:
+                  const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+              width: 20,
+              height: 20,
+            ),
+            label: 'Facilities',
+          ),
+          NavigationDestination(
+            icon: SvgPicture.asset(
+              'assets/icons/user.svg',
+              colorFilter:
+                  const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+              width: 20,
+              height: 20,
+            ),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }

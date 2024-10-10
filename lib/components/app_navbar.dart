@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:taralibrary/screens/login.dart';
 import 'package:taralibrary/utils/colors.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -61,7 +62,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      // TODO: Implement profile tap functionality
+                      _openLoggedoutDialog(context);
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -83,6 +84,83 @@ class _CustomAppBarState extends State<CustomAppBar> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _openLoggedoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: SizedBox(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Logout?',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Text(
+                    'You are about to leave this page.',
+                    style: TextStyle(fontSize: 15),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          _logout();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary.withOpacity(0.1),
+                          foregroundColor: AppColors.primary,
+                          shadowColor: Colors.transparent,
+                        ),
+                        child: const Text('Sign out'),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text(
+                          'Cancel',
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _logout() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const LoginScreen(),
       ),
     );
   }

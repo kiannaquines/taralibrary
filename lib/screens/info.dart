@@ -636,7 +636,8 @@ class _InfoScreenState extends State<InfoScreen>
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
-                              'Please enter a comment and select a rating!'),
+                            'Please enter a comment and select a rating!',
+                          ),
                         ),
                       );
                     }
