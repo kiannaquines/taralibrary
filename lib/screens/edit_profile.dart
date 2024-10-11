@@ -19,10 +19,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     'Publication',
   ];
 
+  final TextEditingController _username = TextEditingController();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _firstName = TextEditingController();
+  final TextEditingController _lastName = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     _loadAccessToken();
+
+    _username.text = 'kjgnaquines';
+    _email.text = 'kjgnaquines@gmail.com';
+    _firstName.text = 'Kian';
+    _lastName.text = 'Naquines';
   }
 
   MyStorage myStorage = MyStorage();
@@ -30,6 +40,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Future<String?> _loadAccessToken() async {
     Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
     return tokenData['accessToken'];
+  }
+
+  @override
+  void dispose() {
+    _username.dispose();
+    _email.dispose();
+    _firstName.dispose();
+    _lastName.dispose();
+    super.dispose();
   }
 
   @override
@@ -54,8 +73,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 alignment: Alignment.topCenter,
                 children: [
                   Positioned(
-                    top: 40,
-                    left: 20,
+                    top: 45,
+                    left: 25,
                     child: GestureDetector(
                       onTap: () {
                         Navigator.pushReplacement(
@@ -66,20 +85,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                         );
                       },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
+                      child: ClipOval(
                         child: Container(
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: const BoxDecoration(
+                          padding: const EdgeInsets.all(10.0),
+                          decoration: BoxDecoration(
                             color: AppColors.white,
-                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 5,
+                                spreadRadius: 1,
+                              ),
+                            ],
                           ),
                           width: 50,
                           height: 50,
                           child: SvgPicture.asset(
                             'assets/icons/angle-small-left.svg',
                             colorFilter: ColorFilter.mode(
-                              AppColors.dark.withOpacity(0.5),
+                              AppColors.dark.withOpacity(0.7),
                               BlendMode.srcIn,
                             ),
                             width: 25,
@@ -93,14 +118,44 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     bottom: 0,
                     child: Container(
                       padding: const EdgeInsets.all(5),
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 10,
+                            spreadRadius: 2,
+                          ),
+                        ],
                       ),
                       child: const CircleAvatar(
                         radius: 60,
                         backgroundImage:
                             AssetImage('assets/images/avatar-1.jpg'),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: -5,
+                    right: 150,
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.dark.withOpacity(0.1),
+                            blurRadius: 2,
+                            spreadRadius: 1,
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.camera_alt,
+                        size: 30,
+                        color: AppColors.primary,
                       ),
                     ),
                   ),
@@ -123,10 +178,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
             const SizedBox(height: 10),
             Container(
-              padding: const EdgeInsets.all(15.0),
+              padding: const EdgeInsets.all(25.0),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  const Text(
+                    'Edit Profile',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.black,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 25,
+                  ),
                   TextField(
+                    controller: _username,
                     maxLines: 1,
                     decoration: InputDecoration(
                       labelText: 'User Name',
@@ -153,9 +222,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 25,
                   ),
                   TextField(
+                    controller: _firstName,
                     maxLines: 1,
                     decoration: InputDecoration(
                       labelText: 'First Name',
@@ -182,9 +252,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 25,
                   ),
                   TextField(
+                    controller: _lastName,
                     maxLines: 1,
                     decoration: InputDecoration(
                       labelText: 'Last Name',
@@ -211,9 +282,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 25,
                   ),
                   TextField(
+                    controller: _email,
                     maxLines: 1,
                     decoration: InputDecoration(
                       labelText: 'Email Address',
@@ -223,7 +295,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                       ),
                       prefixIcon: const Icon(
-                        Icons.person,
+                        Icons.email,
                         color: AppColors.primary,
                       ),
                       border: OutlineInputBorder(
@@ -240,7 +312,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 25,
                   ),
                   ElevatedButton(
                     onPressed: () {

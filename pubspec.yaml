@@ -50,6 +50,7 @@ flutter:
     - assets/icons/star.svg
     - assets/icons/user-solid.svg
     - assets/icons/user.svg
+    - assets/icons/building.svg
     - assets/icons/search.svg
     - assets/icons/arrow-trend-up.svg
     - assets/icons/ellipse.png

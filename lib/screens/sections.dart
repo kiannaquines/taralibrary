@@ -97,10 +97,8 @@ class _SectionScreenState extends State<SectionScreen> {
           slivers: [
             SliverPadding(
               padding: const EdgeInsets.only(
-                top: 20.0,
                 left: 20.0,
                 right: 20.0,
-                bottom: 20.0,
               ),
               sliver: SliverToBoxAdapter(
                 child: Container(
@@ -435,7 +433,7 @@ class _SectionScreenState extends State<SectionScreen> {
           ),
           NavigationDestination(
             icon: SvgPicture.asset(
-              'assets/icons/building-solid.svg',
+              'assets/icons/building.svg',
               colorFilter:
                   const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
               width: 20,

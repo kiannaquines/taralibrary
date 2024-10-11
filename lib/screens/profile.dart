@@ -23,8 +23,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-     _loadAccessToken();
+    _loadAccessToken();
   }
+
   MyStorage myStorage = MyStorage();
 
   Future<String?> _loadAccessToken() async {
@@ -66,13 +67,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         );
                       },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
+                      child: ClipOval(
                         child: Container(
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: const BoxDecoration(
+                          padding: const EdgeInsets.all(10.0),
+                          decoration: BoxDecoration(
                             color: AppColors.white,
-                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 5,
+                                spreadRadius: 1,
+                              ),
+                            ],
                           ),
                           width: 50,
                           height: 50,

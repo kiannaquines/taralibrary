@@ -65,7 +65,6 @@ class _HomePageState extends State<HomePage> {
       slivers: [
         SliverPadding(
           padding: const EdgeInsets.only(
-            top: 20.0,
             left: 20.0,
             right: 20.0,
             bottom: 10.0,
@@ -168,8 +167,10 @@ class _HomePageState extends State<HomePage> {
         ),
         SliverToBoxAdapter(
           child: Container(
-            padding:
-                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+            padding: const EdgeInsets.symmetric(
+              vertical: 10.0,
+              horizontal: 20.0,
+            ),
             child: SizedBox(
               height: MediaQuery.of(context).size.height * 0.25,
               child: GridView.builder(

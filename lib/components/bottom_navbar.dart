@@ -25,7 +25,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
     },
     {
       'icon': 'building-solid',
-      'selectedIcon': 'building-solid',
+      'selectedIcon': 'building',
       'label': 'Facilities',
     },
     {
