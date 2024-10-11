@@ -23,9 +23,8 @@ class _HomePageState extends State<HomePage> {
   final HomeService _homeService = HomeService();
   List<PopularModel> _popularZones = [];
   List<RecommendedModel> _recommendedZones = [];
-  List<CategoryModel> _categories = [];
 
-  String selectedSection = 'Study';
+  String selectedSection = 'All';
 
   final TextEditingController _controller = TextEditingController();
   int selectedIndex = 0;
@@ -53,14 +52,9 @@ class _HomePageState extends State<HomePage> {
       tokenData['accessToken'],
     );
 
-    List<CategoryModel> categoriesList = await _homeService.getCategories(
-      tokenData['accessToken'],
-    );
-
     setState(() {
       _popularZones = popularSection;
       _recommendedZones = recommendedSection;
-      _categories = categoriesList;
     });
     return tokenData['accessToken'];
   }
@@ -74,7 +68,7 @@ class _HomePageState extends State<HomePage> {
             top: 20.0,
             left: 20.0,
             right: 20.0,
-            bottom: 20.0,
+            bottom: 10.0,
           ),
           sliver: SliverToBoxAdapter(
             child: Container(
@@ -120,45 +114,6 @@ class _HomePageState extends State<HomePage> {
                       : null,
                 ),
                 keyboardType: TextInputType.text,
-              ),
-            ),
-          ),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.only(
-            top: 10.0,
-            left: 20.0,
-            right: 20.0,
-            bottom: 20.0,
-          ),
-          sliver: SliverToBoxAdapter(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  _buildSectionButton('All',
-                      isSelected: selectedSection == 'All', onTap: () {
-                    setState(() {
-                      selectedSection = 'All';
-                    });
-                  }),
-                  const SizedBox(width: 15.0),
-                  ..._categories.map((item) {
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 15.0),
-                      child: _buildSectionButton(
-                        item.name,
-                        isSelected: selectedSection == item.name,
-                        onTap: () {
-                          setState(() {
-                            selectedSection = item.name;
-                          });
-                        },
-                      ),
-                    );
-                  }),
-                ],
               ),
             ),
           ),
