@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:taralibrary/model/home_model.dart';
+import 'package:taralibrary/model/section_models.dart';
 import 'package:taralibrary/screens/home.dart';
 import 'package:taralibrary/screens/profile.dart';
+import 'package:taralibrary/service/home_service.dart';
+import 'package:taralibrary/service/section_service.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:taralibrary/screens/info.dart';
+import 'package:taralibrary/utils/constants.dart';
 import 'package:taralibrary/utils/storage.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class SectionScreen extends StatefulWidget {
   const SectionScreen({super.key});
@@ -14,14 +20,16 @@ class SectionScreen extends StatefulWidget {
 }
 
 class _SectionScreenState extends State<SectionScreen> {
-  final List<String> sectionName = [
-    'Information Technology',
-    'References',
-    'Filipiniana',
-    'Pubication',
-    'Serials',
-    'Medical',
-  ];
+  ApiSettings apiSettings = ApiSettings();
+  final SectionService _sectionService = SectionService();
+  final HomeService _homeService = HomeService();
+
+  String get staticDir => ApiSettings.getStaticFileDir();
+  List<AllSectionModel> _allSection = [];
+  List<CategoryModel> _categories = [];
+  MyStorage myStorage = MyStorage();
+
+  String selectedSection = 'All';
 
   final TextEditingController _controller = TextEditingController();
 
@@ -33,10 +41,21 @@ class _SectionScreenState extends State<SectionScreen> {
     _loadAccessToken();
   }
 
-  MyStorage myStorage = MyStorage();
-
   Future<String?> _loadAccessToken() async {
     Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
+
+    List<AllSectionModel> allSection = await _sectionService.getAllSections(
+      tokenData['accessToken'],
+    );
+
+    List<CategoryModel> categoriesList = await _homeService.getCategories(
+      tokenData['accessToken'],
+    );
+
+    setState(() {
+      _allSection = allSection;
+      _categories = categoriesList;
+    });
     return tokenData['accessToken'];
   }
 
@@ -48,8 +67,6 @@ class _SectionScreenState extends State<SectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String selectedSection = 'All';
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -80,9 +97,10 @@ class _SectionScreenState extends State<SectionScreen> {
           slivers: [
             SliverPadding(
               padding: const EdgeInsets.only(
-                top: 10.0,
+                top: 20.0,
                 left: 20.0,
                 right: 20.0,
+                bottom: 20.0,
               ),
               sliver: SliverToBoxAdapter(
                 child: Container(
@@ -135,6 +153,7 @@ class _SectionScreenState extends State<SectionScreen> {
                 top: 10.0,
                 left: 20.0,
                 right: 20.0,
+                bottom: 20.0,
               ),
               sliver: SliverToBoxAdapter(
                 child: SingleChildScrollView(
@@ -146,51 +165,22 @@ class _SectionScreenState extends State<SectionScreen> {
                           isSelected: selectedSection == 'All', onTap: () {
                         setState(() {
                           selectedSection = 'All';
-                          debugPrint(selectedSection);
                         });
                       }),
                       const SizedBox(width: 15.0),
-                      _buildSectionButton('Study',
-                          isSelected: selectedSection == 'Study', onTap: () {
-                        setState(() {
-                          selectedSection = 'Study';
-
-                          debugPrint(selectedSection);
-                        });
-                      }),
-                      const SizedBox(width: 15.0),
-                      _buildSectionButton('Relax',
-                          isSelected: selectedSection == 'Relax', onTap: () {
-                        setState(() {
-                          selectedSection = 'Relax';
-                          debugPrint(selectedSection);
-                        });
-                      }),
-                      const SizedBox(width: 15.0),
-                      _buildSectionButton('Reading',
-                          isSelected: selectedSection == 'Reading', onTap: () {
-                        setState(() {
-                          selectedSection = 'Reading';
-                          debugPrint(selectedSection);
-                        });
-                      }),
-                      const SizedBox(width: 15.0),
-                      _buildSectionButton('Computer Lab',
-                          isSelected: selectedSection == 'Computer Lab',
-                          onTap: () {
-                        setState(() {
-                          selectedSection = 'Computer Lab';
-                          debugPrint(selectedSection);
-                        });
-                      }),
-                      const SizedBox(width: 15.0),
-                      _buildSectionButton('Study Desk',
-                          isSelected: selectedSection == 'Study Desk',
-                          onTap: () {
-                        setState(() {
-                          selectedSection = 'Study Desk';
-                          debugPrint(selectedSection);
-                        });
+                      ..._categories.map((item) {
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 15.0),
+                          child: _buildSectionButton(
+                            item.name,
+                            isSelected: selectedSection == item.name,
+                            onTap: () {
+                              setState(() {
+                                selectedSection = item.name;
+                              });
+                            },
+                          ),
+                        );
                       }),
                     ],
                   ),
@@ -202,7 +192,7 @@ class _SectionScreenState extends State<SectionScreen> {
                 padding: const EdgeInsets.symmetric(
                     vertical: 10.0, horizontal: 20.0),
                 child: const Text(
-                  'Sections',
+                  'Library Sections',
                   style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
@@ -214,167 +204,177 @@ class _SectionScreenState extends State<SectionScreen> {
             SliverPadding(
               padding:
                   const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
-              sliver: SliverGrid(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 2 / 3,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
-                ),
-                delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
-                    double screenWidth = MediaQuery.of(context).size.width;
-                    double baseFontSize = screenWidth * 0.03;
+              sliver: _allSection.isEmpty
+                  ? const SliverToBoxAdapter(
+                    child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                  )
+                  : SliverGrid(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 2 / 3,
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 20,
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                          double screenWidth =
+                              MediaQuery.of(context).size.width;
+                          double baseFontSize = screenWidth * 0.03;
 
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const InfoScreen(),
-                            maintainState: false,
-                          ),
-                        );
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primary.withOpacity(0.1),
-                              blurRadius: 8,
-                              spreadRadius: 2,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                            Expanded(
-                              flex: 5,
-                              child: Stack(
+                          AllSectionModel section = _allSection[index];
+
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => InfoScreen(
+                                    zoneID: section.zoneID,
+                                  ),
+                                  maintainState: false,
+                                ),
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.white,
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.primary.withOpacity(0.1),
+                                    blurRadius: 8,
+                                    spreadRadius: 2,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
                                 children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Image.asset(
-                                      'assets/images/${index + 2}.jfif',
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
+                                  Expanded(
+                                    flex: 5,
+                                    child: Stack(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                                '$staticDir${section.image}',
+                                            fit: BoxFit.cover,
+                                            width: double.infinity,
+                                            placeholder: (context, url) =>
+                                                const Center(
+                                                    child:
+                                                        CircularProgressIndicator()),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const Icon(Icons.error),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          bottom: 5,
+                                          left: 5,
+                                          child: ConstrainedBox(
+                                            constraints: const BoxConstraints(
+                                              maxWidth: 115,
+                                            ),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: AppColors
+                                                    .imagebackgroundOverlay
+                                                    .withOpacity(0.5),
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 8,
+                                                vertical: 4,
+                                              ),
+                                              child: Text(
+                                                'Open',
+                                                style: TextStyle(
+                                                  fontSize: baseFontSize,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: AppColors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  Positioned(
-                                    bottom: 5,
-                                    left: 5,
-                                    child: ConstrainedBox(
-                                      constraints: const BoxConstraints(
-                                        maxWidth: 115,
+                                  Expanded(
+                                    flex: 2,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
                                       ),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color:
-                                              AppColors.imagebackgroundOverlay,
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 4,
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              'Trending Now',
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            width: double.infinity,
+                                            child: Text(
+                                              section.title,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
                                                 fontSize: baseFontSize,
                                                 fontWeight: FontWeight.bold,
-                                                color: AppColors.white,
+                                                color: AppColors.black,
                                               ),
+                                              textAlign: TextAlign.left,
                                             ),
-                                            SvgPicture.asset(
-                                                'assets/icons/arrow-trend-up.svg',
-                                                colorFilter:
-                                                    const ColorFilter.mode(
-                                                  Colors.yellow,
-                                                  BlendMode.srcIn,
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            section.description,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize: baseFontSize * 0.9,
+                                              color: AppColors.dark,
+                                            ),
+                                            textAlign: TextAlign.left,
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.star,
+                                                color: Colors.yellow,
+                                                size: 15,
+                                              ),
+                                              const SizedBox(width: 5),
+                                              Text(
+                                                section.rating.toString(),
+                                                style: TextStyle(
+                                                  fontSize: baseFontSize * 0.9,
+                                                  color: AppColors.black,
                                                 ),
-                                                width: 10,
-                                                height: 10),
-                                          ],
-                                        ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: Text(
-                                        sectionName[index],
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          fontSize: baseFontSize,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppColors.black,
-                                        ),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      'Spacious and well-equipped spaces.',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: baseFontSize * 0.9,
-                                        color: AppColors.dark,
-                                      ),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.star,
-                                          color: Colors.yellow,
-                                          size: 15,
-                                        ),
-                                        const SizedBox(width: 5),
-                                        Text(
-                                          '4.5',
-                                          style: TextStyle(
-                                            fontSize: baseFontSize * 0.9,
-                                            color: AppColors.black,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                          );
+                        },
+                        childCount: _allSection
+                            .length, // Use length of the sections list
                       ),
-                    );
-                  },
-                  childCount: sectionName.length,
-                ),
-              ),
+                    ),
             ),
             const SliverToBoxAdapter(
               child: SizedBox(height: 15),

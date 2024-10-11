@@ -41,7 +41,7 @@ class MyStorage {
   Future<Map<String, dynamic>> fetchAccessToken() async {
     String? accessToken = await _storage.getData('accessToken');
     return {
-      'accessToken': accessToken ?? 'No access token found',
+      'accessToken': accessToken ?? '',
     };
   }
 }

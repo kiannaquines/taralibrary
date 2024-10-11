@@ -11,7 +11,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   const CustomAppBar({
     super.key,
     this.greetingMessage = 'Good Morning, Kian!',
-    this.libraryName = 'KEPLRC Library',
+    this.libraryName = 'TaraLibrary',
     this.avatarImagePath = 'assets/images/avatar-1.jpg',
   });
 
@@ -47,7 +47,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         Text(
                           widget.greetingMessage,
                           style: const TextStyle(
-                            fontSize: 16.0,
+                            fontSize: 13.0,
                             color: AppColors.dark,
                           ),
                         ),

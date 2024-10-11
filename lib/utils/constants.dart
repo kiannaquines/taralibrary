@@ -7,4 +7,8 @@ class ApiSettings {
   static String getApiUrl() {
     return '$protocol://$apiEndpoint:$apiPort$apiVersion';
   }
+
+  static String getStaticFileDir() {
+    return '$protocol://$apiEndpoint:$apiPort';
+  }
 }

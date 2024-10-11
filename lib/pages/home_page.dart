@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:taralibrary/model/home_model.dart';
+import 'package:taralibrary/service/home_service.dart';
 import 'package:taralibrary/utils/colors.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:taralibrary/screens/info.dart';
 import 'package:taralibrary/screens/sections.dart';
 import 'package:taralibrary/utils/storage.dart';
+import 'package:taralibrary/utils/constants.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,14 +16,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  ApiSettings apiSettings = ApiSettings();
+
+  String get staticDir => ApiSettings.getStaticFileDir();
   MyStorage myStorage = MyStorage();
+  final HomeService _homeService = HomeService();
+  List<PopularModel> _popularZones = [];
+  List<RecommendedModel> _recommendedZones = [];
+  List<CategoryModel> _categories = [];
+
   String selectedSection = 'Study';
-  final List<String> sectionName = [
-    'Information Technology',
-    'References',
-    'Filipiniana',
-    'Pubication',
-  ];
 
   final TextEditingController _controller = TextEditingController();
   int selectedIndex = 0;
@@ -39,6 +44,24 @@ class _HomePageState extends State<HomePage> {
 
   Future<String?> _loadAccessToken() async {
     Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
+    List<PopularModel> popularSection = await _homeService.getPopularSection(
+      tokenData['accessToken'],
+    );
+
+    List<RecommendedModel> recommendedSection =
+        await _homeService.getRecommendedSection(
+      tokenData['accessToken'],
+    );
+
+    List<CategoryModel> categoriesList = await _homeService.getCategories(
+      tokenData['accessToken'],
+    );
+
+    setState(() {
+      _popularZones = popularSection;
+      _recommendedZones = recommendedSection;
+      _categories = categoriesList;
+    });
     return tokenData['accessToken'];
   }
 
@@ -48,9 +71,10 @@ class _HomePageState extends State<HomePage> {
       slivers: [
         SliverPadding(
           padding: const EdgeInsets.only(
-            top: 10.0,
+            top: 20.0,
             left: 20.0,
             right: 20.0,
+            bottom: 20.0,
           ),
           sliver: SliverToBoxAdapter(
             child: Container(
@@ -105,6 +129,7 @@ class _HomePageState extends State<HomePage> {
             top: 10.0,
             left: 20.0,
             right: 20.0,
+            bottom: 20.0,
           ),
           sliver: SliverToBoxAdapter(
             child: SingleChildScrollView(
@@ -119,41 +144,19 @@ class _HomePageState extends State<HomePage> {
                     });
                   }),
                   const SizedBox(width: 15.0),
-                  _buildSectionButton('Study',
-                      isSelected: selectedSection == 'Study', onTap: () {
-                    setState(() {
-                      selectedSection = 'Study';
-                    });
-                  }),
-                  const SizedBox(width: 15.0),
-                  _buildSectionButton('Relax',
-                      isSelected: selectedSection == 'Relax', onTap: () {
-                    setState(() {
-                      selectedSection = 'Relax';
-                      debugPrint(selectedSection);
-                    });
-                  }),
-                  const SizedBox(width: 15.0),
-                  _buildSectionButton('Reading',
-                      isSelected: selectedSection == 'Reading', onTap: () {
-                    setState(() {
-                      selectedSection = 'Reading';
-                    });
-                  }),
-                  const SizedBox(width: 15.0),
-                  _buildSectionButton('Computer Lab',
-                      isSelected: selectedSection == 'Computer Lab', onTap: () {
-                    setState(() {
-                      selectedSection = 'Computer Lab';
-                      debugPrint(selectedSection);
-                    });
-                  }),
-                  const SizedBox(width: 15.0),
-                  _buildSectionButton('Study Desk',
-                      isSelected: selectedSection == 'Study Desk', onTap: () {
-                    setState(() {
-                      selectedSection = 'Study Desk';
-                    });
+                  ..._categories.map((item) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 15.0),
+                      child: _buildSectionButton(
+                        item.name,
+                        isSelected: selectedSection == item.name,
+                        onTap: () {
+                          setState(() {
+                            selectedSection = item.name;
+                          });
+                        },
+                      ),
+                    );
                   }),
                 ],
               ),
@@ -222,29 +225,42 @@ class _HomePageState extends State<HomePage> {
                   crossAxisSpacing: 20,
                   mainAxisSpacing: 20,
                 ),
-                itemCount: 7,
+                itemCount: _popularZones.length,
                 itemBuilder: (BuildContext ctx, index) {
+                  final zone = _popularZones[index];
+
                   return GestureDetector(
                     onTap: () {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const InfoScreen(),
+                          builder: (context) => InfoScreen(
+                            zoneID: zone.zoneID,
+                          ),
                           maintainState: false,
                         ),
                       );
                     },
                     child: Stack(
                       children: [
-                        Container(
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.3),
-                            borderRadius: BorderRadius.circular(15),
-                            image: DecorationImage(
-                              image:
-                                  AssetImage('assets/images/${index + 1}.jfif'),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Container(
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: CachedNetworkImage(
+                              imageUrl: '$staticDir${zone.image}',
                               fit: BoxFit.cover,
+                              width: double.infinity,
+                              height: double.infinity,
+                              placeholder: (context, url) => const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
                             ),
                           ),
                         ),
@@ -263,9 +279,9 @@ class _HomePageState extends State<HomePage> {
                                     .withOpacity(0.7),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: const Text(
-                                'Information Technology',
-                                style: TextStyle(
+                              child: Text(
+                                zone.title,
+                                style: const TextStyle(
                                   color: AppColors.white,
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
@@ -291,17 +307,17 @@ class _HomePageState extends State<HomePage> {
                                     .withOpacity(0.7),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: const Row(
+                              child: Row(
                                 children: [
-                                  Icon(
+                                  const Icon(
                                     Icons.star,
                                     color: Colors.yellow,
                                     size: 15,
                                   ),
-                                  SizedBox(width: 5),
+                                  const SizedBox(width: 5),
                                   Text(
-                                    '4.5 Rating',
-                                    style: TextStyle(
+                                    '${zone.rating} Rating',
+                                    style: const TextStyle(
                                       color: AppColors.white,
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
@@ -327,7 +343,7 @@ class _HomePageState extends State<HomePage> {
             padding:
                 const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
             child: const Text(
-              'Recommended Sections',
+              'Most Visited Sections',
               style: TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.bold,
@@ -349,13 +365,14 @@ class _HomePageState extends State<HomePage> {
               (BuildContext context, int index) {
                 double screenWidth = MediaQuery.of(context).size.width;
                 double baseFontSize = screenWidth * 0.03;
+                RecommendedModel recommenedZone = _recommendedZones[index];
 
                 return GestureDetector(
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const InfoScreen(),
+                        builder: (context) => const InfoScreen(zoneID: 1),
                         maintainState: false,
                       ),
                     );
@@ -381,52 +398,75 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
-                                child: Image.asset(
-                                  'assets/images/${index + 2}.jfif',
+                                child: CachedNetworkImage(
+                                  imageUrl: '$staticDir${recommenedZone.image}',
                                   fit: BoxFit.cover,
                                   width: double.infinity,
+                                  placeholder: (context, url) => const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
                                 ),
                               ),
                               Positioned(
                                 bottom: 5,
                                 left: 5,
-                                child: ConstrainedBox(
-                                  constraints: const BoxConstraints(
-                                    maxWidth: 115,
-                                  ),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: AppColors.imagebackgroundOverlay
-                                          .withOpacity(0.7),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 4,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          'Trending Now',
-                                          style: TextStyle(
-                                            fontSize: baseFontSize,
-                                            fontWeight: FontWeight.bold,
-                                            color: AppColors.white,
+                                child: Builder(
+                                  builder: (context) {
+                                    final text = recommenedZone.status;
+                                    final textStyle = TextStyle(
+                                      fontSize: baseFontSize,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.white,
+                                    );
+
+                                    final textPainter = TextPainter(
+                                      text: TextSpan(
+                                          text: text, style: textStyle),
+                                      textDirection: TextDirection.ltr,
+                                      maxLines: 1,
+                                    )..layout();
+
+                                    double textWidth = textPainter.size.width;
+
+                                    double iconWidth = 10;
+                                    double iconPadding = 5;
+
+                                    double maxWidth =
+                                        textWidth + iconWidth + iconPadding <
+                                                130
+                                            ? textWidth +
+                                                iconWidth +
+                                                iconPadding +
+                                                20
+                                            : 130;
+
+                                    return ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                        maxWidth: maxWidth,
+                                      ),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: AppColors
+                                              .imagebackgroundOverlay
+                                              .withOpacity(0.7),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 4,
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            text,
+                                            style: textStyle,
                                           ),
                                         ),
-                                        SvgPicture.asset(
-                                            'assets/icons/arrow-trend-up.svg',
-                                            colorFilter: const ColorFilter.mode(
-                                              Colors.yellow,
-                                              BlendMode.srcIn,
-                                            ),
-                                            width: 10,
-                                            height: 10),
-                                      ],
-                                    ),
-                                  ),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                             ],
@@ -445,11 +485,11 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(
                                   width: double.infinity,
                                   child: Text(
-                                    sectionName[index],
+                                    recommenedZone.title,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
-                                      fontSize: baseFontSize, // Responsive size
+                                      fontSize: baseFontSize,
                                       fontWeight: FontWeight.bold,
                                       color: AppColors.black,
                                     ),
@@ -458,12 +498,11 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  'Spacious and well-equipped spaces.',
+                                  recommenedZone.description,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    fontSize:
-                                        baseFontSize * 0.9, // Responsive size
+                                    fontSize: baseFontSize * 0.9,
                                     color: AppColors.dark,
                                   ),
                                   textAlign: TextAlign.left,
@@ -478,10 +517,9 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     const SizedBox(width: 5),
                                     Text(
-                                      '4.5',
+                                      recommenedZone.rating.toString(),
                                       style: TextStyle(
-                                        fontSize: baseFontSize *
-                                            0.9, // Responsive size
+                                        fontSize: baseFontSize * 0.9,
                                         color: AppColors.black,
                                       ),
                                     ),
@@ -496,7 +534,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 );
               },
-              childCount: sectionName.length,
+              childCount: _recommendedZones.length,
             ),
           ),
         ),

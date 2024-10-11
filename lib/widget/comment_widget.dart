@@ -21,11 +21,10 @@ class CommentWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
-            backgroundImage:
-                AssetImage(userProfile),
+            backgroundImage: AssetImage(userProfile),
             radius: 20,
           ),
           const SizedBox(width: 10),
@@ -33,11 +32,13 @@ class CommentWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(userName,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                    )),
+                Text(
+                  userName,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 Row(
                   children: [
                     Text(
@@ -49,13 +50,14 @@ class CommentWidget extends StatelessWidget {
                     ),
                     const Spacer(),
                     Row(
-                      children: List.generate(rating, (index) {
-                        return const Icon(
+                      children: List.generate(
+                        rating.clamp(0, 5),
+                        (index) => const Icon(
                           Icons.star,
                           color: Colors.yellow,
                           size: 16,
-                        );
-                      }),
+                        ),
+                      ),
                     ),
                   ],
                 ),

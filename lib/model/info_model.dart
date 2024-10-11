@@ -1,94 +1,91 @@
 class RealTimeChartModel {
-  final int predictionID;
-  final int predictionCount;
-  final String predictionTime;
+  final int count;
+  final String time;
 
   RealTimeChartModel({
-    required this.predictionID,
-    required this.predictionCount,
-    required this.predictionTime,
+    required this.count,
+    required this.time,
   });
 
   factory RealTimeChartModel.fromJson(Map<String, dynamic> json) {
     return RealTimeChartModel(
-      predictionID: json['predictionID'],
-      predictionCount: json['predictionCount'],
-      predictionTime: json['predictionTime'],
+      count: json['count'],
+      time: json['time'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'predictionID': predictionID,
-      'predictionCount': predictionCount,
-      'predictionTime': predictionTime,
+      'count': count,
+      'time': time,
     };
   }
 }
 
 class ZoneImagesModel {
   final int imageZoneID;
-  final int zoneID;
-  final String dateComment;
   final String imageName;
 
   ZoneImagesModel({
     required this.imageZoneID,
-    required this.zoneID,
-    required this.dateComment,
     required this.imageName,
   });
 
   factory ZoneImagesModel.fromJson(Map<String, dynamic> json) {
     return ZoneImagesModel(
-      imageZoneID: json['imageZoneID'],
-      dateComment: json['dateComment'],
-      zoneID: json['zoneID'],
-      imageName: json['imageName'],
+      imageZoneID: json['id'],
+      imageName: json['image_url'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'imageZoneID': imageZoneID,
-      'zoneID': zoneID,
-      'dateComment': dateComment,
-      'imageName': imageName,
+      'id': imageZoneID,
+      'image_url': imageName,
     };
   }
 }
 
 class CommentModel {
-  final int zoneID;
   final int commentID;
-  final String commentName;
-  final String commentDescription;
-  final int rating;
+  final int zoneID;
+  final String firstName;
+  final String lastName;
+  final String comment;
+  final DateTime dateAdded;
+  final DateTime updateDate;
 
   CommentModel({
-    required this.zoneID,
     required this.commentID,
-    required this.commentName,
-    required this.commentDescription,
-    required this.rating,
+    required this.zoneID,
+    required this.firstName,
+    required this.lastName,
+    required this.comment,
+    required this.dateAdded,
+    required this.updateDate,
   });
 
   factory CommentModel.fromJson(Map<String, dynamic> json) {
     return CommentModel(
-      zoneID: json['zoneID'],
-      commentID: json['commentID'],
-      commentName: json['commentName'],
-      commentDescription: json['commentDescription'],
-      rating: json['rating'],
+      commentID: json['id'],
+      zoneID: json['zone_id'],
+      firstName: json['first_name'],
+      lastName: json['last_name'],
+      comment: json['comment'],
+      dateAdded: DateTime.parse(json['date_added']),
+      updateDate: DateTime.parse(json['update_date']),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'commentID': commentID,
-      'commentName': commentName,
-      'commentDescription': commentDescription,
-      'rating': rating,
+      'id': commentID,
+      'zone_id': zoneID,
+      'first_name': firstName,
+      'last_name': lastName,
+      'comment': comment,
+      'date_added': dateAdded.toIso8601String(),
+      'update_date': updateDate.toIso8601String(),
     };
   }
 }
@@ -96,7 +93,8 @@ class CommentModel {
 class ZoneInfoModel {
   final int id;
   final String name;
-  final int rating;
+  final double rating;
+  final int review;
   final String description;
   final List<CommentModel> comments;
   final List<ZoneImagesModel> images;
@@ -106,6 +104,7 @@ class ZoneInfoModel {
     required this.id,
     required this.name,
     required this.rating,
+    required this.review,
     required this.description,
     required this.comments,
     required this.images,
@@ -113,41 +112,33 @@ class ZoneInfoModel {
   });
 
   factory ZoneInfoModel.fromJson(Map<String, dynamic> json) {
-    var commentsArr = json['comments'] as List;
-    List<CommentModel> commentsList = commentsArr
-        .map(
-          (item) => CommentModel.fromJson(
-            item,
-          ),
-        )
-        .toList();
-
-    var imageArr = json['images'] as List;
-    List<ZoneImagesModel> imageList = imageArr
-        .map(
-          (item) => ZoneImagesModel.fromJson(
-            item,
-          ),
-        )
-        .toList();
-
-    var chartDataArr = json['chartData'] as List;
-    List<RealTimeChartModel> chartDataList = chartDataArr
-        .map(
-          (item) => RealTimeChartModel.fromJson(
-            item,
-          ),
-        )
-        .toList();
-
     return ZoneInfoModel(
-      id: json['id'],
-      name: json['name'],
-      rating: json['rating'],
-      description: json['description'],
-      comments: commentsList,
-      images: imageList,
-      chartData: chartDataList,
+      id: json['id'] ?? 0,
+      name: json['name'] ?? 'Unknown',
+      rating: json['total_rating']?.toDouble() ?? 0.0,
+      review: json['total_reviews'] ?? 0,
+      description: json['description'] ?? '',
+      comments: json['comments'] != null
+          ? List<CommentModel>.from(
+              json['comments'].map(
+                (item) => CommentModel.fromJson(item),
+              ),
+            )
+          : [],
+      images: json['images'] != null
+          ? List<ZoneImagesModel>.from(
+              json['images'].map(
+                (item) => ZoneImagesModel.fromJson(item),
+              ),
+            )
+          : [],
+      chartData: json['predictions'] != null
+          ? List<RealTimeChartModel>.from(
+              json['predictions'].map(
+                (item) => RealTimeChartModel.fromJson(item),
+              ),
+            )
+          : [],
     );
   }
 
@@ -155,11 +146,12 @@ class ZoneInfoModel {
     return {
       'id': id,
       'name': name,
-      'rating': rating,
       'description': description,
-      'comments': comments,
-      'images': images,
-      'chartData': chartData,
+      'comments': comments.map((c) => c.toJson()).toList(),
+      'images': images.map((img) => img.toJson()).toList(),
+      'predictions': chartData.map((chart) => chart.toJson()).toList(),
+      'total_rating': rating,
+      'total_reviews': review,
     };
   }
 }

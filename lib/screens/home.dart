@@ -14,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 0;
-
+  
   void _onDestinationSelected(int index) {
     switch (index) {
       case 0:
@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: const CustomAppBar(
         greetingMessage: 'Good Evening, Kian!',
-        libraryName: 'KEPLRC Library',
+        libraryName: 'TaraLibrary',
         avatarImagePath: 'assets/images/avatar-1.jpg',
       ),
       body: bodyWidget,

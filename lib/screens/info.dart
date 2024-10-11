@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:taralibrary/model/info_model.dart';
 import 'package:taralibrary/screens/home.dart';
+import 'package:taralibrary/service/info_service.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
+import 'package:taralibrary/utils/constants.dart';
 import 'package:taralibrary/utils/storage.dart';
 import 'package:taralibrary/widget/comment_widget.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:math' as math;
 
 class InfoScreen extends StatefulWidget {
-  const InfoScreen({super.key});
+  final int zoneID;
+  const InfoScreen({
+    super.key,
+    required this.zoneID,
+  });
 
   @override
   State<InfoScreen> createState() => _InfoScreenState();
@@ -19,21 +28,36 @@ class _InfoScreenState extends State<InfoScreen>
     with SingleTickerProviderStateMixin {
   bool isReadMore = false;
   bool isSeeMore = false;
+  ZoneInfoModel? zoneInfo;
   late final AnimationController _controller;
+  ApiSettings apiSettings = ApiSettings();
+  String get staticDir => ApiSettings.getStaticFileDir();
 
   @override
   void initState() {
     super.initState();
-     _loadAccessToken();
+    _loadAccessToken();
     _controller = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 300));
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
   }
 
   MyStorage myStorage = MyStorage();
+  InfoService infoService = InfoService();
 
   Future<String?> _loadAccessToken() async {
     Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
+    await _loadInfo(tokenData['accessToken']);
     return tokenData['accessToken'];
+  }
+
+  Future<void> _loadInfo(String accessToken) async {
+    ZoneInfoModel info =
+        await infoService.getZoneInformation(accessToken, widget.zoneID);
+    setState(() {
+      zoneInfo = info;
+    });
   }
 
   @override
@@ -42,17 +66,12 @@ class _InfoScreenState extends State<InfoScreen>
     super.dispose();
   }
 
-  final List<String> imageUrls = [
-    'assets/images/4.jfif',
-    'assets/images/5.jfif',
-    'assets/images/6.jfif',
-    'assets/images/2.jfif',
-    'assets/images/1.jfif',
-  ];
-
   @override
   Widget build(BuildContext context) {
-    List<double> barValues = [5, 10, 8, 15, 20, 22, 30, 27, 23, 25, 29, 25, 29];
+    if (zoneInfo == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -78,20 +97,41 @@ class _InfoScreenState extends State<InfoScreen>
                         enableInfiniteScroll: true,
                         viewportFraction: 1,
                       ),
-                      items: imageUrls.map((imageUrl) {
-                        return Builder(
-                          builder: (BuildContext context) {
-                            return ClipRRect(
-                              borderRadius: BorderRadius.circular(20.0),
-                              child: Image.asset(
-                                imageUrl,
-                                fit: BoxFit.cover,
-                                width: MediaQuery.of(context).size.width,
+                      items: (zoneInfo?.images.isNotEmpty ?? false)
+                          ? zoneInfo!.images.map((image) {
+                              final imageUrl = '$staticDir${image.imageName}';
+                              return Builder(
+                                builder: (BuildContext context) {
+                                  return ClipRRect(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    child: CachedNetworkImage(
+                                      imageUrl: imageUrl,
+                                      fit: BoxFit.cover,
+                                      width: MediaQuery.of(context).size.width,
+                                      placeholder: (context, url) =>
+                                          const Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          const Center(
+                                        child: Icon(Icons.error),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }).toList()
+                          : [
+                              const Center(
+                                child: Text(
+                                  'No images available',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey,
+                                  ),
+                                ),
                               ),
-                            );
-                          },
-                        );
-                      }).toList(),
+                            ],
                     ),
                     Positioned(
                       top: 14,
@@ -140,26 +180,24 @@ class _InfoScreenState extends State<InfoScreen>
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Information Technology',
-                        style: TextStyle(
+                      Text(
+                        zoneInfo!.name,
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       Row(
                         children: [
-                          SvgPicture.asset(
-                            'assets/icons/star.svg',
-                            colorFilter: const ColorFilter.mode(
-                              Colors.yellow,
-                              BlendMode.srcIn,
-                            ),
-                            width: 15,
-                            height: 15,
+                          const Icon(
+                            Icons.star,
+                            size: 18,
+                            color: Colors.yellow,
                           ),
                           const SizedBox(width: 5),
-                          const Text('4 Stars (365 Reviews)'),
+                          Text(
+                            '${zoneInfo!.rating} Stars (${zoneInfo!.review} Reviews)',
+                          ),
                         ],
                       ),
                     ],
@@ -180,17 +218,12 @@ class _InfoScreenState extends State<InfoScreen>
               AnimatedSize(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.ease,
-                child: isReadMore == false
-                    ? const Text(
-                        'The Information Technology section at the Kundo E. Pham Library and Research Centre (KEPLRC) serves as a vital hub for digital literacy and access to technological resources. This section is dedicated to fostering an environment where patrons can explore various aspects of information technology.',
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 3,
-                      )
-                    : const Text(
-                        'The Information Technology section at the Kundo E. Pham Library and Research Centre (KEPLRC) serves as a vital hub for digital literacy and access to technological resources. This section is dedicated to fostering an environment where patrons can explore various aspects of information technology.',
-                        overflow: TextOverflow.visible,
-                        maxLines: null,
-                      ),
+                child: Text(
+                  zoneInfo!.description,
+                  overflow:
+                      isReadMore ? TextOverflow.visible : TextOverflow.ellipsis,
+                  maxLines: isReadMore ? null : 3,
+                ),
               ),
               const SizedBox(height: 20),
               Row(
@@ -304,7 +337,10 @@ class _InfoScreenState extends State<InfoScreen>
                   scrollDirection: Axis.horizontal,
                   child: SizedBox(
                     height: 220,
-                    width: 1000,
+                    width: math.max(
+                      MediaQuery.of(context).size.width,
+                      zoneInfo!.chartData.length * 70.0,
+                    ),
                     child: BarChart(
                       BarChartData(
                         gridData: FlGridData(
@@ -354,12 +390,13 @@ class _InfoScreenState extends State<InfoScreen>
                               reservedSize: 25,
                               getTitlesWidget: (value, meta) {
                                 int index = value.toInt();
-                                if (index >= 0 && index < barValues.length) {
-                                  double actualValue = barValues[index];
+                                if (index >= 0 &&
+                                    index < zoneInfo!.chartData.length) {
+                                  double actualValue = zoneInfo!
+                                      .chartData[index].count
+                                      .toDouble();
                                   return Container(
-                                    padding: const EdgeInsets.only(
-                                      bottom: 8.0,
-                                    ),
+                                    padding: const EdgeInsets.only(bottom: 8.0),
                                     child: Text(
                                       actualValue.toString(),
                                       style: const TextStyle(
@@ -379,21 +416,9 @@ class _InfoScreenState extends State<InfoScreen>
                               showTitles: true,
                               reservedSize: 30,
                               getTitlesWidget: (value, meta) {
-                                List<String> labels = [
-                                  '7:00 am',
-                                  '7:10 am',
-                                  '7:20 am',
-                                  '7:30 am',
-                                  '7:40 am',
-                                  '7:50 am',
-                                  '8:00 am',
-                                  '8:10 am',
-                                  '8:20 am',
-                                  '8:30 am',
-                                  '8:40 am',
-                                  '8:50 am',
-                                  '9:00 am',
-                                ];
+                                List<String> labels = zoneInfo!.chartData
+                                    .map((chart) => chart.time)
+                                    .toList();
                                 return Padding(
                                   padding: const EdgeInsets.only(top: 8.0),
                                   child: Text(
@@ -413,12 +438,13 @@ class _InfoScreenState extends State<InfoScreen>
                           show: false,
                         ),
                         barGroups: List.generate(
-                          barValues.length,
+                          zoneInfo!.chartData.length,
                           (index) => BarChartGroupData(
                             x: index,
                             barRods: [
                               BarChartRodData(
-                                toY: barValues[index],
+                                toY:
+                                    zoneInfo!.chartData[index].count.toDouble(),
                                 color: AppColors.primary,
                                 width: 22,
                                 borderRadius: BorderRadius.circular(6),
@@ -454,45 +480,56 @@ class _InfoScreenState extends State<InfoScreen>
                 ],
               ),
               const SizedBox(height: 10.0),
-              const Column(
+              Column(
                 children: [
-                  CommentWidget(
-                    userName: 'Arden James D. Petras',
-                    userProfile: 'assets/images/avatar-1.jpg',
-                    commentDate: '2024-10-01',
-                    commentText: 'Great resources available in this section!',
-                    rating: 4,
-                  ),
-                  CommentWidget(
-                    userName: 'Kian G. Naquines',
-                    userProfile: 'assets/images/avatar-2.jpg',
-                    commentDate: '2024-10-02',
-                    commentText: 'Very helpful staff and facilities.',
-                    rating: 5,
-                  ),
-                  CommentWidget(
-                    userName: 'Catherine R. Maglinte',
-                    userProfile: 'assets/images/avatar-3.jpg',
-                    commentDate: '2024-10-03',
-                    commentText: 'A wonderful place to learn and grow!',
-                    rating: 5,
-                  ),
-                  CommentWidget(
-                    userName: 'Irish M. Bianson',
-                    userProfile: 'assets/images/avatar-3.jpg',
-                    commentDate: '2024-10-03',
-                    commentText: 'A wonderful place to learn and grow!',
-                    rating: 5,
-                  ),
-                  CommentWidget(
-                    userName: 'Jennifer M. Escote',
-                    userProfile: 'assets/images/avatar-3.jpg',
-                    commentDate: '2024-10-03',
-                    commentText: 'A wonderful place to learn and grow!',
-                    rating: 5,
-                  ),
+                  if (zoneInfo!
+                      .comments.isNotEmpty) // Check if comments are available
+                    ...zoneInfo!.comments.map((comment) {
+                      return CommentWidget(
+                        userName: '${comment.firstName} ${comment.lastName}',
+                        userProfile: 'assets/images/avatar-1.jpg',
+                        commentDate: comment.dateAdded.toString(),
+                        commentText: comment.comment,
+                        rating: 4,
+                      );
+                    })
+                  else
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        border: Border.all(
+                          color: AppColors.dark.withOpacity(0.1),
+                        ),
+                      ),
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.all(10.0),
+                      child: const Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.face_3,
+                            size: 20,
+                            color: AppColors.primary,
+                          ),
+                          SizedBox(height: 10),
+                          Center(
+                            child: Text(
+                              'Share your positive thought about this section!',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                 ],
               ),
+              const SizedBox(height: 20.0),
             ],
           ),
         ),
@@ -550,11 +587,9 @@ class _InfoScreenState extends State<InfoScreen>
   }
 
   void _showCommentForm(BuildContext context) {
-    double finalRating = 3; // Initialize the rating with a default value
-    final TextEditingController commentController =
-        TextEditingController(); // Controller for comment input
+    double finalRating = 3;
+    final TextEditingController commentController = TextEditingController();
 
-    // Show a dialog for submitting comments
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -621,8 +656,8 @@ class _InfoScreenState extends State<InfoScreen>
                     filled: true,
                     floatingLabelBehavior: FloatingLabelBehavior.auto,
                     hintStyle: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.normal,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
