@@ -79,57 +79,41 @@ class AuthService {
         'status_code': 500,
       };
     }
-  } 
-
-
-  Future<Map<String, dynamic>> login() async{
-
-
-    String endpoint = "/auth/login";
-    final uri = Uri.parse('$baseUrl$endpoint');
-
-    
-    try {
-      return {
-        'access_token': 'this is the JWT token',
-        'type': 'bearer',
-        'status_code': 200,
-      }
-    } catch (e) {
-      return {
-        'access_token': '',
-        'status_code': 500,
-      };
-    }
   }
 
+  Future<Map<String, dynamic>> login(Login loginDetails) async {
+    String endpoint = "/auth/login";
+    final uri = Uri.parse('$baseUrl$endpoint');
+    final response = await http.post(
+      uri,
+      body: loginDetails.toUrlEncoded(),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    );
 
+    final Map<String, dynamic> result = jsonDecode(response.body);
 
+    switch (response.statusCode) {
+      case 200:
+        return LoginResponse(
+          token: result['access_token'],
+          message: 'Login successful, redirecting...',
+          type: result['token_type'],
+          statusCode: response.statusCode,
+        ).toJson();
 
-
-
-
-
-
-
-
-
-  // Future<Map<String, dynamic>> login(Login loginDetails) async {
-  //   String endpoint = "/auth/login";
-  //   final uri = Uri.parse('$baseUrl$endpoint');
-
-
-  //   try {
-  //     return {
-  //       'access_token': 'this is the JWT token',
-  //       'type': 'bearer',
-  //       'status_code': 200,
-  //     };
-  //   } catch (e) {
-  //     return {
-  //       'access_token': '',
-  //       'status_code': 500,
-  //     };
-  //   }
-  // }
+      case 422:
+      case 401:
+        return ErrorResponse(
+          message: result['detail'],
+          statusCode: response.statusCode,
+        ).toJson();
+      default:
+        return ErrorResponse(
+          message: 'Sorry, cannot login, try again later',
+          statusCode: response.statusCode,
+        ).toJson();
+    }
+  }
 }

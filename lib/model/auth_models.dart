@@ -60,28 +60,70 @@ class Login {
       'password': password,
     };
   }
+
+  String toUrlEncoded() {
+    final uri = Uri(
+      queryParameters: {
+        'username': username,
+        'password': password,
+      },
+    );
+    return uri.query;
+  }
 }
 
 class LoginResponse {
   final String token;
+  final String message;
   final String type;
+  final int statusCode;
 
   LoginResponse({
     required this.token,
+    required this.message,
     required this.type,
+    required this.statusCode,
   });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
     return LoginResponse(
       token: json['token'],
+      message: json['message'],
       type: json['type'],
+      statusCode: json['statusCode'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'token': token,
-      'type': type,
+      'access_token': token,
+      'message': message,
+      'token_type': type,
+      'status_code': statusCode,
+    };
+  }
+}
+
+class ErrorResponse {
+  final String message;
+  final int statusCode;
+
+  ErrorResponse({
+    required this.message,
+    required this.statusCode,
+  });
+
+  factory ErrorResponse.fromJson(Map<String, dynamic> json) {
+    return ErrorResponse(
+      message: json['message'],
+      statusCode: json['statusCode'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'message': message,
+      'status_code': statusCode,
     };
   }
 }

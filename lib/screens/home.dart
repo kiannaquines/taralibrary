@@ -4,8 +4,6 @@ import 'package:taralibrary/components/app_navbar.dart';
 import 'package:taralibrary/pages/home_page.dart';
 import 'package:taralibrary/screens/profile.dart';
 import 'package:taralibrary/screens/sections.dart';
-import 'package:taralibrary/utils/colors.dart';
-import 'package:taralibrary/screens/login.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

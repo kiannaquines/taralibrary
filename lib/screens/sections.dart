@@ -4,6 +4,7 @@ import 'package:taralibrary/screens/profile.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:taralibrary/screens/info.dart';
+import 'package:taralibrary/utils/storage.dart';
 
 class SectionScreen extends StatefulWidget {
   const SectionScreen({super.key});
@@ -25,6 +26,19 @@ class _SectionScreenState extends State<SectionScreen> {
   final TextEditingController _controller = TextEditingController();
 
   int selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAccessToken();
+  }
+
+  MyStorage myStorage = MyStorage();
+
+  Future<String?> _loadAccessToken() async {
+    Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
+    return tokenData['accessToken'];
+  }
 
   @override
   void dispose() {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:taralibrary/screens/login.dart';
 import 'package:taralibrary/utils/colors.dart';
+import 'package:taralibrary/utils/storage.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String greetingMessage;
@@ -22,6 +23,8 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _CustomAppBarState extends State<CustomAppBar> {
+  Storage storage = Storage();
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -121,8 +124,14 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       ElevatedButton(
-                        onPressed: () {
-                          _logout();
+                        onPressed: () async {
+                          await storage.deleteData('accessToken');
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LoginScreen(),
+                            ),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary.withOpacity(0.1),

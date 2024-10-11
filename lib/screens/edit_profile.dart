@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:taralibrary/screens/profile.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:taralibrary/utils/storage.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -18,6 +19,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     'Filipiniana',
     'Publication',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAccessToken();
+  }
+
+  MyStorage myStorage = MyStorage();
+
+  Future<String?> _loadAccessToken() async {
+    Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
+    return tokenData['accessToken'];
+  }
 
   @override
   Widget build(BuildContext context) {

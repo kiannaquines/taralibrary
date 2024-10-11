@@ -5,6 +5,7 @@ import 'package:taralibrary/screens/register.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:taralibrary/screens/home.dart';
 import 'package:taralibrary/service/auth_service.dart';
+import 'package:taralibrary/utils/storage.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -33,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   void loginProcess() async {
+    Storage storage = Storage();
     AuthService authService = AuthService();
 
     Login loginDetail = Login(
@@ -42,17 +44,40 @@ class _LoginScreenState extends State<LoginScreen>
 
     Map<String, dynamic> result = await authService.login(loginDetail);
 
-    // String accessToken = result['access_token'];
-    // String type = result['type'];
-    int statusCode = result['status_code'];
+    String message = result['message'] ?? 'An unknown error occurred.';
+    int statusCode = result['status_code'] ?? 500;
 
     if (statusCode == 200) {
+      String accessToken = result['access_token'] ?? '';
+      storage.addData('accessToken', accessToken);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          showCloseIcon: true,
+          duration: const Duration(seconds: 5),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+
+      await Future.delayed(const Duration(seconds: 5));
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
           builder: (context) => const HomeScreen(),
         ),
         (Route<dynamic> route) => false,
+      );
+    }
+
+    if (statusCode == 422 || statusCode == 401 || statusCode == 500) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          showCloseIcon: true,
+          duration: const Duration(seconds: 5),
+          behavior: SnackBarBehavior.floating,
+        ),
       );
     }
   }

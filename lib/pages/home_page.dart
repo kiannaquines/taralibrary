@@ -3,6 +3,7 @@ import 'package:taralibrary/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:taralibrary/screens/info.dart';
 import 'package:taralibrary/screens/sections.dart';
+import 'package:taralibrary/utils/storage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,6 +13,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  MyStorage myStorage = MyStorage();
+  String selectedSection = 'Study';
   final List<String> sectionName = [
     'Information Technology',
     'References',
@@ -20,8 +23,13 @@ class _HomePageState extends State<HomePage> {
   ];
 
   final TextEditingController _controller = TextEditingController();
-
   int selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAccessToken();
+  }
 
   @override
   void dispose() {
@@ -29,10 +37,13 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  Future<String?> _loadAccessToken() async {
+    Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
+    return tokenData['accessToken'];
+  }
+
   @override
   Widget build(BuildContext context) {
-    String selectedSection = 'All';
-
     return CustomScrollView(
       slivers: [
         SliverPadding(
@@ -49,7 +60,9 @@ class _HomePageState extends State<HomePage> {
               child: TextField(
                 controller: _controller,
                 onChanged: (value) {
-                  setState(() {});
+                  setState(() {
+                    // Implement search functionality here
+                  });
                 },
                 decoration: InputDecoration(
                   hintText: 'Search your favorite...',
@@ -103,7 +116,6 @@ class _HomePageState extends State<HomePage> {
                       isSelected: selectedSection == 'All', onTap: () {
                     setState(() {
                       selectedSection = 'All';
-                      debugPrint(selectedSection);
                     });
                   }),
                   const SizedBox(width: 15.0),
@@ -111,8 +123,6 @@ class _HomePageState extends State<HomePage> {
                       isSelected: selectedSection == 'Study', onTap: () {
                     setState(() {
                       selectedSection = 'Study';
-
-                      debugPrint(selectedSection);
                     });
                   }),
                   const SizedBox(width: 15.0),
@@ -128,7 +138,6 @@ class _HomePageState extends State<HomePage> {
                       isSelected: selectedSection == 'Reading', onTap: () {
                     setState(() {
                       selectedSection = 'Reading';
-                      debugPrint(selectedSection);
                     });
                   }),
                   const SizedBox(width: 15.0),
@@ -144,7 +153,6 @@ class _HomePageState extends State<HomePage> {
                       isSelected: selectedSection == 'Study Desk', onTap: () {
                     setState(() {
                       selectedSection = 'Study Desk';
-                      debugPrint(selectedSection);
                     });
                   }),
                 ],
@@ -251,7 +259,8 @@ class _HomePageState extends State<HomePage> {
                                 vertical: 4.0,
                               ),
                               decoration: BoxDecoration(
-                                color: AppColors.imagebackgroundOverlay.withOpacity(0.7),
+                                color: AppColors.imagebackgroundOverlay
+                                    .withOpacity(0.7),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: const Text(
@@ -278,7 +287,8 @@ class _HomePageState extends State<HomePage> {
                                 vertical: 4.0,
                               ),
                               decoration: BoxDecoration(
-                                color: AppColors.imagebackgroundOverlay.withOpacity(0.7),
+                                color: AppColors.imagebackgroundOverlay
+                                    .withOpacity(0.7),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: const Row(
@@ -386,7 +396,8 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      color: AppColors.imagebackgroundOverlay.withOpacity(0.7),
+                                      color: AppColors.imagebackgroundOverlay
+                                          .withOpacity(0.7),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     padding: const EdgeInsets.symmetric(

@@ -4,6 +4,7 @@ import 'package:taralibrary/screens/home.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
+import 'package:taralibrary/utils/storage.dart';
 import 'package:taralibrary/widget/comment_widget.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
@@ -23,8 +24,16 @@ class _InfoScreenState extends State<InfoScreen>
   @override
   void initState() {
     super.initState();
+     _loadAccessToken();
     _controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 300));
+  }
+
+  MyStorage myStorage = MyStorage();
+
+  Future<String?> _loadAccessToken() async {
+    Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
+    return tokenData['accessToken'];
   }
 
   @override
