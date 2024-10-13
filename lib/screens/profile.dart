@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:taralibrary/model/home_model.dart';
 import 'package:taralibrary/model/profile_model.dart';
@@ -9,6 +10,7 @@ import 'package:taralibrary/service/service_app.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:taralibrary/screens/home.dart';
+import 'package:taralibrary/utils/constants.dart';
 import 'package:taralibrary/utils/storage.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
@@ -20,15 +22,17 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  ApiSettings apiSettings = ApiSettings();
   final ProfileService _profileService = ProfileService();
   ProfileModel? _profile;
   final HomeService _homeService = HomeService();
-  
+  String get staticDir => ApiSettings.getStaticFileDir();
+
   List<PopularModel> _popularZones = [];
   List<RecommendedModel> _recommendedZones = [];
 
   bool _isLoading = true;
- 
+
   @override
   void initState() {
     super.initState();
@@ -113,7 +117,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           break;
       }
     }
-    
 
     await handleApiResponseSection<PopularModel>(
       _homeService.getPopularSection,
@@ -129,7 +132,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _profileService.getProfile,
       (data) => setState(() => _profile = data),
     );
-
 
     return accessToken;
   }
@@ -255,30 +257,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     '@${_profile?.username}',
                     style: const TextStyle(
                       fontSize: 15,
+                      fontWeight: FontWeight.w600,
                       color: Colors.grey,
                     ),
                   ),
                   const SizedBox(height: 20),
-                  TextButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const EditProfileScreen(),
-                          maintainState: true,
-                        ),
-                      );
-                    },
-                    label: Text(
-                      'Edit Profile',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.dark.withOpacity(0.9),
-                          fontSize: 16),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(30),
                     ),
-                    icon: const Icon(
-                      FeatherIcons.edit,
-                      size: 25,
+                    child: TextButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const EditProfileScreen(),
+                            maintainState: true,
+                          ),
+                        );
+                      },
+                      label: const Text(
+                        'Edit Profile',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                          fontSize: 14, // Reduced font size
+                        ),
+                      ),
+                      icon: const Icon(
+                        FeatherIcons.edit,
+                        size: 16, // Reduced icon size
+                        color: Colors.white,
+                      ),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8.0, vertical: 4.0), // Reduced padding
+                        backgroundColor: AppColors.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 15),
@@ -319,15 +338,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 child: Stack(
                                   children: [
                                     Container(
-                                      alignment: Alignment.center,
+                                      width: double.infinity,
                                       decoration: BoxDecoration(
                                         color:
                                             AppColors.primary.withOpacity(0.3),
                                         borderRadius: BorderRadius.circular(15),
-                                        image: DecorationImage(
-                                          image: AssetImage(
-                                              'assets/images/${index + 2}.jfif'),
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(15),
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                              '$staticDir${recommendedZone.image}',
                                           fit: BoxFit.cover,
+                                          placeholder: (context, url) =>
+                                              const Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.error),
+                                          fadeInDuration:
+                                              const Duration(milliseconds: 300),
+                                          fadeOutDuration:
+                                              const Duration(milliseconds: 300),
                                         ),
                                       ),
                                     ),
@@ -379,6 +411,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.25,
                           child: GridView.builder(
+                            reverse: false,
                             scrollDirection: Axis.horizontal,
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
@@ -387,7 +420,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               crossAxisSpacing: 20,
                               mainAxisSpacing: 20,
                             ),
-                            itemCount: _popularZones.length,
+                            itemCount: _recommendedZones.length,
                             itemBuilder: (BuildContext ctx, index) {
                               final popularZone = _popularZones[index];
                               return GestureDetector(
@@ -397,15 +430,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 child: Stack(
                                   children: [
                                     Container(
-                                      alignment: Alignment.center,
+                                      width: double.infinity,
                                       decoration: BoxDecoration(
                                         color:
                                             AppColors.primary.withOpacity(0.3),
                                         borderRadius: BorderRadius.circular(15),
-                                        image: DecorationImage(
-                                          image: AssetImage(
-                                              'assets/images/${index + 2}.jfif'),
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(15),
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                              '$staticDir${popularZone.image}',
                                           fit: BoxFit.cover,
+                                          placeholder: (context, url) =>
+                                              const Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.error),
+                                          fadeInDuration:
+                                              const Duration(milliseconds: 300),
+                                          fadeOutDuration:
+                                              const Duration(milliseconds: 300),
                                         ),
                                       ),
                                     ),

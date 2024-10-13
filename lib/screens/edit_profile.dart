@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taralibrary/model/profile_model.dart';
+import 'package:taralibrary/screens/change_password_account.dart';
 import 'package:taralibrary/screens/login.dart';
 import 'package:taralibrary/screens/profile.dart';
 import 'package:taralibrary/service/profile_service.dart';
@@ -392,6 +393,30 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 ),
                               ),
                             ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ChangePasswordAccount(),
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              'Change Password',
+                              style: TextStyle(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
                       ],

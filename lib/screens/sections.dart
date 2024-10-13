@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:taralibrary/model/home_model.dart';
 import 'package:taralibrary/model/section_models.dart';
 import 'package:taralibrary/screens/home.dart';
@@ -33,15 +34,15 @@ class _SectionScreenState extends State<SectionScreen> {
   MyStorage myStorage = MyStorage();
 
   String selectedSection = 'All';
-
   final TextEditingController _controller = TextEditingController();
 
-  int selectedIndex = 0;
+  List<AllSectionModel> _filteredSections = [];
 
   @override
   void initState() {
     super.initState();
     _loadAccessToken();
+    _filteredSections = _allSection;
   }
 
   Future<String?> _loadAccessToken() async {
@@ -68,7 +69,6 @@ class _SectionScreenState extends State<SectionScreen> {
                 behavior: SnackBarBehavior.floating,
               ),
             );
-
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => const LoginScreen()),
             );
@@ -88,7 +88,12 @@ class _SectionScreenState extends State<SectionScreen> {
     }
 
     await handleApiResponse<AllSectionModel>(_sectionService.getAllSections,
-        (data) => setState(() => _allSection = data));
+        (data) {
+      setState(() {
+        _allSection = data;
+        _filteredSections = data; // Initialize filtered sections
+      });
+    });
 
     await handleApiResponse<CategoryModel>(_homeService.getCategories,
         (data) => setState(() => _categories = data));
@@ -102,10 +107,29 @@ class _SectionScreenState extends State<SectionScreen> {
     super.dispose();
   }
 
+  void _filterSections(String query) {
+    if (query.isEmpty) {
+      setState(() {
+        _filteredSections = _allSection;
+      });
+    } else {
+      setState(() {
+        _filteredSections = _allSection.where((section) {
+          return section.title.toLowerCase().contains(query.toLowerCase()) ||
+              section.description.toLowerCase().contains(query.toLowerCase());
+        }).toList();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: const Icon(
+          FeatherIcons.menu,
+          color: AppColors.primary,
+        ),
         title: const Text(
           'Library Facilities',
           style: TextStyle(
@@ -116,7 +140,10 @@ class _SectionScreenState extends State<SectionScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.sort),
+            icon: const Icon(
+              FeatherIcons.bell,
+              color: AppColors.primary,
+            ),
             onPressed: () {
               NotificationService().showNotification(
                 id: 1,
@@ -125,37 +152,32 @@ class _SectionScreenState extends State<SectionScreen> {
               );
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.more_horiz),
-            onPressed: () {
-              // More options logic goes here
-            },
-          ),
         ],
       ),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
             SliverPadding(
-              padding: const EdgeInsets.only(
-                left: 20.0,
-                right: 20.0,
-              ),
+              padding:
+                  const EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0),
               sliver: SliverToBoxAdapter(
                 child: Container(
-                  constraints: const BoxConstraints(
-                    maxHeight: 60,
-                  ),
+                  constraints: const BoxConstraints(maxHeight: 60),
                   child: TextField(
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.dark.withOpacity(0.9),
+                        fontSize: 16),
                     controller: _controller,
                     onChanged: (value) {
-                      setState(() {});
+                      _filterSections(value);
                     },
                     decoration: InputDecoration(
                       hintText: 'Search your favorite...',
                       hintStyle: TextStyle(
-                        color: AppColors.dark.withOpacity(0.5),
-                      ),
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.dark.withOpacity(0.9),
+                          fontSize: 16),
                       fillColor: AppColors.searchBarColor.withOpacity(0.1),
                       filled: true,
                       border: OutlineInputBorder(
@@ -163,9 +185,7 @@ class _SectionScreenState extends State<SectionScreen> {
                         borderSide: BorderSide.none,
                       ),
                       contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0,
-                        horizontal: 20.0,
-                      ),
+                          vertical: 10.0, horizontal: 20.0),
                       prefixIcon: Icon(
                         Icons.search,
                         color: AppColors.dark.withOpacity(0.5),
@@ -176,7 +196,7 @@ class _SectionScreenState extends State<SectionScreen> {
                               icon: const Icon(Icons.clear),
                               onPressed: () {
                                 _controller.clear();
-                                setState(() {});
+                                _filterSections(''); // Reset the filter
                               },
                               color: AppColors.dark.withOpacity(0.5),
                             )
@@ -189,11 +209,7 @@ class _SectionScreenState extends State<SectionScreen> {
             ),
             SliverPadding(
               padding: const EdgeInsets.only(
-                top: 10.0,
-                left: 20.0,
-                right: 20.0,
-                bottom: 20.0,
-              ),
+                  top: 10.0, left: 20.0, right: 20.0, bottom: 20.0),
               sliver: SliverToBoxAdapter(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -243,7 +259,7 @@ class _SectionScreenState extends State<SectionScreen> {
             SliverPadding(
               padding:
                   const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
-              sliver: _allSection.isEmpty
+              sliver: _filteredSections.isEmpty
                   ? const SliverToBoxAdapter(
                       child: Center(
                         child: CircularProgressIndicator(),
@@ -263,7 +279,7 @@ class _SectionScreenState extends State<SectionScreen> {
                               MediaQuery.of(context).size.width;
                           double baseFontSize = screenWidth * 0.03;
 
-                          AllSectionModel section = _allSection[index];
+                          AllSectionModel section = _filteredSections[index];
 
                           return GestureDetector(
                             onTap: () {
@@ -285,8 +301,8 @@ class _SectionScreenState extends State<SectionScreen> {
                                   BoxShadow(
                                     color: AppColors.primary.withOpacity(0.1),
                                     blurRadius: 8,
-                                    spreadRadius: 2,
-                                    offset: const Offset(0, 2),
+                                    spreadRadius: 0,
+                                    offset: const Offset(0, 4),
                                   ),
                                 ],
                               ),
@@ -410,8 +426,7 @@ class _SectionScreenState extends State<SectionScreen> {
                             ),
                           );
                         },
-                        childCount: _allSection
-                            .length, // Use length of the sections list
+                        childCount: _filteredSections.length,
                       ),
                     ),
             ),
@@ -498,23 +513,27 @@ class _SectionScreenState extends State<SectionScreen> {
   }
 }
 
-Widget _buildSectionButton(String title,
-    {bool isSelected = false, VoidCallback? onTap}) {
+Widget _buildSectionButton(
+  String name, {
+  required bool isSelected,
+  required VoidCallback onTap,
+}) {
   return GestureDetector(
     onTap: onTap,
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+    child: AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
       decoration: BoxDecoration(
-        color:
-            isSelected ? AppColors.primary.withOpacity(0.2) : AppColors.white,
-        borderRadius: BorderRadius.circular(30.0),
-        boxShadow: null,
+        color: isSelected ? AppColors.primary : Colors.transparent,
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: AppColors.primary),
       ),
+      curve: Curves.easeInOut,
       child: Text(
-        title,
+        name,
         style: TextStyle(
-          color: isSelected ? AppColors.primary : AppColors.dark,
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          color: isSelected ? Colors.white : AppColors.primary,
+          fontWeight: FontWeight.bold,
         ),
       ),
     ),

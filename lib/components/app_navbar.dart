@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:taralibrary/screens/login.dart';
-import 'package:taralibrary/service/notification_service.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:taralibrary/utils/storage.dart';
 
@@ -56,7 +56,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         Text(
                           widget.libraryName,
                           style: const TextStyle(
-                            fontSize: 20.0,
+                            fontSize: 23.0,
                             fontWeight: FontWeight.bold,
                             color: AppColors.primary,
                           ),
@@ -72,8 +72,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: AppColors.primary.withOpacity(0.2),
-                          width: 5.0,
+                          color: AppColors.primary,
+                          width: 3.0,
                         ),
                       ),
                       child: CircleAvatar(
@@ -111,7 +111,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                   const Text(
                     'Logout?',
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 23,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -135,11 +135,22 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary.withOpacity(0.1),
-                          foregroundColor: AppColors.primary,
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: AppColors.white,
                           shadowColor: Colors.transparent,
                         ),
-                        child: const Text('Sign out'),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('Sign out'),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Icon(
+                              FeatherIcons.logOut,
+                            ),
+                          ],
+                        ),
                       ),
                       const SizedBox(
                         width: 10,
@@ -163,15 +174,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
           ),
         );
       },
-    );
-  }
-
-  void _logout() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const LoginScreen(),
-      ),
     );
   }
 }

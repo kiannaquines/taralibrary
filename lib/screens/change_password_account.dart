@@ -90,12 +90,18 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextField(
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.dark.withOpacity(0.9),
+                            fontSize: 16),
                         maxLines: 1,
                         obscureText: true,
                         decoration: InputDecoration(
                           labelText: 'Old Password',
                           labelStyle: TextStyle(
-                              color: AppColors.black.withOpacity(0.5)),
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.dark.withOpacity(0.9),
+                              fontSize: 16),
                           prefixIcon: const Icon(
                             Icons.lock,
                             color: AppColors.primary,
@@ -115,12 +121,18 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
                       ),
                       const SizedBox(height: 25),
                       TextField(
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.dark.withOpacity(0.9),
+                            fontSize: 16),
                         maxLines: 1,
                         obscureText: true,
                         decoration: InputDecoration(
                           labelText: 'New Password',
                           labelStyle: TextStyle(
-                              color: AppColors.black.withOpacity(0.5)),
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.dark.withOpacity(0.9),
+                              fontSize: 16),
                           prefixIcon: const Icon(
                             Icons.lock,
                             color: AppColors.primary,
@@ -140,12 +152,18 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
                       ),
                       const SizedBox(height: 25),
                       TextField(
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.dark.withOpacity(0.9),
+                            fontSize: 16),
                         obscureText: true,
                         maxLines: 1,
                         decoration: InputDecoration(
                           labelText: 'Confirm Password',
                           labelStyle: TextStyle(
-                              color: AppColors.black.withOpacity(0.5)),
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.dark.withOpacity(0.9),
+                              fontSize: 16),
                           prefixIcon: const Icon(
                             Icons.lock,
                             color: AppColors.primary,
@@ -171,8 +189,7 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    const HomeScreen(),
+                                builder: (context) => const HomeScreen(),
                               ),
                             );
                           },
@@ -188,17 +205,11 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
                       const SizedBox(height: 25),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const HomeScreen(),
-                              maintainState: false,
-                            ),
-                          );
+                          Navigator.of(context).pop();
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary.withOpacity(0.1),
-                          foregroundColor: AppColors.primary,
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: AppColors.white,
                           shadowColor: Colors.transparent,
                           padding: const EdgeInsets.symmetric(
                               vertical: 14.0, horizontal: 32.0),
@@ -211,7 +222,7 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
                           children: [
                             Icon(
                               Icons.lock_open,
-                              color: AppColors.primary,
+                              color: AppColors.white,
                             ),
                             SizedBox(width: 8),
                             Text(
@@ -225,7 +236,6 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
                         ),
                       ),
                       const SizedBox(height: 20),
-                      
                       const SizedBox(height: 40),
                       Center(
                         child: Text(

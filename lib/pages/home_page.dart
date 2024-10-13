@@ -99,60 +99,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.only(
-            left: 20.0,
-            right: 20.0,
-            bottom: 10.0,
-          ),
-          sliver: SliverToBoxAdapter(
-            child: Container(
-              constraints: const BoxConstraints(
-                maxHeight: 60,
-              ),
-              child: TextField(
-                controller: _controller,
-                onChanged: (value) {
-                  setState(() {
-                    // Implement search functionality here
-                  });
-                },
-                decoration: InputDecoration(
-                  hintText: 'Search your favorite...',
-                  hintStyle: TextStyle(
-                    color: AppColors.dark.withOpacity(0.5),
-                  ),
-                  fillColor: AppColors.searchBarColor.withOpacity(0.1),
-                  filled: true,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 10.0,
-                    horizontal: 20.0,
-                  ),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: AppColors.dark.withOpacity(0.5),
-                    size: 25.0,
-                  ),
-                  suffixIcon: _controller.text.isNotEmpty
-                      ? IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: () {
-                            _controller.clear();
-                            setState(() {});
-                          },
-                          color: AppColors.dark.withOpacity(0.5),
-                        )
-                      : null,
-                ),
-                keyboardType: TextInputType.text,
-              ),
-            ),
-          ),
-        ),
         SliverToBoxAdapter(
           child: Container(
             padding:
@@ -536,27 +482,4 @@ class _HomePageState extends State<HomePage> {
       ],
     );
   }
-}
-
-Widget _buildSectionButton(String title,
-    {bool isSelected = false, VoidCallback? onTap}) {
-  return GestureDetector(
-    onTap: onTap,
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-      decoration: BoxDecoration(
-        color:
-            isSelected ? AppColors.primary.withOpacity(0.2) : AppColors.white,
-        borderRadius: BorderRadius.circular(30.0),
-        boxShadow: null,
-      ),
-      child: Text(
-        title,
-        style: TextStyle(
-          color: isSelected ? AppColors.primary : AppColors.dark,
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-        ),
-      ),
-    ),
-  );
 }

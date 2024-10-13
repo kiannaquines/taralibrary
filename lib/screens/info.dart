@@ -342,7 +342,7 @@ class _InfoScreenState extends State<InfoScreen>
               ),
               const SizedBox(height: 20),
               const Text(
-                'Real-Time Visitor Chart',
+                'Todays Visitor',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -634,7 +634,6 @@ class _InfoScreenState extends State<InfoScreen>
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
           ),
-          alignment: Alignment.center,
           backgroundColor: AppColors.white,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -646,11 +645,17 @@ class _InfoScreenState extends State<InfoScreen>
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColors.dark.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(10.5),
+                ),
+                child: IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
               ),
             ],
           ),
@@ -658,7 +663,33 @@ class _InfoScreenState extends State<InfoScreen>
             height: 200,
             width: MediaQuery.of(context).size.width,
             child: Column(
-              children: [
+              crossAxisAlignment:
+                  CrossAxisAlignment.center,
+              children: [              
+                TextField(
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.dark.withOpacity(0.9),
+                      fontSize: 16),
+                  controller: commentController,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    hintText: 'Write your comment',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    fillColor: AppColors.primary.withOpacity(0.1),
+                    filled: true,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    hintStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.dark.withOpacity(0.9),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
                 RatingBar.builder(
                   initialRating: 3,
                   minRating: 1,
@@ -674,29 +705,6 @@ class _InfoScreenState extends State<InfoScreen>
                   onRatingUpdate: (rating) {
                     finalRating = rating;
                   },
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                TextField(
-                  controller: commentController,
-                  maxLines: 3,
-                  decoration: InputDecoration(
-                    hintText: 'Write your comment',
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(
-                        10,
-                      ),
-                    ),
-                    fillColor: AppColors.primary.withOpacity(0.1),
-                    filled: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.auto,
-                    hintStyle: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
                 ),
                 const SizedBox(height: 10),
                 ElevatedButton(
@@ -724,8 +732,8 @@ class _InfoScreenState extends State<InfoScreen>
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary.withOpacity(0.1),
-                    foregroundColor: AppColors.primary,
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: AppColors.white,
                     shadowColor: Colors.transparent,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
