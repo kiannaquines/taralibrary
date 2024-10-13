@@ -7,6 +7,7 @@ import 'package:taralibrary/service/service_app.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:taralibrary/utils/storage.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -30,14 +31,30 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
     String accessToken = tokenData['accessToken'];
 
-    ApiResponse<ProfileModel> response = await _profileService.getProfile(accessToken);
+    ApiResponse<ProfileModel> response =
+        await _profileService.getProfile(accessToken);
     if (response.result == ApiResult.success) {
       return response.data;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response.errorMessage ?? 'An error occurred')),
+        SnackBar(
+          content: Text(
+            response.errorMessage ?? 'An error occurred',
+          ),
+          showCloseIcon: true,
+          duration: const Duration(seconds: 5),
+          behavior: SnackBarBehavior.floating,
+        ),
       );
       if (response.result == ApiResult.loginRequired) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response.errorMessage ?? 'An error occurred'),
+            showCloseIcon: true,
+            duration: const Duration(seconds: 5),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const LoginScreen()),
         );
@@ -187,7 +204,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             height: 120,
                             decoration: const BoxDecoration(
                               image: DecorationImage(
-                                image: AssetImage('assets/icons/small-ellipse.png'),
+                                image: AssetImage(
+                                    'assets/icons/small-ellipse.png'),
                                 fit: BoxFit.contain,
                               ),
                             ),
@@ -203,25 +221,32 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Edit Profile',
+                        Text(
+                          'Edit your information',
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.black,
+                            color: AppColors.dark.withOpacity(0.7),
                           ),
                         ),
-                        const SizedBox(height: 25),
+                        const SizedBox(
+                          height: 20,
+                        ),
                         TextField(
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.dark.withOpacity(0.9),
+                              fontSize: 16),
                           controller: _username,
                           maxLines: 1,
                           decoration: InputDecoration(
                             labelText: 'User Name',
                             labelStyle: TextStyle(
-                              color: AppColors.black.withOpacity(0.5),
-                            ),
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.dark.withOpacity(0.9),
+                                fontSize: 16),
                             prefixIcon: const Icon(
-                              Icons.person,
+                              FeatherIcons.user,
                               color: AppColors.primary,
                             ),
                             border: OutlineInputBorder(
@@ -239,15 +264,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         const SizedBox(height: 25),
                         TextField(
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.dark.withOpacity(0.9),
+                              fontSize: 16),
                           controller: _firstName,
                           maxLines: 1,
                           decoration: InputDecoration(
                             labelText: 'First Name',
                             labelStyle: TextStyle(
-                              color: AppColors.black.withOpacity(0.5),
-                            ),
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.dark.withOpacity(0.9),
+                                fontSize: 16),
                             prefixIcon: const Icon(
-                              Icons.person,
+                              FeatherIcons.circle,
                               color: AppColors.primary,
                             ),
                             border: OutlineInputBorder(
@@ -265,15 +295,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         const SizedBox(height: 25),
                         TextField(
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.dark.withOpacity(0.9),
+                              fontSize: 16),
                           controller: _lastName,
                           maxLines: 1,
                           decoration: InputDecoration(
                             labelText: 'Last Name',
                             labelStyle: TextStyle(
-                              color: AppColors.black.withOpacity(0.5),
-                            ),
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.dark.withOpacity(0.9),
+                                fontSize: 16),
                             prefixIcon: const Icon(
-                              Icons.person,
+                              FeatherIcons.circle,
                               color: AppColors.primary,
                             ),
                             border: OutlineInputBorder(
@@ -291,15 +326,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         const SizedBox(height: 25),
                         TextField(
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.dark.withOpacity(0.9),
+                              fontSize: 16),
                           controller: _email,
                           maxLines: 1,
                           decoration: InputDecoration(
                             labelText: 'Email Address',
                             labelStyle: TextStyle(
-                              color: AppColors.black.withOpacity(0.5),
-                            ),
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.dark.withOpacity(0.9),
+                                fontSize: 16),
                             prefixIcon: const Icon(
-                              Icons.email,
+                              FeatherIcons.mail,
                               color: AppColors.primary,
                             ),
                             border: OutlineInputBorder(
@@ -316,25 +356,42 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                         ),
                         const SizedBox(height: 25),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ProfileScreen(),
+                                maintainState: false,
                               ),
-                              backgroundColor: AppColors.primary,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: AppColors.white,
+                            shadowColor: Colors.transparent,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 14.0, horizontal: 32.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
                             ),
-                            onPressed: () {
-                              // Add your save profile logic here
-                            },
-                            child: const Text(
-                              'Save',
-                              style: TextStyle(
-                                fontSize: 18,
+                          ),
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.save,
                                 color: AppColors.white,
                               ),
-                            ),
+                              SizedBox(width: 8),
+                              Text(
+                                'Save Changes',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],

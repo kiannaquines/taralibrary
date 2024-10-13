@@ -22,6 +22,8 @@ dependencies:
   flutter_secure_storage: ^9.2.2
   cached_network_image: ^3.4.1
   flutter_local_notifications: ^17.2.3
+  ionicons: ^0.2.2
+  flutter_feather_icons: ^2.0.0+1
 
 dev_dependencies:
   flutter_test:

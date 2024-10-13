@@ -58,7 +58,11 @@ class _HomePageState extends State<HomePage> {
         case ApiResult.loginRequired:
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-                content: Text(response.errorMessage ?? 'An error occurred')),
+              content: Text(response.errorMessage ?? 'An error occurred'),
+              showCloseIcon: true,
+              duration: const Duration(seconds: 5),
+              behavior: SnackBarBehavior.floating,
+            ),
           );
 
           Navigator.of(context).pushReplacement(
@@ -68,18 +72,25 @@ class _HomePageState extends State<HomePage> {
         case ApiResult.error:
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-                content: Text(response.errorMessage ?? 'An error occurred')),
+              content: Text(response.errorMessage ?? 'An error occurred'),
+              showCloseIcon: true,
+              duration: const Duration(seconds: 5),
+              behavior: SnackBarBehavior.floating,
+            ),
           );
           break;
       }
     }
 
-    await handleApiResponse<PopularModel>(_homeService.getPopularSection,
-        (data) => setState(() => _popularZones = data));
+    await handleApiResponse<PopularModel>(
+      _homeService.getPopularSection,
+      (data) => setState(() => _popularZones = data),
+    );
 
     await handleApiResponse<RecommendedModel>(
-        _homeService.getRecommendedSection,
-        (data) => setState(() => _recommendedZones = data));
+      _homeService.getRecommendedSection,
+      (data) => setState(() => _recommendedZones = data),
+    );
 
     return accessToken;
   }

@@ -5,6 +5,8 @@ import 'package:taralibrary/screens/verification.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:taralibrary/model/auth_models.dart';
 import 'package:taralibrary/service/auth_service.dart';
+import 'package:ionicons/ionicons.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -144,15 +146,32 @@ class _RegisterScreenState extends State<RegisterScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text(
+                        'Fill all information',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.dark.withOpacity(0.7),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       TextField(
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.dark.withOpacity(0.9),
+                            fontSize: 16),
                         controller: _userNameController,
                         maxLines: 1,
                         decoration: InputDecoration(
                           labelText: 'Username',
                           labelStyle: TextStyle(
-                              color: AppColors.black.withOpacity(0.5)),
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.dark.withOpacity(0.9),
+                              fontSize: 16),
                           prefixIcon: const Icon(
-                            Icons.person,
+                            Ionicons.at_circle,
                             color: AppColors.primary,
                           ),
                           border: OutlineInputBorder(
@@ -170,15 +189,21 @@ class _RegisterScreenState extends State<RegisterScreen>
                       ),
                       const SizedBox(height: 25),
                       TextField(
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.dark.withOpacity(0.9),
+                            fontSize: 16),
                         controller: _emailController,
                         maxLines: 1,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           labelText: 'Email Address',
                           labelStyle: TextStyle(
-                              color: AppColors.black.withOpacity(0.5)),
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.dark.withOpacity(0.9),
+                              fontSize: 16),
                           prefixIcon: const Icon(
-                            Icons.email_rounded,
+                            FeatherIcons.mail,
                             color: AppColors.primary,
                           ),
                           border: OutlineInputBorder(
@@ -196,14 +221,20 @@ class _RegisterScreenState extends State<RegisterScreen>
                       ),
                       const SizedBox(height: 25),
                       TextField(
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.dark.withOpacity(0.9),
+                            fontSize: 16),
                         controller: _firstNameController,
                         maxLines: 1,
                         decoration: InputDecoration(
                           labelText: 'Firstname',
                           labelStyle: TextStyle(
-                              color: AppColors.black.withOpacity(0.5)),
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.dark.withOpacity(0.9),
+                              fontSize: 16),
                           prefixIcon: const Icon(
-                            Icons.circle,
+                            FeatherIcons.circle,
                             color: AppColors.primary,
                           ),
                           border: OutlineInputBorder(
@@ -221,14 +252,20 @@ class _RegisterScreenState extends State<RegisterScreen>
                       ),
                       const SizedBox(height: 25),
                       TextField(
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.dark.withOpacity(0.9),
+                            fontSize: 16),
                         controller: _lastNameController,
                         maxLines: 1,
                         decoration: InputDecoration(
                           labelText: 'Lastname',
                           labelStyle: TextStyle(
-                              color: AppColors.black.withOpacity(0.5)),
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.dark.withOpacity(0.9),
+                              fontSize: 16),
                           prefixIcon: const Icon(
-                            Icons.circle,
+                            FeatherIcons.circle,
                             color: AppColors.primary,
                           ),
                           border: OutlineInputBorder(
@@ -244,17 +281,32 @@ class _RegisterScreenState extends State<RegisterScreen>
                           ),
                         ),
                       ),
-                      const SizedBox(height: 25),
+                      const SizedBox(height: 10),
+                      Text(
+                        'Fill password',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.dark.withOpacity(0.7),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
                       TextField(
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.dark.withOpacity(0.9),
+                            fontSize: 16),
                         controller: _passwordController,
                         obscureText: true,
                         maxLines: 1,
                         decoration: InputDecoration(
                           labelText: 'Password',
                           labelStyle: TextStyle(
-                              color: AppColors.black.withOpacity(0.5)),
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.dark.withOpacity(0.9),
+                              fontSize: 16),
                           prefixIcon: const Icon(
-                            Icons.lock,
+                            FeatherIcons.lock,
                             color: AppColors.primary,
                           ),
                           border: OutlineInputBorder(
@@ -272,15 +324,21 @@ class _RegisterScreenState extends State<RegisterScreen>
                       ),
                       const SizedBox(height: 25),
                       TextField(
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.dark.withOpacity(0.9),
+                            fontSize: 16),
                         controller: _confirmPasswordController,
                         obscureText: true,
                         maxLines: 1,
                         decoration: InputDecoration(
                           labelText: 'Confirm Password',
                           labelStyle: TextStyle(
-                              color: AppColors.black.withOpacity(0.5)),
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.dark.withOpacity(0.9),
+                              fontSize: 16),
                           prefixIcon: const Icon(
-                            Icons.lock,
+                            FeatherIcons.lock,
                             color: AppColors.primary,
                           ),
                           border: OutlineInputBorder(
@@ -323,8 +381,8 @@ class _RegisterScreenState extends State<RegisterScreen>
                           _registerUser();
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary.withOpacity(0.1),
-                          foregroundColor: AppColors.primary,
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: AppColors.white,
                           shadowColor: Colors.transparent,
                           padding: const EdgeInsets.symmetric(
                               vertical: 14.0, horizontal: 32.0),
@@ -337,7 +395,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                           children: [
                             Icon(
                               Icons.login,
-                              color: AppColors.primary,
+                              color: AppColors.white,
                             ),
                             SizedBox(width: 8),
                             Text(

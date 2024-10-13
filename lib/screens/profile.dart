@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:taralibrary/model/home_model.dart';
 import 'package:taralibrary/model/profile_model.dart';
 import 'package:taralibrary/screens/edit_profile.dart';
 import 'package:taralibrary/screens/login.dart';
+import 'package:taralibrary/service/home_service.dart';
 import 'package:taralibrary/service/profile_service.dart';
 import 'package:taralibrary/service/service_app.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:taralibrary/screens/home.dart';
 import 'package:taralibrary/utils/storage.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -19,14 +22,13 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final ProfileService _profileService = ProfileService();
   ProfileModel? _profile;
-  bool _isLoading = true; // Add loading state
-  final List<String> recentSections = [
-    'Information Technology',
-    'References',
-    'Filipiniana',
-    'Publication',
-  ];
+  final HomeService _homeService = HomeService();
+  
+  List<PopularModel> _popularZones = [];
+  List<RecommendedModel> _recommendedZones = [];
 
+  bool _isLoading = true;
+ 
   @override
   void initState() {
     super.initState();
@@ -39,17 +41,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
     String accessToken = tokenData['accessToken'];
 
-    Future<void> handleApiResponse<T>(Future<ApiResponse<T>> Function(String) apiCall, void Function(T) updateState) async {
+    Future<void> handleApiResponse<T>(
+        Future<ApiResponse<T>> Function(String) apiCall,
+        void Function(T) updateState) async {
       ApiResponse<T> response = await apiCall(accessToken);
 
       switch (response.result) {
         case ApiResult.success:
           updateState(response.data!);
-          setState(() => _isLoading = false); // Set loading to false on success
+          setState(() => _isLoading = false);
           break;
         case ApiResult.loginRequired:
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(response.errorMessage ?? 'An error occurred')),
+            SnackBar(
+              content: Text(response.errorMessage ?? 'An error occurred'),
+              showCloseIcon: true,
+              duration: const Duration(seconds: 5),
+              behavior: SnackBarBehavior.floating,
+            ),
           );
 
           Navigator.of(context).pushReplacement(
@@ -58,17 +67,69 @@ class _ProfileScreenState extends State<ProfileScreen> {
           break;
         case ApiResult.error:
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(response.errorMessage ?? 'An error occurred')),
+            SnackBar(
+              content: Text(response.errorMessage ?? 'An error occurred'),
+              showCloseIcon: true,
+              duration: const Duration(seconds: 5),
+              behavior: SnackBarBehavior.floating,
+            ),
           );
-          setState(() => _isLoading = false); // Set loading to false on error
+          setState(() => _isLoading = false);
           break;
       }
     }
+
+    Future<void> handleApiResponseSection<T>(
+        Future<ApiResponse<List<T>>> Function(String) apiCall,
+        void Function(List<T>) updateState) async {
+      ApiResponse<List<T>> response = await apiCall(accessToken);
+      switch (response.result) {
+        case ApiResult.success:
+          updateState(response.data!);
+          break;
+        case ApiResult.loginRequired:
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(response.errorMessage ?? 'An error occurred'),
+              showCloseIcon: true,
+              duration: const Duration(seconds: 5),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+          );
+          break;
+        case ApiResult.error:
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(response.errorMessage ?? 'An error occurred'),
+              showCloseIcon: true,
+              duration: const Duration(seconds: 5),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+          break;
+      }
+    }
+    
+
+    await handleApiResponseSection<PopularModel>(
+      _homeService.getPopularSection,
+      (data) => setState(() => _popularZones = data),
+    );
+
+    await handleApiResponseSection<RecommendedModel>(
+      _homeService.getRecommendedSection,
+      (data) => setState(() => _recommendedZones = data),
+    );
 
     await handleApiResponse<ProfileModel>(
       _profileService.getProfile,
       (data) => setState(() => _profile = data),
     );
+
 
     return accessToken;
   }
@@ -159,7 +220,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             child: const CircleAvatar(
                               radius: 60,
-                              backgroundImage: AssetImage('assets/images/avatar-1.jpg'),
+                              backgroundImage:
+                                  AssetImage('assets/images/avatar-1.jpg'),
                             ),
                           ),
                         ),
@@ -171,7 +233,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             height: 120,
                             decoration: const BoxDecoration(
                               image: DecorationImage(
-                                image: AssetImage('assets/icons/small-ellipse.png'),
+                                image: AssetImage(
+                                    'assets/icons/small-ellipse.png'),
                                 fit: BoxFit.contain,
                               ),
                             ),
@@ -206,20 +269,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       );
                     },
-                    label: const Text('Edit Profile'),
+                    label: Text(
+                      'Edit Profile',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.dark.withOpacity(0.9),
+                          fontSize: 16),
+                    ),
                     icon: const Icon(
-                      Icons.edit,
-                      size: 15,
+                      FeatherIcons.edit,
+                      size: 25,
                     ),
                   ),
                   const SizedBox(height: 15),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 20.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'Recent Viewed Sections',
+                          'Recommended Sections',
                           style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.bold,
@@ -230,16 +300,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.25,
                           child: GridView.builder(
-                            reverse: true,
+                            reverse: false,
                             scrollDirection: Axis.horizontal,
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 1,
                               childAspectRatio: 2 / 2,
                               crossAxisSpacing: 20,
                               mainAxisSpacing: 20,
                             ),
-                            itemCount: recentSections.length,
+                            itemCount: _recommendedZones.length,
                             itemBuilder: (BuildContext ctx, index) {
+                              final recommendedZone = _recommendedZones[index];
                               return GestureDetector(
                                 onTap: () {
                                   // TODO: Add functionality to navigate to the selected section
@@ -249,10 +321,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     Container(
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
-                                        color: AppColors.primary.withOpacity(0.3),
+                                        color:
+                                            AppColors.primary.withOpacity(0.3),
                                         borderRadius: BorderRadius.circular(15),
                                         image: DecorationImage(
-                                          image: AssetImage('assets/images/${index + 2}.jfif'),
+                                          image: AssetImage(
+                                              'assets/images/${index + 2}.jfif'),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -264,9 +338,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         borderRadius: BorderRadius.circular(15),
                                         child: Container(
                                           padding: const EdgeInsets.all(8.0),
-                                          color: AppColors.imagebackgroundOverlay.withOpacity(0.6),
+                                          color: AppColors
+                                              .imagebackgroundOverlay
+                                              .withOpacity(0.6),
                                           child: Text(
-                                            recentSections[index],
+                                            recommendedZone.title,
                                             style: const TextStyle(
                                               color: AppColors.white,
                                               fontSize: 12,
@@ -286,12 +362,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 20.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'Trending Sections',
+                          'Most Visited Sections',
                           style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.bold,
@@ -303,14 +380,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           height: MediaQuery.of(context).size.height * 0.25,
                           child: GridView.builder(
                             scrollDirection: Axis.horizontal,
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 1,
                               childAspectRatio: 2 / 2,
                               crossAxisSpacing: 20,
                               mainAxisSpacing: 20,
                             ),
-                            itemCount: recentSections.length,
+                            itemCount: _popularZones.length,
                             itemBuilder: (BuildContext ctx, index) {
+                              final popularZone = _popularZones[index];
                               return GestureDetector(
                                 onTap: () {
                                   // TODO: Add functionality to navigate to the selected section
@@ -320,10 +399,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     Container(
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
-                                        color: AppColors.primary.withOpacity(0.3),
+                                        color:
+                                            AppColors.primary.withOpacity(0.3),
                                         borderRadius: BorderRadius.circular(15),
                                         image: DecorationImage(
-                                          image: AssetImage('assets/images/${index + 2}.jfif'),
+                                          image: AssetImage(
+                                              'assets/images/${index + 2}.jfif'),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -335,9 +416,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         borderRadius: BorderRadius.circular(15),
                                         child: Container(
                                           padding: const EdgeInsets.all(8.0),
-                                          color: AppColors.imagebackgroundOverlay.withOpacity(0.6),
+                                          color: AppColors
+                                              .imagebackgroundOverlay
+                                              .withOpacity(0.6),
                                           child: Text(
-                                            recentSections[index],
+                                            popularZone.title,
                                             style: const TextStyle(
                                               color: AppColors.white,
                                               fontSize: 12,

@@ -44,48 +44,58 @@ class _SectionScreenState extends State<SectionScreen> {
     _loadAccessToken();
   }
 
-Future<String?> _loadAccessToken() async {
-  Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
-  String accessToken = tokenData['accessToken'];
+  Future<String?> _loadAccessToken() async {
+    Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
+    String accessToken = tokenData['accessToken'];
 
-  Future<void> handleApiResponse<T>(
-    Future<ApiResponse<List<T>>> Function(String) apiCall,
-    void Function(List<T>) updateState
-  ) async {
-    ApiResponse<List<T>> response = await apiCall(accessToken);
-    switch (response.result) {
-      case ApiResult.success:
-        if (response.data != null) {
-          updateState(response.data!);
-        }
-        break;
-      case ApiResult.loginRequired:
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const LoginScreen()),
+    Future<void> handleApiResponse<T>(
+        Future<ApiResponse<List<T>>> Function(String) apiCall,
+        void Function(List<T>) updateState) async {
+      ApiResponse<List<T>> response = await apiCall(accessToken);
+      switch (response.result) {
+        case ApiResult.success:
+          if (response.data != null) {
+            updateState(response.data!);
+          }
+          break;
+        case ApiResult.loginRequired:
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(response.errorMessage ?? 'An error occurred'),
+                showCloseIcon: true,
+                duration: const Duration(seconds: 5),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const LoginScreen()),
+            );
+          });
+          return;
+        case ApiResult.error:
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(response.errorMessage ?? 'An error occurred'),
+              showCloseIcon: true,
+              duration: const Duration(seconds: 5),
+              behavior: SnackBarBehavior.floating,
+            ),
           );
-        });
-        return;
-      case ApiResult.error:
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response.errorMessage ?? 'An error occurred')),
-        );
-        break;
+          break;
+      }
     }
+
+    await handleApiResponse<AllSectionModel>(_sectionService.getAllSections,
+        (data) => setState(() => _allSection = data));
+
+    await handleApiResponse<CategoryModel>(_homeService.getCategories,
+        (data) => setState(() => _categories = data));
+
+    return accessToken;
   }
 
-  await handleApiResponse<AllSectionModel>(
-    _sectionService.getAllSections,
-    (data) => setState(() => _allSection = data)
-  );
-
-  await handleApiResponse<CategoryModel>(
-    _homeService.getCategories,
-    (data) => setState(() => _categories = data)
-  );
-
-  return accessToken;
-}
   @override
   void dispose() {
     _controller.dispose();

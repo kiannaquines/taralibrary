@@ -6,6 +6,7 @@ import 'package:taralibrary/utils/colors.dart';
 import 'package:taralibrary/screens/home.dart';
 import 'package:taralibrary/service/auth_service.dart';
 import 'package:taralibrary/utils/storage.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -146,15 +147,32 @@ class _LoginScreenState extends State<LoginScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text(
+                        'Fill all fields',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.dark.withOpacity(0.7),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       TextField(
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.dark.withOpacity(0.9),
+                            fontSize: 16),
                         controller: _usernameController,
                         maxLines: 1,
                         decoration: InputDecoration(
                           labelText: 'Username',
                           labelStyle: TextStyle(
-                              color: AppColors.black.withOpacity(0.5)),
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.dark.withOpacity(0.9),
+                              fontSize: 16),
                           prefixIcon: const Icon(
-                            Icons.person,
+                            FeatherIcons.circle,
                             color: AppColors.primary,
                           ),
                           border: OutlineInputBorder(
@@ -172,15 +190,21 @@ class _LoginScreenState extends State<LoginScreen>
                       ),
                       const SizedBox(height: 25),
                       TextField(
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.dark.withOpacity(0.9),
+                            fontSize: 16),
                         controller: _passwordController,
                         obscureText: true,
                         maxLines: 1,
                         decoration: InputDecoration(
                           labelText: 'Password',
                           labelStyle: TextStyle(
-                              color: AppColors.black.withOpacity(0.5)),
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.dark.withOpacity(0.9),
+                              fontSize: 16),
                           prefixIcon: const Icon(
-                            Icons.lock,
+                            FeatherIcons.lock,
                             color: AppColors.primary,
                           ),
                           border: OutlineInputBorder(
@@ -225,8 +249,8 @@ class _LoginScreenState extends State<LoginScreen>
                           loginProcess();
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary.withOpacity(0.1),
-                          foregroundColor: AppColors.primary,
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: AppColors.white,
                           shadowColor: Colors.transparent,
                           padding: const EdgeInsets.symmetric(
                               vertical: 14.0, horizontal: 32.0),
@@ -239,7 +263,7 @@ class _LoginScreenState extends State<LoginScreen>
                           children: [
                             Icon(
                               Icons.login,
-                              color: AppColors.primary,
+                              color: AppColors.white,
                             ),
                             SizedBox(width: 8),
                             Text(

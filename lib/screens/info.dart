@@ -55,27 +55,41 @@ class _InfoScreenState extends State<InfoScreen>
   }
 
   Future<void> _loadInfo(String accessToken) async {
-  ApiResponse<ZoneInfoModel> response = await infoService.getZoneInformation(accessToken, widget.zoneID);
-  
-  switch (response.result) {
-    case ApiResult.success:
-      setState(() {
-        zoneInfo = response.data!;
-      });
-      break;
-    case ApiResult.loginRequired:
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
-      );
-      break;
-    case ApiResult.error:
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response.errorMessage ?? 'An error occurred')),
-      );
-      break;
-  }
-}
+    ApiResponse<ZoneInfoModel> response =
+        await infoService.getZoneInformation(accessToken, widget.zoneID);
 
+    switch (response.result) {
+      case ApiResult.success:
+        setState(() {
+          zoneInfo = response.data!;
+        });
+        break;
+      case ApiResult.loginRequired:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response.errorMessage ?? 'An error occurred'),
+            showCloseIcon: true,
+            duration: const Duration(seconds: 5),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+        );
+        break;
+      case ApiResult.error:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response.errorMessage ?? 'An error occurred'),
+            showCloseIcon: true,
+            duration: const Duration(seconds: 5),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        break;
+    }
+  }
 
   @override
   void dispose() {
@@ -167,16 +181,16 @@ class _InfoScreenState extends State<InfoScreen>
                           child: Container(
                             padding: const EdgeInsets.all(10.0),
                             decoration: BoxDecoration(
-                            color: AppColors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 5,
-                                spreadRadius: 1,
-                              ),
-                            ],
-                          ),
+                              color: AppColors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 5,
+                                  spreadRadius: 1,
+                                ),
+                              ],
+                            ),
                             width: 50,
                             height: 50,
                             child: SvgPicture.asset(

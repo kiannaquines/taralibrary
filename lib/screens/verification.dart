@@ -167,6 +167,10 @@ class _VerificationScreenState extends State<VerificationScreen>
                             return SizedBox(
                               width: 45,
                               child: TextField(
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.dark.withOpacity(0.9),
+                                    fontSize: 16),
                                 controller: _controllers[index],
                                 focusNode: _focusNodes[index],
                                 obscureText: false,
@@ -255,8 +259,8 @@ class _VerificationScreenState extends State<VerificationScreen>
                             verifyAccount();
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary.withOpacity(0.1),
-                            foregroundColor: AppColors.primary,
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: AppColors.white,
                             shadowColor: Colors.transparent,
                             padding: const EdgeInsets.symmetric(
                               vertical: 14.0,
@@ -273,7 +277,7 @@ class _VerificationScreenState extends State<VerificationScreen>
                             children: [
                               Icon(
                                 Icons.login,
-                                color: AppColors.primary,
+                                color: AppColors.white,
                               ),
                               SizedBox(width: 8),
                               Text(

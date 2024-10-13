@@ -174,8 +174,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary.withOpacity(0.1),
-                          foregroundColor: AppColors.primary,
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: AppColors.white,
                           shadowColor: Colors.transparent,
                           padding: const EdgeInsets.symmetric(
                               vertical: 14.0, horizontal: 32.0),
@@ -188,7 +188,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                           children: [
                             Icon(
                               Icons.lock_open,
-                              color: AppColors.primary,
+                              color: AppColors.white,
                             ),
                             SizedBox(width: 8),
                             Text(

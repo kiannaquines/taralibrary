@@ -92,13 +92,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextField(
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.dark.withOpacity(0.9),
+                            fontSize: 16),
                         obscureText: false,
                         keyboardType: TextInputType.emailAddress,
                         maxLines: 1,
                         decoration: InputDecoration(
                           labelText: 'Email Address',
                           labelStyle: TextStyle(
-                              color: AppColors.black.withOpacity(0.5)),
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.dark.withOpacity(0.9),
+                              fontSize: 16),
                           prefixIcon: const Icon(
                             Icons.lock,
                             color: AppColors.primary,
