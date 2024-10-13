@@ -3,12 +3,13 @@ import 'package:taralibrary/model/home_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:taralibrary/utils/constants.dart';
 import 'dart:convert';
+import 'package:taralibrary/service/service_app.dart';
+
 
 class HomeService {
   String get baseUrl => ApiSettings.getApiUrl();
 
-  Future<List<PopularModel>> getPopularSection(String accessToken) async {
-    String endpoint = "/zones/popular/";
+  Future<ApiResponse<List<T>>> _getData<T>(String endpoint, String accessToken, T Function(Map<String, dynamic>) fromJson) async {
     final uri = Uri.parse('$baseUrl$endpoint');
 
     try {
@@ -18,62 +19,39 @@ class HomeService {
 
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
-
-        return data.map((item) => PopularModel.fromJson(item)).toList();
+        return ApiResponse(
+          result: ApiResult.success,
+          data: data.map((item) => fromJson(item)).toList(),
+        );
+      } else if (response.statusCode == 401) {
+        return ApiResponse(
+          result: ApiResult.loginRequired,
+          errorMessage: 'Authentication required',
+        );
       } else {
-        throw Exception(
-            'Failed to get home data, status code: ${response.statusCode}');
+        return ApiResponse(
+          result: ApiResult.error,
+          errorMessage: 'Failed to get data, status code: ${response.statusCode}',
+        );
       }
     } catch (e) {
-      debugPrint('Error fetching home data: $e');
-      return [];
+      debugPrint('Error fetching data: $e');
+      return ApiResponse(
+        result: ApiResult.error,
+        errorMessage: 'Error fetching data: $e',
+      );
     }
   }
 
-  Future<List<RecommendedModel>> getRecommendedSection(String accessToken) async {
-    String endpoint = "/zones/recommended/";
-    final uri = Uri.parse('$baseUrl$endpoint');
-
-    try {
-      final response = await http.get(uri, headers: {
-        'Authorization': 'Bearer $accessToken',
-      });
-
-      if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-
-        return data.map((item) => RecommendedModel.fromJson(item)).toList();
-      } else {
-        throw Exception(
-            'Failed to get home data, status code: ${response.statusCode}');
-      }
-    } catch (e) {
-      debugPrint('Error fetching home data: $e');
-      return [];
-    }
+  Future<ApiResponse<List<PopularModel>>> getPopularSection(String accessToken) async {
+    return _getData('/zones/popular/', accessToken, PopularModel.fromJson);
   }
 
+  Future<ApiResponse<List<RecommendedModel>>> getRecommendedSection(String accessToken) async {
+    return _getData('/zones/recommended/', accessToken, RecommendedModel.fromJson);
+  }
 
-  Future<List<CategoryModel>> getCategories(String accessToken) async {
-    String endpoint = "/category/";
-    final uri = Uri.parse('$baseUrl$endpoint');
-
-    try {
-      final response = await http.get(uri, headers: {
-        'Authorization': 'Bearer $accessToken',
-      });
-
-      if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-
-        return data.map((item) => CategoryModel.fromJson(item)).toList();
-      } else {
-        throw Exception(
-            'Failed to get home data, status code: ${response.statusCode}');
-      }
-    } catch (e) {
-      debugPrint('Error fetching home data: $e');
-      return [];
-    }
+  Future<ApiResponse<List<CategoryModel>>> getCategories(String accessToken) async {
+    return _getData('/category/', accessToken, CategoryModel.fromJson);
   }
 }

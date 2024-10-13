@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:taralibrary/model/info_model.dart';
 import 'package:taralibrary/screens/home.dart';
+import 'package:taralibrary/screens/login.dart';
 import 'package:taralibrary/service/info_service.dart';
+import 'package:taralibrary/service/service_app.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
@@ -53,12 +55,27 @@ class _InfoScreenState extends State<InfoScreen>
   }
 
   Future<void> _loadInfo(String accessToken) async {
-    ZoneInfoModel info =
-        await infoService.getZoneInformation(accessToken, widget.zoneID);
-    setState(() {
-      zoneInfo = info;
-    });
+  ApiResponse<ZoneInfoModel> response = await infoService.getZoneInformation(accessToken, widget.zoneID);
+  
+  switch (response.result) {
+    case ApiResult.success:
+      setState(() {
+        zoneInfo = response.data!;
+      });
+      break;
+    case ApiResult.loginRequired:
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );
+      break;
+    case ApiResult.error:
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(response.errorMessage ?? 'An error occurred')),
+      );
+      break;
   }
+}
+
 
   @override
   void dispose() {

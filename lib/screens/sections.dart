@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:taralibrary/model/home_model.dart';
 import 'package:taralibrary/model/section_models.dart';
 import 'package:taralibrary/screens/home.dart';
+import 'package:taralibrary/screens/login.dart';
 import 'package:taralibrary/screens/profile.dart';
 import 'package:taralibrary/service/home_service.dart';
+import 'package:taralibrary/service/notification_service.dart';
 import 'package:taralibrary/service/section_service.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,6 +13,7 @@ import 'package:taralibrary/screens/info.dart';
 import 'package:taralibrary/utils/constants.dart';
 import 'package:taralibrary/utils/storage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:taralibrary/service/service_app.dart';
 
 class SectionScreen extends StatefulWidget {
   const SectionScreen({super.key});
@@ -41,24 +44,48 @@ class _SectionScreenState extends State<SectionScreen> {
     _loadAccessToken();
   }
 
-  Future<String?> _loadAccessToken() async {
-    Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
+Future<String?> _loadAccessToken() async {
+  Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
+  String accessToken = tokenData['accessToken'];
 
-    List<AllSectionModel> allSection = await _sectionService.getAllSections(
-      tokenData['accessToken'],
-    );
-
-    List<CategoryModel> categoriesList = await _homeService.getCategories(
-      tokenData['accessToken'],
-    );
-
-    setState(() {
-      _allSection = allSection;
-      _categories = categoriesList;
-    });
-    return tokenData['accessToken'];
+  Future<void> handleApiResponse<T>(
+    Future<ApiResponse<List<T>>> Function(String) apiCall,
+    void Function(List<T>) updateState
+  ) async {
+    ApiResponse<List<T>> response = await apiCall(accessToken);
+    switch (response.result) {
+      case ApiResult.success:
+        if (response.data != null) {
+          updateState(response.data!);
+        }
+        break;
+      case ApiResult.loginRequired:
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+          );
+        });
+        return;
+      case ApiResult.error:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response.errorMessage ?? 'An error occurred')),
+        );
+        break;
+    }
   }
 
+  await handleApiResponse<AllSectionModel>(
+    _sectionService.getAllSections,
+    (data) => setState(() => _allSection = data)
+  );
+
+  await handleApiResponse<CategoryModel>(
+    _homeService.getCategories,
+    (data) => setState(() => _categories = data)
+  );
+
+  return accessToken;
+}
   @override
   void dispose() {
     _controller.dispose();
@@ -81,7 +108,11 @@ class _SectionScreenState extends State<SectionScreen> {
           IconButton(
             icon: const Icon(Icons.sort),
             onPressed: () {
-              // Sorting logic goes here
+              NotificationService().showNotification(
+                id: 1,
+                title: 'Crowd Density Alert',
+                body: 'The Reference Section has 34 visitors as of 9:43 AM.',
+              );
             },
           ),
           IconButton(
@@ -204,10 +235,10 @@ class _SectionScreenState extends State<SectionScreen> {
                   const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
               sliver: _allSection.isEmpty
                   ? const SliverToBoxAdapter(
-                    child: Center(
+                      child: Center(
                         child: CircularProgressIndicator(),
                       ),
-                  )
+                    )
                   : SliverGrid(
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(

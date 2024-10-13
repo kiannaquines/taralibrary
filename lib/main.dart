@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:taralibrary/screens/home.dart';
+import 'package:taralibrary/service/notification_service.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:taralibrary/utils/storage.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  NotificationService().initNotification();
   runApp(const MyApp());
 }
 
@@ -16,6 +19,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  late final String accessToken;
+
   @override
   void initState() {
     super.initState();
@@ -24,9 +29,13 @@ class _MyAppState extends State<MyApp> {
 
   MyStorage myStorage = MyStorage();
 
-  Future<String?> _loadAccessToken() async {
-    Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
-    return tokenData['accessToken'];
+  Future<void> _loadAccessToken() async {
+    try {
+      Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
+      accessToken = tokenData['accessToken'] ?? '';
+    } catch (e) {
+      accessToken = '';
+    }
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taralibrary/model/home_model.dart';
+import 'package:taralibrary/screens/login.dart';
 import 'package:taralibrary/service/home_service.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:taralibrary/screens/info.dart';
@@ -7,6 +8,7 @@ import 'package:taralibrary/screens/sections.dart';
 import 'package:taralibrary/utils/storage.dart';
 import 'package:taralibrary/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:taralibrary/service/service_app.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -43,20 +45,43 @@ class _HomePageState extends State<HomePage> {
 
   Future<String?> _loadAccessToken() async {
     Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
-    List<PopularModel> popularSection = await _homeService.getPopularSection(
-      tokenData['accessToken'],
-    );
+    String accessToken = tokenData['accessToken'];
 
-    List<RecommendedModel> recommendedSection =
-        await _homeService.getRecommendedSection(
-      tokenData['accessToken'],
-    );
+    Future<void> handleApiResponse<T>(
+        Future<ApiResponse<List<T>>> Function(String) apiCall,
+        void Function(List<T>) updateState) async {
+      ApiResponse<List<T>> response = await apiCall(accessToken);
+      switch (response.result) {
+        case ApiResult.success:
+          updateState(response.data!);
+          break;
+        case ApiResult.loginRequired:
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(response.errorMessage ?? 'An error occurred')),
+          );
 
-    setState(() {
-      _popularZones = popularSection;
-      _recommendedZones = recommendedSection;
-    });
-    return tokenData['accessToken'];
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+          );
+          break;
+        case ApiResult.error:
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(response.errorMessage ?? 'An error occurred')),
+          );
+          break;
+      }
+    }
+
+    await handleApiResponse<PopularModel>(_homeService.getPopularSection,
+        (data) => setState(() => _popularZones = data));
+
+    await handleApiResponse<RecommendedModel>(
+        _homeService.getRecommendedSection,
+        (data) => setState(() => _recommendedZones = data));
+
+    return accessToken;
   }
 
   @override

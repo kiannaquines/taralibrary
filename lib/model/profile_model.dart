@@ -46,21 +46,21 @@ class TrendingModel {
   }
 }
 
-class EditProfileModel {
+class ProfileModel {
   final String username;
   final String firstName;
   final String lastName;
   final String email;
 
-  EditProfileModel({
+  ProfileModel({
     required this.username,
     required this.firstName,
     required this.lastName,
     required this.email,
   });
 
-  factory EditProfileModel.formJson(Map<String, dynamic> json) {
-    return EditProfileModel(
+  factory ProfileModel.fromJson(Map<String, dynamic> json) {
+    return ProfileModel(
       username: json['username'],
       firstName: json['first_name'],
       lastName: json['last_name'],
