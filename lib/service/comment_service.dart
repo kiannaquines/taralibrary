@@ -1,34 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:taralibrary/model/profile_model.dart';
+import 'package:taralibrary/model/comment_model.dart';
 import 'package:taralibrary/utils/constants.dart';
 import 'dart:convert';
 import 'package:taralibrary/service/service_app.dart';
 
-class ProfileService {
+class CommentService {
   String get baseUrl => ApiSettings.getApiUrl();
 
-  Future<ApiResponse<T>> _getData<T>(
-      String endpoint,
-      String accessToken,
-      T Function(Map<String, dynamic>) fromJson) async {
-    final uri = Uri.parse('$baseUrl$endpoint');
+  Future<ApiResponse<AddCommentModel>> postComment(
+      String accessToken, String comment, double rating, int userId, int zoneID) async {
+    final uri = Uri.parse('$baseUrl/comments/');
+
+    final Map<String, dynamic> requestBody = {
+      'comment': comment,
+      'rating': rating,
+      'user_id': userId,
+      'zone_id': zoneID,
+    };
 
     try {
-      final response = await http.get(
+      final response = await http.post(
         uri,
         headers: {
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
         },
+        body: jsonEncode(requestBody),
       ).timeout(const Duration(seconds: 10));
 
-      return _handleResponse<T>(response, fromJson);
+      return _handleResponse<AddCommentModel>(
+          response, AddCommentModel.fromJson);
     } catch (e) {
-      debugPrint('Error fetching data: $e');
+      debugPrint('Error posting comment: $e');
       return ApiResponse(
         result: ApiResult.error,
-        errorMessage: 'Error fetching data: $e',
+        errorMessage: 'Error posting comment: $e',
       );
     }
   }
@@ -52,9 +59,5 @@ class ProfileService {
         errorMessage: 'Failed to get data, status code: ${response.statusCode}',
       );
     }
-  }
-
-  Future<ApiResponse<ProfileModel>> getProfile(String accessToken) async {
-    return _getData<ProfileModel>('/users/me', accessToken, ProfileModel.fromJson);
   }
 }

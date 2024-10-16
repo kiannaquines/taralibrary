@@ -173,7 +173,7 @@ class _SectionScreenState extends State<SectionScreen> {
                       _filterSections(value);
                     },
                     decoration: InputDecoration(
-                      hintText: 'Search your favorite...',
+                      hintText: 'Search library section',
                       hintStyle: TextStyle(
                           fontWeight: FontWeight.w500,
                           color: AppColors.dark.withOpacity(0.9),
@@ -187,7 +187,7 @@ class _SectionScreenState extends State<SectionScreen> {
                       contentPadding: const EdgeInsets.symmetric(
                           vertical: 10.0, horizontal: 20.0),
                       prefixIcon: Icon(
-                        Icons.search,
+                        FeatherIcons.search,
                         color: AppColors.dark.withOpacity(0.5),
                         size: 25.0,
                       ),
@@ -196,7 +196,7 @@ class _SectionScreenState extends State<SectionScreen> {
                               icon: const Icon(Icons.clear),
                               onPressed: () {
                                 _controller.clear();
-                                _filterSections(''); // Reset the filter
+                                _filterSections('');
                               },
                               color: AppColors.dark.withOpacity(0.5),
                             )

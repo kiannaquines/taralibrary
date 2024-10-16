@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taralibrary/screens/home.dart';
+import 'package:taralibrary/screens/login.dart';
 import 'package:taralibrary/service/notification_service.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,22 +20,26 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late final String accessToken;
+  late Future<Widget> homeWidgetFuture;
+  final MyStorage myStorage = MyStorage();
 
   @override
   void initState() {
     super.initState();
-    _loadAccessToken();
+    homeWidgetFuture = _loadHomeWidget();
   }
 
-  MyStorage myStorage = MyStorage();
-
-  Future<void> _loadAccessToken() async {
+  Future<Widget> _loadHomeWidget() async {
     try {
       Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
-      accessToken = tokenData['accessToken'] ?? '';
+      String accessToken = tokenData['accessToken'] ?? '';
+      if (accessToken.isNotEmpty) {
+        return const HomeScreen();
+      } else {
+        return const LoginScreen();
+      }
     } catch (e) {
-      accessToken = '';
+      return const LoginScreen();
     }
   }
 
@@ -55,7 +60,18 @@ class _MyAppState extends State<MyApp> {
         scaffoldBackgroundColor: AppColors.white,
         useMaterial3: true,
       ),
-      home: const HomeScreen(),
+      home: FutureBuilder<Widget>(
+        future: homeWidgetFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return const LoginScreen();
+          } else {
+            return snapshot.data!;
+          }
+        },
+      ),
     );
   }
 }

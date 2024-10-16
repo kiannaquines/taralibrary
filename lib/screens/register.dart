@@ -147,7 +147,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Fill all information',
+                        'Fill your information',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -171,7 +171,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                               color: AppColors.dark.withOpacity(0.9),
                               fontSize: 16),
                           prefixIcon: const Icon(
-                            Ionicons.at_circle,
+                            FeatherIcons.atSign,
                             color: AppColors.primary,
                           ),
                           border: OutlineInputBorder(
@@ -281,16 +281,20 @@ class _RegisterScreenState extends State<RegisterScreen>
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       Text(
-                        'Fill password',
+                        'Fill your password',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: AppColors.dark.withOpacity(0.7),
                         ),
                       ),
-                      const SizedBox(height: 15),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       TextField(
                         style: TextStyle(
                             fontWeight: FontWeight.w600,

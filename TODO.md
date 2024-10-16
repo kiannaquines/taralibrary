@@ -1,4 +1,4 @@
-## Crowd Todos
+## TaraLibrary Todos
 
 1. AUTH - DONE
 2. POPULAR - DONE
@@ -25,3 +25,4 @@
 6. Message - NOT STARTED
 7. Profile Image- NOT STARTED
 8. Push Notification - NOT STARTED
+9. Forgot Password - NOT STARTED

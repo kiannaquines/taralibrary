@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/widgets.dart';
 import 'package:taralibrary/model/info_model.dart';
+import 'package:taralibrary/model/profile_model.dart';
 import 'package:taralibrary/screens/home.dart';
 import 'package:taralibrary/screens/login.dart';
+import 'package:taralibrary/service/comment_service.dart';
 import 'package:taralibrary/service/info_service.dart';
+import 'package:taralibrary/service/profile_service.dart';
 import 'package:taralibrary/service/service_app.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -33,6 +37,7 @@ class _InfoScreenState extends State<InfoScreen>
   ZoneInfoModel? zoneInfo;
   late final AnimationController _controller;
   ApiSettings apiSettings = ApiSettings();
+  CommentService commentService = CommentService();
   String get staticDir => ApiSettings.getStaticFileDir();
 
   @override
@@ -47,11 +52,32 @@ class _InfoScreenState extends State<InfoScreen>
 
   MyStorage myStorage = MyStorage();
   InfoService infoService = InfoService();
+  ProfileService profileService = ProfileService();
 
   Future<String?> _loadAccessToken() async {
     Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
     await _loadInfo(tokenData['accessToken']);
     return tokenData['accessToken'];
+  }
+
+  Future<ProfileModel?> getCurrentUser() async {
+    try {
+      String? accessToken = await _loadAccessToken();
+      ApiResponse<ProfileModel> response =
+          await profileService.getProfile(accessToken!);
+      if (response.result == ApiResult.success) {
+        var jsonData = response.data;
+        return jsonData;
+      } else if (response.result == ApiResult.loginRequired) {
+        debugPrint('Login required: ${response.errorMessage}');
+      } else {
+        debugPrint('Error fetching profile: ${response.errorMessage}');
+      }
+    } catch (e) {
+      debugPrint('An error occurred: $e');
+    }
+
+    return null;
   }
 
   Future<void> _loadInfo(String accessToken) async {
@@ -511,7 +537,10 @@ class _InfoScreenState extends State<InfoScreen>
                       _showCommentForm(context);
                     },
                     child: const Text(
-                      'Leave a Comment',
+                      'Positive Feedback?',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
@@ -519,8 +548,7 @@ class _InfoScreenState extends State<InfoScreen>
               const SizedBox(height: 10.0),
               Column(
                 children: [
-                  if (zoneInfo!
-                      .comments.isNotEmpty) // Check if comments are available
+                  if (zoneInfo!.comments.isNotEmpty)
                     ...zoneInfo!.comments.map((comment) {
                       return CommentWidget(
                         userName: '${comment.firstName} ${comment.lastName}',
@@ -623,9 +651,18 @@ class _InfoScreenState extends State<InfoScreen>
     );
   }
 
-  void _showCommentForm(BuildContext context) {
+  void _showCommentForm(BuildContext context) async {
+    ProfileModel? currentUser = await getCurrentUser();
     double finalRating = 3;
     final TextEditingController commentController = TextEditingController();
+    if (currentUser == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('You need to log in to leave a comment.')),
+      );
+      return;
+    }
+
+    int userId = currentUser.id;
 
     showDialog(
       context: context,
@@ -647,11 +684,14 @@ class _InfoScreenState extends State<InfoScreen>
               ),
               Container(
                 decoration: BoxDecoration(
-                  color: AppColors.dark.withOpacity(0.2),
+                  color: AppColors.primary.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(10.5),
                 ),
                 child: IconButton(
-                  icon: const Icon(Icons.close),
+                  icon: const Icon(
+                    Icons.close,
+                    color: AppColors.primary,
+                  ),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -663,9 +703,8 @@ class _InfoScreenState extends State<InfoScreen>
             height: 200,
             width: MediaQuery.of(context).size.width,
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.center,
-              children: [              
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
                 TextField(
                   style: TextStyle(
                       fontWeight: FontWeight.w600,
@@ -708,19 +747,41 @@ class _InfoScreenState extends State<InfoScreen>
                 ),
                 const SizedBox(height: 10),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    int zoneId = widget.zoneID;
+                    final String? accessToken = await _loadAccessToken();
+
                     String comment = commentController.text;
                     if (comment.isNotEmpty && finalRating > 0) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'Comment submitted: "$comment" with $finalRating star${finalRating > 1 ? 's' : ''}',
-                          ),
-                        ),
-                      );
-                      commentController.clear();
-                      finalRating = 0;
-                      Navigator.of(context).pop();
+                      if (accessToken != null) {
+                        var response = await CommentService().postComment(
+                          accessToken,
+                          comment,
+                          finalRating,
+                          userId,
+                          zoneId,
+                        );
+
+                        if (response.result == ApiResult.success) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Comment submitted successfully!'),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Error submitting comment: ${response.errorMessage}',
+                              ),
+                            ),
+                          );
+                        }
+
+                        commentController.clear();
+                        finalRating = 0;
+                        Navigator.of(context).pop();
+                      }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

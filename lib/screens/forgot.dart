@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:taralibrary/screens/code.dart';
 import 'package:taralibrary/screens/login.dart';
 import 'package:taralibrary/screens/register.dart';
@@ -106,7 +107,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                               color: AppColors.dark.withOpacity(0.9),
                               fontSize: 16),
                           prefixIcon: const Icon(
-                            Icons.lock,
+                            FeatherIcons.mail,
                             color: AppColors.primary,
                           ),
                           border: OutlineInputBorder(
@@ -156,8 +157,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary.withOpacity(0.1),
-                          foregroundColor: AppColors.primary,
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: AppColors.white,
                           shadowColor: Colors.transparent,
                           padding: const EdgeInsets.symmetric(
                               vertical: 14.0, horizontal: 32.0),
@@ -170,7 +171,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                           children: [
                             Icon(
                               Icons.login,
-                              color: AppColors.primary,
+                              color: AppColors.white,
                             ),
                             SizedBox(width: 8),
                             Text(
