@@ -555,7 +555,7 @@ class _InfoScreenState extends State<InfoScreen>
                         userProfile: 'assets/images/avatar-1.jpg',
                         commentDate: comment.dateAdded.toString(),
                         commentText: comment.comment,
-                        rating: 4,
+                        rating: comment.rating,
                       );
                     })
                   else
@@ -661,9 +661,7 @@ class _InfoScreenState extends State<InfoScreen>
       );
       return;
     }
-
-    int userId = currentUser.id;
-
+    final String? accessToken = await _loadAccessToken();
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -748,47 +746,38 @@ class _InfoScreenState extends State<InfoScreen>
                 const SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: () async {
-                    int zoneId = widget.zoneID;
-                    final String? accessToken = await _loadAccessToken();
-
-                    String comment = commentController.text;
-                    if (comment.isNotEmpty && finalRating > 0) {
-                      if (accessToken != null) {
-                        var response = await CommentService().postComment(
-                          accessToken,
-                          comment,
-                          finalRating,
-                          userId,
-                          zoneId,
-                        );
-
-                        if (response.result == ApiResult.success) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Comment submitted successfully!'),
-                            ),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Error submitting comment: ${response.errorMessage}',
-                              ),
-                            ),
-                          );
-                        }
-
-                        commentController.clear();
-                        finalRating = 0;
-                        Navigator.of(context).pop();
-                      }
-                    } else {
+                    ProfileModel? currentUser = await getCurrentUser();
+                    if (currentUser == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text(
-                            'Please enter a comment and select a rating!',
-                          ),
-                        ),
+                            content: Text('Error: User not logged in')),
+                      );
+                      return;
+                    }
+
+                    int userId = currentUser.id;
+                    int zoneId = widget.zoneID;
+
+                    CommentService commentService = CommentService();
+                    ApiResponse response =
+                        await commentService.addCommentService(
+                      accessToken: accessToken!,
+                      zoneId: zoneId,
+                      userId: userId,
+                      rating: finalRating,
+                      comment: commentController.text,
+                    );
+
+                    if (response.result == ApiResult.success) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Comment submitted successfully')),
+                      );
+                      Navigator.of(context).pop();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text('Error: ${response.errorMessage}')),
                       );
                     }
                   },

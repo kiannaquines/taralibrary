@@ -8,13 +8,13 @@ class CommentWidget extends StatelessWidget {
   final int rating;
 
   const CommentWidget({
-    Key? key,
+    super.key,
     required this.userName,
     required this.userProfile,
     required this.commentDate,
     required this.commentText,
     required this.rating,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -50,14 +50,21 @@ class CommentWidget extends StatelessWidget {
                     ),
                     const Spacer(),
                     Row(
-                      children: List.generate(
-                        rating.clamp(0, 5),
-                        (index) => const Icon(
-                          Icons.star,
-                          color: Colors.yellow,
-                          size: 16,
-                        ),
-                      ),
+                      children: List.generate(5, (index) {
+                        if (index < rating && rating >= 1 && rating <= 5) {
+                          return const Icon(
+                            Icons.star,
+                            color: Colors.yellow,
+                            size: 16,
+                          );
+                        } else {
+                          return const Icon(
+                            Icons.star_border,
+                            color: Colors.grey,
+                            size: 16,
+                          );
+                        }
+                      }),
                     ),
                   ],
                 ),

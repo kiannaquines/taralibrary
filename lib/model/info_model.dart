@@ -51,6 +51,7 @@ class CommentModel {
   final int zoneID;
   final String firstName;
   final String lastName;
+  final int rating;
   final String comment;
   final DateTime dateAdded;
   final DateTime updateDate;
@@ -60,6 +61,7 @@ class CommentModel {
     required this.zoneID,
     required this.firstName,
     required this.lastName,
+    required this.rating,
     required this.comment,
     required this.dateAdded,
     required this.updateDate,
@@ -71,6 +73,7 @@ class CommentModel {
       zoneID: json['zone_id'],
       firstName: json['first_name'],
       lastName: json['last_name'],
+      rating: json['rating'],
       comment: json['comment'],
       dateAdded: DateTime.parse(json['date_added']),
       updateDate: DateTime.parse(json['update_date']),
@@ -83,6 +86,7 @@ class CommentModel {
       'zone_id': zoneID,
       'first_name': firstName,
       'last_name': lastName,
+      'rating': rating,
       'comment': comment,
       'date_added': dateAdded.toIso8601String(),
       'update_date': updateDate.toIso8601String(),

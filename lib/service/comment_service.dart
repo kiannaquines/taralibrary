@@ -8,15 +8,19 @@ import 'package:taralibrary/service/service_app.dart';
 class CommentService {
   String get baseUrl => ApiSettings.getApiUrl();
 
-  Future<ApiResponse<AddCommentModel>> postComment(
-      String accessToken, String comment, double rating, int userId, int zoneID) async {
+  Future<ApiResponse> addCommentService({
+    required String accessToken,
+    required int zoneId,
+    required int userId,
+    required double rating,
+    required String comment,
+  }) async {
     final uri = Uri.parse('$baseUrl/comments/');
-
-    final Map<String, dynamic> requestBody = {
-      'comment': comment,
-      'rating': rating,
+    final Map<String, dynamic> data = {
+      'zone_id': zoneId,
       'user_id': userId,
-      'zone_id': zoneID,
+      'rating': rating,
+      'comment': comment,
     };
 
     try {
@@ -26,11 +30,10 @@ class CommentService {
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
         },
-        body: jsonEncode(requestBody),
-      ).timeout(const Duration(seconds: 10));
+        body: jsonEncode(data),
+      );
 
-      return _handleResponse<AddCommentModel>(
-          response, AddCommentModel.fromJson);
+      return _handleResponse(response);
     } catch (e) {
       debugPrint('Error posting comment: $e');
       return ApiResponse(
@@ -40,13 +43,11 @@ class CommentService {
     }
   }
 
-  ApiResponse<T> _handleResponse<T>(
-      http.Response response, T Function(Map<String, dynamic>) fromJson) {
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+  ApiResponse _handleResponse(http.Response response) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return ApiResponse(
         result: ApiResult.success,
-        data: fromJson(data),
+        data: jsonDecode(response.body),
       );
     } else if (response.statusCode == 401) {
       return ApiResponse(
@@ -56,7 +57,7 @@ class CommentService {
     } else {
       return ApiResponse(
         result: ApiResult.error,
-        errorMessage: 'Failed to get data, status code: ${response.statusCode}',
+        errorMessage: 'Failed to post comment, status code: ${response.statusCode}',
       );
     }
   }
