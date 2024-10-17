@@ -45,7 +45,6 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
   void changePassword() async {
     final String? accessToken = await _loadAccessToken();
 
-
     AuthService authService = AuthService();
     ChangePasswordInAccount changePasswordInAccount = ChangePasswordInAccount(
       oldPassword: _oldPasswordController.text,
@@ -127,7 +126,7 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
                     clipBehavior: Clip.none,
                     alignment: Alignment.topCenter,
                     children: [
-                      const Positioned(
+                      Positioned(
                         top: 100,
                         left: 25,
                         child: Text(
@@ -135,7 +134,7 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
                           style: TextStyle(
                             fontSize: 35,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.black,
+                            color: AppColors.black.withOpacity(0.8),
                           ),
                         ),
                       ),
@@ -147,9 +146,9 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
                           softWrap: true,
                           maxLines: 2,
                           style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.normal,
-                            color: AppColors.black.withOpacity(0.5),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.dark.withOpacity(0.7),
                           ),
                         ),
                       ),
@@ -173,8 +172,8 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
                         decoration: InputDecoration(
                           labelText: 'Old Password',
                           labelStyle: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.dark.withOpacity(0.9),
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.dark.withOpacity(0.5),
                               fontSize: 16),
                           prefixIcon: const Icon(
                             Icons.lock,
@@ -205,8 +204,8 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
                         decoration: InputDecoration(
                           labelText: 'New Password',
                           labelStyle: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.dark.withOpacity(0.9),
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.dark.withOpacity(0.5),
                               fontSize: 16),
                           prefixIcon: const Icon(
                             Icons.lock,
@@ -237,8 +236,8 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
                         decoration: InputDecoration(
                           labelText: 'Confirm Password',
                           labelStyle: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.dark.withOpacity(0.9),
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.dark.withOpacity(0.5),
                               fontSize: 16),
                           prefixIcon: const Icon(
                             Icons.lock,
@@ -272,6 +271,7 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
                           child: const Text(
                             'Back to home?',
                             style: TextStyle(
+                              fontSize: 16,
                               color: AppColors.primary,
                               fontWeight: FontWeight.bold,
                             ),
@@ -313,17 +313,6 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
                       ),
                       const SizedBox(height: 20),
                       const SizedBox(height: 40),
-                      Center(
-                        child: Text(
-                          '© 2024 TaraLibrary. All rights reserved.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: copyrightFontSize,
-                            color: Colors.black54,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
                     ],
                   ),
                 ),

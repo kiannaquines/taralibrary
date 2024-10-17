@@ -498,10 +498,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           child: const Text(
                             'Change Password',
                             style: TextStyle(
-                              fontSize: 14,
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
+                                fontSize: 16,
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
                           ),
                         ),
                       ],
