@@ -130,15 +130,15 @@ class _VerifyResetPasswordState extends State<VerifyResetPassword>
                       clipBehavior: Clip.none,
                       alignment: Alignment.topCenter,
                       children: [
-                        const Positioned(
+                        Positioned(
                           top: 100,
                           left: 25,
                           child: Text(
                             "Confirmation Code",
                             style: TextStyle(
-                              fontSize: 32,
+                              fontSize: 33,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.black,
+                              color: AppColors.black.withOpacity(0.8),
                             ),
                           ),
                         ),
@@ -151,8 +151,8 @@ class _VerifyResetPasswordState extends State<VerifyResetPassword>
                             maxLines: 2,
                             style: TextStyle(
                               fontSize: 17,
-                              fontWeight: FontWeight.normal,
-                              color: AppColors.black.withOpacity(0.5),
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.dark.withOpacity(0.7),
                             ),
                           ),
                         ),
@@ -186,7 +186,9 @@ class _VerifyResetPasswordState extends State<VerifyResetPassword>
                                 decoration: InputDecoration(
                                   labelText: '',
                                   labelStyle: TextStyle(
-                                      color: AppColors.black.withOpacity(0.5)),
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.dark.withOpacity(0.5),
+                                      fontSize: 16),
                                   border: OutlineInputBorder(
                                     borderSide: BorderSide.none,
                                     borderRadius: BorderRadius.circular(10),
@@ -219,8 +221,9 @@ class _VerifyResetPasswordState extends State<VerifyResetPassword>
                               );
                             },
                             child: const Text(
-                              'Remembered your password?',
+                              'Remember password?',
                               style: TextStyle(
+                                fontSize: 16,
                                 color: AppColors.primary,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -264,11 +267,12 @@ class _VerifyResetPasswordState extends State<VerifyResetPassword>
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text(
-                              "Are you not registered yet? ",
+                            Text(
+                              "Not registered yet? ",
                               style: TextStyle(
-                                fontSize: 14,
-                                color: AppColors.black,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.dark.withOpacity(0.6),
                               ),
                             ),
                             TextButton(
@@ -284,7 +288,7 @@ class _VerifyResetPasswordState extends State<VerifyResetPassword>
                               child: const Text(
                                 'Register',
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 16,
                                   color: AppColors.primary,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -298,8 +302,9 @@ class _VerifyResetPasswordState extends State<VerifyResetPassword>
                             '© 2024 TaraLibrary. All rights reserved.',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: copyrightFontSize,
-                              color: Colors.black54,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.dark.withOpacity(0.6),
                             ),
                           ),
                         ),

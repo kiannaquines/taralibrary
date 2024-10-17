@@ -105,7 +105,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                     clipBehavior: Clip.none,
                     alignment: Alignment.topCenter,
                     children: [
-                      const Positioned(
+                      Positioned(
                         top: 100,
                         left: 25,
                         child: Text(
@@ -113,7 +113,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                           style: TextStyle(
                             fontSize: 35,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.black,
+                            color: AppColors.black.withOpacity(0.8),
                           ),
                         ),
                       ),
@@ -126,8 +126,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                           maxLines: 2,
                           style: TextStyle(
                             fontSize: 17,
-                            fontWeight: FontWeight.normal,
-                            color: AppColors.black.withOpacity(0.5),
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.dark.withOpacity(0.7),
                           ),
                         ),
                       ),
@@ -152,8 +152,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                         decoration: InputDecoration(
                           labelText: 'Email Address',
                           labelStyle: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.dark.withOpacity(0.9),
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.dark.withOpacity(0.5),
                               fontSize: 16),
                           prefixIcon: const Icon(
                             FeatherIcons.mail,
@@ -231,11 +231,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            "Are you not registered yet? ",
+                          Text(
+                            "Not registered yet? ",
                             style: TextStyle(
-                              fontSize: 14,
-                              color: AppColors.black,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.dark.withOpacity(0.6),
                             ),
                           ),
                           TextButton(
@@ -250,8 +251,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                             child: const Text(
                               'Register',
                               style: TextStyle(
-                                fontSize: 14,
-                                color: AppColors.primary,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
