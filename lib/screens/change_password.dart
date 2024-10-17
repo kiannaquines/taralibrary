@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:taralibrary/model/auth_models.dart';
-import 'package:taralibrary/screens/forgot.dart';
 import 'package:taralibrary/screens/login.dart';
 import 'package:taralibrary/screens/register.dart';
 import 'package:taralibrary/service/auth_service.dart';
 import 'package:taralibrary/utils/colors.dart';
-import 'package:taralibrary/screens/home.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   final int userId;

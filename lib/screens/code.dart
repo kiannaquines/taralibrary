@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:taralibrary/screens/change_password.dart';
 import 'package:taralibrary/screens/login.dart';
 import 'package:taralibrary/screens/register.dart';
 import 'package:taralibrary/utils/colors.dart';
