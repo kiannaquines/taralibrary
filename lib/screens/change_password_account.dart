@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:taralibrary/model/auth_models.dart';
+import 'package:taralibrary/screens/login.dart';
+import 'package:taralibrary/service/auth_service.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:taralibrary/screens/home.dart';
+import 'package:taralibrary/utils/storage.dart';
 
 class ChangePasswordAccount extends StatefulWidget {
-  const ChangePasswordAccount({super.key});
+  final int userId;
+
+  const ChangePasswordAccount({super.key, required this.userId});
 
   @override
   _ChangePasswordAccountState createState() => _ChangePasswordAccountState();
@@ -12,7 +18,12 @@ class ChangePasswordAccount extends StatefulWidget {
 class _ChangePasswordAccountState extends State<ChangePasswordAccount>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-
+  Storage storage = Storage();
+  final TextEditingController _oldPasswordController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  MyStorage myStorage = MyStorage();
   @override
   void initState() {
     super.initState();
@@ -23,6 +34,68 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  Future<String?> _loadAccessToken() async {
+    Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
+    String accessToken = tokenData['accessToken'];
+    return accessToken;
+  }
+
+  void changePassword() async {
+    final String? accessToken = await _loadAccessToken();
+
+
+    AuthService authService = AuthService();
+    ChangePasswordInAccount changePasswordInAccount = ChangePasswordInAccount(
+      oldPassword: _oldPasswordController.text,
+      newPassword: _newPasswordController.text,
+      confirmPassword: _confirmPasswordController.text,
+      userId: widget.userId,
+    );
+
+    final response = await authService.changePasswordInAccount(
+        changePasswordInAccount, accessToken!);
+
+    try {
+      if (response['status_code'] == 200) {
+        _showSnackBar(response['message']);
+        await Future.delayed(const Duration(seconds: 3));
+        await storage.deleteData('accessToken');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const LoginScreen(),
+            maintainState: false,
+          ),
+        );
+      } else if (response['status_code'] == 401) {
+        _showSnackBar('Login required');
+        await storage.deleteData('accessToken');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const LoginScreen(),
+            maintainState: false,
+          ),
+        );
+      } else {
+        _showSnackBar(response['message']);
+      }
+    } catch (error) {
+      _showSnackBar('Something went wrong');
+    }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: AppColors.imagebackgroundOverlay,
+        showCloseIcon: true,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   @override
@@ -90,6 +163,7 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextField(
+                        controller: _oldPasswordController,
                         style: TextStyle(
                             fontWeight: FontWeight.w600,
                             color: AppColors.dark.withOpacity(0.9),
@@ -121,6 +195,7 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
                       ),
                       const SizedBox(height: 25),
                       TextField(
+                        controller: _newPasswordController,
                         style: TextStyle(
                             fontWeight: FontWeight.w600,
                             color: AppColors.dark.withOpacity(0.9),
@@ -152,6 +227,7 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
                       ),
                       const SizedBox(height: 25),
                       TextField(
+                        controller: _confirmPasswordController,
                         style: TextStyle(
                             fontWeight: FontWeight.w600,
                             color: AppColors.dark.withOpacity(0.9),
@@ -205,7 +281,7 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
                       const SizedBox(height: 25),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          changePassword();
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,

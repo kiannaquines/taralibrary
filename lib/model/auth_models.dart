@@ -198,3 +198,70 @@ class ForgotPasswordResponse {
     };
   }
 }
+
+
+class ChangePasswordModel {
+  final String newPassword;
+  final String confirmPassword;
+  final int userId;
+
+
+  ChangePasswordModel({
+    required this.newPassword,
+    required this.confirmPassword,
+    required this.userId,
+  });
+
+
+  factory ChangePasswordModel.fromJson(Map<String, dynamic> json){
+    return ChangePasswordModel(
+      newPassword: json['new_password'],
+      confirmPassword: json['confirm_password'],
+      userId: json['user_id'],
+    );
+  }
+
+
+  Map<String, dynamic> toJson() {
+    return {
+      'new_password': newPassword,
+      'confirm_password': confirmPassword,
+      'user_id': userId,
+    };
+  }
+}
+
+
+class ChangePasswordInAccount {
+  final String oldPassword;
+  final String newPassword;
+  final String confirmPassword;
+  final int userId;
+
+  ChangePasswordInAccount({
+    required this.oldPassword,
+    required this.newPassword,
+    required this.confirmPassword,
+    required this.userId,
+  });
+
+
+  factory ChangePasswordInAccount.fromJson(Map<String, dynamic> json){
+    return ChangePasswordInAccount(
+      oldPassword: json['old_password'],
+      newPassword: json['new_password'],
+      confirmPassword: json['confirm_password'],
+      userId: json['user_id'],
+    );
+  }
+
+
+  Map<String, dynamic> toJson() {
+    return {
+      'old_password': oldPassword,
+      'new_password': newPassword,
+      'confirm_password': confirmPassword,
+      'user_id': userId,
+    };
+  }
+}

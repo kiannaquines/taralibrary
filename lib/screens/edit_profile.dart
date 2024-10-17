@@ -489,7 +489,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    const ChangePasswordAccount(),
+                                  ChangePasswordAccount(
+                                    userId: _profile!.id,
+                                  ),
                               ),
                             );
                           },

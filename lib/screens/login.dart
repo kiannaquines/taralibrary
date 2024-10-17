@@ -112,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen>
                     clipBehavior: Clip.none,
                     alignment: Alignment.topCenter,
                     children: [
-                      const Positioned(
+                      Positioned(
                         top: 100,
                         left: 25,
                         child: Text(
@@ -120,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen>
                           style: TextStyle(
                             fontSize: 35,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.black,
+                            color: AppColors.black.withOpacity(0.8),
                           ),
                         ),
                       ),
@@ -128,13 +128,13 @@ class _LoginScreenState extends State<LoginScreen>
                         top: 150,
                         left: 25,
                         child: Text(
-                          "Start by using signing in your account.",
+                          "Start by using signing in your\naccount.",
                           softWrap: true,
                           maxLines: 2,
                           style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.normal,
-                            color: AppColors.black.withOpacity(0.5),
+                            fontSize: 19,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.dark.withOpacity(0.7),
                           ),
                         ),
                       ),
@@ -147,17 +147,6 @@ class _LoginScreenState extends State<LoginScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Fill all fields',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.dark.withOpacity(0.7),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
                       TextField(
                         style: TextStyle(
                             fontWeight: FontWeight.w600,
@@ -168,8 +157,8 @@ class _LoginScreenState extends State<LoginScreen>
                         decoration: InputDecoration(
                           labelText: 'Username',
                           labelStyle: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.dark.withOpacity(0.9),
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.dark.withOpacity(0.5),
                               fontSize: 16),
                           prefixIcon: const Icon(
                             FeatherIcons.circle,
@@ -200,8 +189,8 @@ class _LoginScreenState extends State<LoginScreen>
                         decoration: InputDecoration(
                           labelText: 'Password',
                           labelStyle: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.dark.withOpacity(0.9),
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.dark.withOpacity(0.5),
                               fontSize: 16),
                           prefixIcon: const Icon(
                             FeatherIcons.lock,
@@ -220,7 +209,7 @@ class _LoginScreenState extends State<LoginScreen>
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 15),
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
@@ -238,12 +227,13 @@ class _LoginScreenState extends State<LoginScreen>
                             'Forgot Password?',
                             style: TextStyle(
                               color: AppColors.primary,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 25),
+                      const SizedBox(height: 15),
                       ElevatedButton(
                         onPressed: () {
                           loginProcess();
@@ -269,7 +259,7 @@ class _LoginScreenState extends State<LoginScreen>
                             Text(
                               'Sign In',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -280,11 +270,12 @@ class _LoginScreenState extends State<LoginScreen>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            "Are you not registered yet? ",
+                          Text(
+                            "Not registered yet? ",
                             style: TextStyle(
-                              fontSize: 14,
-                              color: AppColors.black,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.dark.withOpacity(0.6),
                             ),
                           ),
                           TextButton(
@@ -299,7 +290,7 @@ class _LoginScreenState extends State<LoginScreen>
                             child: const Text(
                               'Register',
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: 16,
                                 color: AppColors.primary,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -307,14 +298,15 @@ class _LoginScreenState extends State<LoginScreen>
                           ),
                         ],
                       ),
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 60),
                       Center(
                         child: Text(
                           '© 2024 TaraLibrary. All rights reserved.',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: copyrightFontSize,
-                            color: Colors.black54,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.dark.withOpacity(0.6),
                           ),
                         ),
                       ),

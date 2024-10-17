@@ -142,6 +142,13 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           color: AppColors.primary.withOpacity(0.1),
                           width: 3.0,
                         ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 10,
+                            spreadRadius: 2,
+                          ),
+                        ],
                       ),
                       child: _profile != null &&
                               _profile!.profile != null &&
@@ -152,7 +159,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                 placeholder: (context, url) =>
                                     const CircularProgressIndicator(),
                                 errorWidget: (context, url, error) =>
-                                    Image.asset('assets/images/user.png'),
+                                    Image.asset(
+                                  'assets/images/user.png',
+                                ),
                                 height: 55,
                                 width: 55,
                                 fit: BoxFit.cover,
@@ -160,7 +169,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                             )
                           : CircleAvatar(
                               radius: 60,
-                              backgroundColor: AppColors.primary.withOpacity(0.2),
+                              backgroundColor:
+                                  AppColors.primary.withOpacity(0.2),
                               child: SvgPicture.asset(
                                 'assets/images/user.png',
                                 width: 30,

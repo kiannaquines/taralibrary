@@ -176,14 +176,16 @@ class _CodeScreenState extends State<CodeScreen>
                         const SizedBox(height: 25),
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const ChangePasswordScreen(),
-                                maintainState: false,
-                              ),
-                            );
+                            // Navigator.pushReplacement(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) =>
+                            //         ChangePasswordScreen(
+                            //           userId: widget.user,
+                            //         ),
+                            //     maintainState: false,
+                            //   ),
+                            // );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary.withOpacity(0.1),

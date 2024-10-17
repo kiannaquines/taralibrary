@@ -111,7 +111,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                     clipBehavior: Clip.none,
                     alignment: Alignment.topCenter,
                     children: [
-                      const Positioned(
+                      Positioned(
                         top: 100,
                         left: 25,
                         child: Text(
@@ -119,7 +119,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                           style: TextStyle(
                             fontSize: 35,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.black,
+                            color: AppColors.black.withOpacity(0.8),
                           ),
                         ),
                       ),
@@ -127,13 +127,13 @@ class _RegisterScreenState extends State<RegisterScreen>
                         top: 150,
                         left: 25,
                         child: Text(
-                          "Start by creating your new account\nhere",
+                          "Start by creating your new\naccount",
                           softWrap: true,
                           maxLines: 2,
                           style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.normal,
-                            color: AppColors.black.withOpacity(0.5),
+                            fontSize: 19,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.dark.withOpacity(0.7),
                           ),
                         ),
                       ),
@@ -166,8 +166,8 @@ class _RegisterScreenState extends State<RegisterScreen>
                         decoration: InputDecoration(
                           labelText: 'Username',
                           labelStyle: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.dark.withOpacity(0.9),
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.dark.withOpacity(0.5),
                               fontSize: 16),
                           prefixIcon: const Icon(
                             FeatherIcons.atSign,
@@ -198,8 +198,8 @@ class _RegisterScreenState extends State<RegisterScreen>
                         decoration: InputDecoration(
                           labelText: 'Email Address',
                           labelStyle: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.dark.withOpacity(0.9),
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.dark.withOpacity(0.5),
                               fontSize: 16),
                           prefixIcon: const Icon(
                             FeatherIcons.mail,
@@ -229,8 +229,8 @@ class _RegisterScreenState extends State<RegisterScreen>
                         decoration: InputDecoration(
                           labelText: 'Firstname',
                           labelStyle: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.dark.withOpacity(0.9),
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.dark.withOpacity(0.5),
                               fontSize: 16),
                           prefixIcon: const Icon(
                             FeatherIcons.circle,
@@ -260,8 +260,8 @@ class _RegisterScreenState extends State<RegisterScreen>
                         decoration: InputDecoration(
                           labelText: 'Lastname',
                           labelStyle: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.dark.withOpacity(0.9),
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.dark.withOpacity(0.5),
                               fontSize: 16),
                           prefixIcon: const Icon(
                             FeatherIcons.circle,
@@ -305,8 +305,8 @@ class _RegisterScreenState extends State<RegisterScreen>
                         decoration: InputDecoration(
                           labelText: 'Password',
                           labelStyle: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.dark.withOpacity(0.9),
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.dark.withOpacity(0.5),
                               fontSize: 16),
                           prefixIcon: const Icon(
                             FeatherIcons.lock,
@@ -337,8 +337,8 @@ class _RegisterScreenState extends State<RegisterScreen>
                         decoration: InputDecoration(
                           labelText: 'Confirm Password',
                           labelStyle: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.dark.withOpacity(0.9),
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.dark.withOpacity(0.5),
                               fontSize: 16),
                           prefixIcon: const Icon(
                             FeatherIcons.lock,
@@ -357,6 +357,9 @@ class _RegisterScreenState extends State<RegisterScreen>
                           ),
                         ),
                       ),
+                      const SizedBox(
+                        height: 15,
+                      ),
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
@@ -373,12 +376,13 @@ class _RegisterScreenState extends State<RegisterScreen>
                             'Forgot Password?',
                             style: TextStyle(
                               color: AppColors.primary,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 25),
+                      const SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {
                           _registerUser();
@@ -404,7 +408,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                             Text(
                               'Sign Up',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -415,11 +419,12 @@ class _RegisterScreenState extends State<RegisterScreen>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            "Are you already registered ? ",
+                          Text(
+                            "Already registered ? ",
                             style: TextStyle(
-                              fontSize: 14,
-                              color: AppColors.black,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.dark.withOpacity(0.6),
                             ),
                           ),
                           TextButton(
@@ -448,8 +453,9 @@ class _RegisterScreenState extends State<RegisterScreen>
                           '© 2024 TaraLibrary. All rights reserved.',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: copyrightFontSize,
-                            color: Colors.black54,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.dark.withOpacity(0.6),
                           ),
                         ),
                       ),

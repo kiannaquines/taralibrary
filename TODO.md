@@ -19,8 +19,8 @@
 16. Added Upload Image - DONE
 17. Edit Profile - DONE
 18. Forgot Password - DONE
+19. Change Password- DONE
 
 ### NEW TODO (BACKEND)
 
-5. Change Password- NOT STARTED
 7. Push Notification - NOT STARTED

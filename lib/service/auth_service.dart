@@ -168,9 +168,8 @@ class AuthService {
     }
   }
 
-
-   Future<Map<String, dynamic>> changePasswordRequest(
-    AccountVerification accountVerification,
+  Future<Map<String, dynamic>> changePasswordRequest(
+    ChangePasswordModel changePassword,
   ) async {
     const String endpoint = "/auth/request/change-password";
     final uri = Uri.parse('$baseUrl$endpoint');
@@ -178,7 +177,7 @@ class AuthService {
     try {
       final response = await http.post(
         uri,
-        body: jsonEncode(accountVerification.toJson()),
+        body: jsonEncode(changePassword.toJson()),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -191,7 +190,7 @@ class AuthService {
           return ForgotPasswordResponse(
             message: result['message'],
             statusCode: response.statusCode,
-            userId: accountVerification.userId,
+            userId: changePassword.userId,
           ).toJson();
         case 500:
         case 404:
@@ -203,7 +202,57 @@ class AuthService {
           ).toJson();
         default:
           return ErrorResponse(
-            message: 'Failed to chnage account password',
+            message: 'Failed to change account password',
+            statusCode: response.statusCode,
+          ).toJson();
+      }
+    } catch (e) {
+      return ErrorResponse(
+        message: 'Something went wrong, please try again later',
+        statusCode: 500,
+      ).toJson();
+    }
+  }
+
+
+  Future<Map<String, dynamic>> changePasswordInAccount(
+    ChangePasswordInAccount changePassword,
+    String accessToken,
+  ) async {
+    const String endpoint = "/users/me/change-password";
+    final uri = Uri.parse('$baseUrl$endpoint');
+
+    try {
+      final response = await http.put(
+        uri,
+        body: jsonEncode(changePassword.toJson()),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      final Map<String, dynamic> result = jsonDecode(response.body);
+
+      switch (response.statusCode) {
+        case 200:
+          return ForgotPasswordResponse(
+            message: result['message'],
+            statusCode: response.statusCode,
+            userId: changePassword.userId,
+          ).toJson();
+        case 500:
+        case 404:
+        case 400:
+        case 401:
+        case 307:
+          return ErrorResponse(
+            message: result['detail'],
+            statusCode: response.statusCode,
+          ).toJson();
+        default:
+          return ErrorResponse(
+            message: 'Failed to change account password',
             statusCode: response.statusCode,
           ).toJson();
       }

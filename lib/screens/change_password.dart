@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:taralibrary/model/auth_models.dart';
 import 'package:taralibrary/screens/forgot.dart';
+import 'package:taralibrary/screens/login.dart';
 import 'package:taralibrary/screens/register.dart';
+import 'package:taralibrary/service/auth_service.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:taralibrary/screens/home.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
-  const ChangePasswordScreen({super.key});
+  final int userId;
+
+  const ChangePasswordScreen({super.key, required this.userId});
 
   @override
   _ChangePasswordScreenState createState() => _ChangePasswordScreenState();
@@ -14,6 +19,9 @@ class ChangePasswordScreen extends StatefulWidget {
 class _ChangePasswordScreenState extends State<ChangePasswordScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _newconfirmPassword = TextEditingController();
 
   @override
   void initState() {
@@ -25,6 +33,46 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  void changePassword() async {
+    AuthService authService = AuthService();
+    ChangePasswordModel changePassword = ChangePasswordModel(
+      newPassword: _newPasswordController.text,
+      confirmPassword: _newconfirmPassword.text,
+      userId: widget.userId,
+    );
+
+    final response = await authService.changePasswordRequest(changePassword);
+
+    try {
+      if (response['status_code'] == 200) {
+        _showSnackBar(response['message']);
+        await Future.delayed(const Duration(seconds: 3));
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const LoginScreen(),
+            maintainState: false,
+          ),
+        );
+      } else {
+        _showSnackBar(response['message']);
+      }
+    } catch (error) {
+      _showSnackBar('Something went wrong');
+    }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: AppColors.imagebackgroundOverlay,
+        showCloseIcon: true,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   @override
@@ -92,6 +140,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextField(
+                        controller: _newPasswordController,
                         style: TextStyle(
                             fontWeight: FontWeight.w600,
                             color: AppColors.dark.withOpacity(0.9),
@@ -123,6 +172,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                       ),
                       const SizedBox(height: 25),
                       TextField(
+                        controller: _newconfirmPassword,
                         style: TextStyle(
                             fontWeight: FontWeight.w600,
                             color: AppColors.dark.withOpacity(0.9),
@@ -161,12 +211,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    const ForgotPasswordScreen(),
+                                    const LoginScreen(),
                               ),
                             );
                           },
                           child: const Text(
-                            'Forgot Password?',
+                            'Remembered your password?',
                             style: TextStyle(
                               color: AppColors.primary,
                               fontWeight: FontWeight.bold,
@@ -177,13 +227,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                       const SizedBox(height: 25),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const HomeScreen(),
-                              maintainState: false,
-                            ),
-                          );
+                          changePassword();
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
@@ -204,7 +248,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                             ),
                             SizedBox(width: 8),
                             Text(
-                              'Reset Password',
+                              'Change Password',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

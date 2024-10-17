@@ -49,7 +49,9 @@ class _VerifyResetPasswordState extends State<VerifyResetPassword>
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => const ChangePasswordScreen(),
+            builder: (context) => ChangePasswordScreen(
+              userId: widget.userId,
+            ),
           ),
           (Route<dynamic> route) => false,
         );
