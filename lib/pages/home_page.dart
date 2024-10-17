@@ -116,12 +116,12 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Text(
+                  Text(
                     'Popular Sections',
                     style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.black,
+                      color: AppColors.black.withOpacity(0.8),
                     ),
                   ),
                   GestureDetector(

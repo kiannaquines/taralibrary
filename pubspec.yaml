@@ -69,6 +69,7 @@ flutter:
 
     - assets/images/avatar-1.jpg
     - assets/images/user.png
+    - assets/images/empty-box.png
     - assets/images/avatar-2.jpg
     - assets/images/avatar-3.jpg
     - assets/images/1.jfif

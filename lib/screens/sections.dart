@@ -171,7 +171,7 @@ class _SectionScreenState extends State<SectionScreen> {
             slivers: [
               SliverPadding(
                 padding:
-                    const EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0),
+                    const EdgeInsets.only(left: 20.0, right: 20.0, top: 15.0),
                 sliver: SliverToBoxAdapter(
                   child: Container(
                     constraints: const BoxConstraints(maxHeight: 60),
@@ -221,7 +221,7 @@ class _SectionScreenState extends State<SectionScreen> {
               ),
               SliverPadding(
                 padding: const EdgeInsets.only(
-                    top: 10.0, left: 20.0, right: 20.0, bottom: 20.0),
+                    top: 15.0, left: 20.0, right: 20.0, bottom: 20.0),
                 sliver: SliverToBoxAdapter(
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,

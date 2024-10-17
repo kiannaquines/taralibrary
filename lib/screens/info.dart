@@ -549,15 +549,28 @@ class _InfoScreenState extends State<InfoScreen>
                             ),
                           ),
                         )
-                      : const Center(
-                          child: Text(
-                            'No data available',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey,
-                            ),
+                      : SizedBox(
+                          width: double.infinity,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/images/empty-box.png',
+                                width: 70,
+                                height: 70,
+                              ),
+                              const Text(
+                                'Empty Chart Data',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                 ),
@@ -609,19 +622,22 @@ class _InfoScreenState extends State<InfoScreen>
                         ),
                         width: MediaQuery.of(context).size.width,
                         padding: const EdgeInsets.all(10.0),
-                        child: const Column(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Center(
-                              child: Text(
-                                'Share your positive thought',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey,
-                                ),
+                            Image.asset(
+                              'assets/images/empty-box.png',
+                              width: 70,
+                              height: 70,
+                            ),
+                            const Text(
+                              'Share your thoughts',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey,
                               ),
                             ),
                           ],

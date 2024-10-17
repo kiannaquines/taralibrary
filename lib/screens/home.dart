@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: const CustomAppBar(
-        greetingMessage: 'Good Evening, Kian Naquines! 🌙',
+        greetingMessage: 'Good Evening, Kian! 🌙',
         libraryName: 'TaraLibrary',
         avatarImagePath: 'assets/images/avatar-1.jpg',
       ),
