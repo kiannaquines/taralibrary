@@ -60,24 +60,34 @@ class AuthService {
         },
       );
 
-      final Map<String, dynamic> responseData = json.decode(response.body);
+      final Map<String, dynamic> result = jsonDecode(response.body);
 
-      if (response.statusCode == 200) {
-        return {
-          'message': responseData['message'],
-          'status_code': response.statusCode,
-        };
-      } else {
-        return {
-          'message': responseData['detail'],
-          'status_code': response.statusCode,
-        };
+      switch (response.statusCode) {
+        case 200:
+          return ForgotPasswordResponse(
+            message: result['message'],
+            statusCode: response.statusCode,
+            userId: accountVerification.userId,
+          ).toJson();
+        case 500:
+        case 404:
+        case 400:
+        case 307:
+          return ErrorResponse(
+            message: result['detail'],
+            statusCode: response.statusCode,
+          ).toJson();
+        default:
+          return ErrorResponse(
+            message: 'Failed to verify account',
+            statusCode: response.statusCode,
+          ).toJson();
       }
     } catch (e) {
-      return {
-        'message': 'Failed to verify account',
-        'status_code': 500,
-      };
+      return ErrorResponse(
+        message: 'Something went wrong, please try again later',
+        statusCode: 500,
+      ).toJson();
     }
   }
 
@@ -114,6 +124,94 @@ class AuthService {
           message: 'Sorry, cannot login, try again later',
           statusCode: response.statusCode,
         ).toJson();
+    }
+  }
+
+  Future<Map<String, dynamic>> forgotPassword(
+      ForgotPassword forgotpassword) async {
+    String endpoint = "/auth/request/forgot-password";
+    final uri = Uri.parse('$baseUrl$endpoint');
+
+    final response = await http.post(
+      uri,
+      body: jsonEncode(forgotpassword.toJson()),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    );
+
+    final Map<String, dynamic> result = jsonDecode(response.body);
+
+    switch (response.statusCode) {
+      case 200:
+        return ForgotPasswordResponse(
+          message: result['message'],
+          statusCode: response.statusCode,
+          userId: result['user_id'],
+        ).toJson();
+
+      case 422:
+      case 401:
+      case 404:
+      case 500:
+        return ErrorResponse(
+          message: result['detail'] ?? 'Unknown error occurred',
+          statusCode: response.statusCode,
+        ).toJson();
+
+      default:
+        return ErrorResponse(
+          message: 'Sorry, system error, try again later',
+          statusCode: response.statusCode,
+        ).toJson();
+    }
+  }
+
+
+   Future<Map<String, dynamic>> changePasswordRequest(
+    AccountVerification accountVerification,
+  ) async {
+    const String endpoint = "/auth/request/change-password";
+    final uri = Uri.parse('$baseUrl$endpoint');
+
+    try {
+      final response = await http.post(
+        uri,
+        body: jsonEncode(accountVerification.toJson()),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      final Map<String, dynamic> result = jsonDecode(response.body);
+
+      switch (response.statusCode) {
+        case 200:
+          return ForgotPasswordResponse(
+            message: result['message'],
+            statusCode: response.statusCode,
+            userId: accountVerification.userId,
+          ).toJson();
+        case 500:
+        case 404:
+        case 400:
+        case 307:
+          return ErrorResponse(
+            message: result['detail'],
+            statusCode: response.statusCode,
+          ).toJson();
+        default:
+          return ErrorResponse(
+            message: 'Failed to chnage account password',
+            statusCode: response.statusCode,
+          ).toJson();
+      }
+    } catch (e) {
+      return ErrorResponse(
+        message: 'Something went wrong, please try again later',
+        statusCode: 500,
+      ).toJson();
     }
   }
 }

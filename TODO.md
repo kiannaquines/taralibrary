@@ -17,11 +17,10 @@
 14. Pull Refresh - DONE
 15. Filter by Category - DONE
 16. Added Upload Image - DONE
+17. Edit Profile - DONE
+18. Forgot Password - DONE
 
 ### NEW TODO (BACKEND)
 
-4. Edit Profile - IN PROGRESS
 5. Change Password- NOT STARTED
-6. Message - NOT STARTED
 7. Push Notification - NOT STARTED
-8. Forgot Password - NOT STARTED

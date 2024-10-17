@@ -151,3 +151,50 @@ class AccountVerification {
     };
   }
 }
+
+class ForgotPassword {
+  final String email;
+  ForgotPassword({
+    required this.email,
+  });
+
+  factory ForgotPassword.fromJson(Map<String, dynamic> json) {
+    return ForgotPassword(
+      email: json['email'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'email': email,
+    };
+  }
+}
+
+class ForgotPasswordResponse {
+  final String message;
+  final int statusCode;
+  final int userId;
+
+  ForgotPasswordResponse({
+    required this.message,
+    required this.statusCode,
+    required this.userId,
+  });
+
+  factory ForgotPasswordResponse.fromJson(Map<String, dynamic> json) {
+    return ForgotPasswordResponse(
+      message: json['message'],
+      statusCode: json['status_code'],
+      userId: json['user_id'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'message': message,
+      'status_code': statusCode,
+      'user_id': userId,
+    };
+  }
+}

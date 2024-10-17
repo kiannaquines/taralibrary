@@ -60,7 +60,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                         top: 100,
                         left: 25,
                         child: Text(
-                          "Change Password",
+                          "Reset Password",
                           style: TextStyle(
                             fontSize: 35,
                             fontWeight: FontWeight.bold,
@@ -72,7 +72,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                         top: 150,
                         left: 25,
                         child: Text(
-                          "Enter your new password",
+                          "Reset authentication details",
                           softWrap: true,
                           maxLines: 2,
                           style: TextStyle(
@@ -204,7 +204,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                             ),
                             SizedBox(width: 8),
                             Text(
-                              'Change Password',
+                              'Reset Password',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

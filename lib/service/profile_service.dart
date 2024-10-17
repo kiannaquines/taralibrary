@@ -79,8 +79,6 @@ class ProfileService {
         imageFile.path,
         contentType: MediaType('image', 'jpeg'),
       ));
-    } else {
-      debugPrint('No image file provided');
     }
 
     try {
@@ -89,7 +87,6 @@ class ProfileService {
 
       if (response.statusCode == 307) {
         final redirectUrl = response.headers['location'];
-        debugPrint('Redirected to: $redirectUrl');
         return ApiResponse(
           result: ApiResult.error,
           errorMessage: 'Redirected to: $redirectUrl',
@@ -107,7 +104,6 @@ class ProfileService {
       } else {
         final errorData = await http.Response.fromStream(response);
         final errorMessage = jsonDecode(errorData.body);
-        debugPrint('Error Message: ${errorMessage['message']}');
 
         return ApiResponse(
           result: ApiResult.error,
@@ -115,7 +111,6 @@ class ProfileService {
         );
       }
     } catch (e) {
-      debugPrint('Error updating profile with image: $e');
       return ApiResponse(
         result: ApiResult.error,
         errorMessage: 'Error updating profile: ${e.toString()}',

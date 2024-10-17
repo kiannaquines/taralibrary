@@ -103,7 +103,7 @@ class UpdateProfileModel {
 
   factory UpdateProfileModel.fromJson(Map<String, dynamic> json) {
     return UpdateProfileModel(
-      id: json['id'],
+      id: json['user_id'],
       firstName: json['first_name'],
       lastName: json['last_name'],
       email: json['email'],
@@ -112,7 +112,7 @@ class UpdateProfileModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      'user_id': id,
       'first_name': firstName,
       'last_name': lastName,
       'email': email,

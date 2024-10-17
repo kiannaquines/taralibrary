@@ -1,8 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:taralibrary/model/auth_models.dart';
 import 'package:taralibrary/screens/code.dart';
 import 'package:taralibrary/screens/login.dart';
 import 'package:taralibrary/screens/register.dart';
+import 'package:taralibrary/screens/verify_reset_password.dart';
+import 'package:taralibrary/service/auth_service.dart';
 import 'package:taralibrary/utils/colors.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -22,10 +27,54 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
     _tabController = TabController(length: 3, vsync: this);
   }
 
+  final TextEditingController _emailController = TextEditingController();
+
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  void _forgotPassword() async {
+    AuthService authService = AuthService();
+    ForgotPassword forgotPassword = ForgotPassword(
+      email: _emailController.text,
+    );
+
+    try {
+      final response = await authService.forgotPassword(forgotPassword);
+
+      if (response['status_code'] == 200) {
+        _showSnackBar(response['message']);
+
+        await Future.delayed(const Duration(seconds: 5));
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VerifyResetPassword(
+              userId: response['user_id'],
+            ),
+          ),
+          (Route<dynamic> route) => false,
+        );
+      } else {
+        _showSnackBar(response['message']);
+      }
+    } catch (e) {
+      _showSnackBar('An unexpected error occurred. Please try again.');
+    }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: AppColors.imagebackgroundOverlay,
+        showCloseIcon: true,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   @override
@@ -93,6 +142,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextField(
+                        controller: _emailController,
                         style: TextStyle(
                             fontWeight: FontWeight.w600,
                             color: AppColors.dark.withOpacity(0.9),
@@ -148,13 +198,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                       const SizedBox(height: 25),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const CodeScreen(),
-                              maintainState: false,
-                            ),
-                          );
+                          _forgotPassword();
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
@@ -175,7 +219,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                             ),
                             SizedBox(width: 8),
                             Text(
-                              'Send Code',
+                              'Send Recovery Code',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

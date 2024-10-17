@@ -58,7 +58,7 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
                         top: 100,
                         left: 25,
                         child: Text(
-                          "Change Password",
+                          "Reset Password",
                           style: TextStyle(
                             fontSize: 35,
                             fontWeight: FontWeight.bold,
@@ -70,7 +70,7 @@ class _ChangePasswordAccountState extends State<ChangePasswordAccount>
                         top: 150,
                         left: 25,
                         child: Text(
-                          "Enter your new password",
+                          "Reset authentication details",
                           softWrap: true,
                           maxLines: 2,
                           style: TextStyle(
