@@ -98,10 +98,6 @@ class _VerifyResetPasswordState extends State<VerifyResetPassword>
 
   @override
   Widget build(BuildContext context) {
-    var screenWidth = MediaQuery.of(context).size.width;
-
-    double copyrightFontSize = screenWidth < 400 ? 12 : 14;
-
     return Scaffold(
       body: SingleChildScrollView(
         child: AnimatedPadding(
