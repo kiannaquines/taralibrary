@@ -256,7 +256,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       )
                                     : CircleAvatar(
                                         radius:
-                                            50, // Increase the radius for a bigger circular image
+                                            50,
                                         backgroundColor: AppColors.primary,
                                         child: SvgPicture.asset(
                                           'assets/images/user.png',

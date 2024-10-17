@@ -138,28 +138,11 @@ class _InfoScreenState extends State<InfoScreen>
     }
   }
 
-  List<ChartData> initializeData() {
-    List<ChartData> timeSlots = [];
-    DateTime startTime = DateTime(2024, 1, 1, 7, 0);
-    DateTime endTime = DateTime(2024, 1, 1, 16, 30);
-
-    while (startTime.isBefore(endTime) || startTime.isAtSameMomentAs(endTime)) {
-      String formattedTime =
-          "${startTime.hour.toString().padLeft(2, '0')}:${startTime.minute.toString().padLeft(2, '0')}";
-      timeSlots.add(ChartData(time: formattedTime, count: 0));
-      startTime = startTime.add(const Duration(minutes: 10));
-    }
-
-    return timeSlots;
-  }
-
   @override
   Widget build(BuildContext context) {
     if (zoneInfo == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-
-    List<Object> chartData = zoneInfo?.chartData ?? initializeData();
 
     return RefreshIndicator(
       onRefresh: _refreshData,
