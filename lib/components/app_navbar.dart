@@ -1,7 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:taralibrary/model/profile_model.dart';
 import 'package:taralibrary/screens/login.dart';
+import 'package:taralibrary/service/profile_service.dart';
+import 'package:taralibrary/service/service_app.dart';
 import 'package:taralibrary/utils/colors.dart';
+import 'package:taralibrary/utils/constants.dart';
 import 'package:taralibrary/utils/storage.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -25,6 +30,65 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 
 class _CustomAppBarState extends State<CustomAppBar> {
   Storage storage = Storage();
+  MyStorage myStorage = MyStorage();
+  ApiSettings apiSettings = ApiSettings();
+  final ProfileService _profileService = ProfileService();
+  ProfileModel? _profile;
+  String get staticDir => ApiSettings.getStaticFileDir();
+
+  Future<String?> _loadAccessToken() async {
+    Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
+    String accessToken = tokenData['accessToken'];
+
+    Future<void> handleApiResponse<T>(
+        Future<ApiResponse<T>> Function(String) apiCall,
+        void Function(T) updateState) async {
+      ApiResponse<T> response = await apiCall(accessToken);
+
+      switch (response.result) {
+        case ApiResult.success:
+          updateState(response.data!);
+          break;
+        case ApiResult.loginRequired:
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(response.errorMessage ?? 'An error occurred'),
+              showCloseIcon: true,
+              duration: const Duration(seconds: 5),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+          );
+          break;
+        case ApiResult.error:
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(response.errorMessage ?? 'An error occurred'),
+              showCloseIcon: true,
+              duration: const Duration(seconds: 5),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+          break;
+      }
+    }
+
+    await handleApiResponse<ProfileModel>(
+      _profileService.getProfile,
+      (data) => setState(() => _profile = data),
+    );
+
+    return accessToken;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAccessToken();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,18 +133,40 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       _openLoggedoutDialog(context);
                     },
                     child: Container(
+                      width: 55,
+                      height: 55,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
+                        color: AppColors.primary.withOpacity(0.2),
                         border: Border.all(
-                          color: AppColors.primary,
+                          color: AppColors.primary.withOpacity(0.1),
                           width: 3.0,
                         ),
                       ),
-                      child: CircleAvatar(
-                        radius: 22.0,
-                        backgroundImage: AssetImage(widget.avatarImagePath),
-                        backgroundColor: Colors.transparent,
-                      ),
+                      child: _profile != null &&
+                              _profile!.profile != null &&
+                              _profile!.profile!.isNotEmpty
+                          ? ClipOval(
+                              child: CachedNetworkImage(
+                                imageUrl: '$staticDir${_profile!.profile!}',
+                                placeholder: (context, url) =>
+                                    const CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    Image.asset('assets/images/user.png'),
+                                height: 55,
+                                width: 55,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : CircleAvatar(
+                              radius: 60,
+                              backgroundColor: AppColors.primary.withOpacity(0.2),
+                              child: SvgPicture.asset(
+                                'assets/images/user.png',
+                                width: 30,
+                                height: 30,
+                              ),
+                            ),
                     ),
                   ),
                 ],
@@ -142,12 +228,14 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         child: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text('Sign out'),
+                            Text(
+                              'Sign out',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                             SizedBox(
                               width: 5,
-                            ),
-                            Icon(
-                              FeatherIcons.logOut,
                             ),
                           ],
                         ),

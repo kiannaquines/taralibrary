@@ -116,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen>
                         top: 100,
                         left: 25,
                         child: Text(
-                          "Sign In",
+                          "TaraLibrary",
                           style: TextStyle(
                             fontSize: 35,
                             fontWeight: FontWeight.bold,
@@ -128,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen>
                         top: 150,
                         left: 25,
                         child: Text(
-                          "Start using the app by signing in with\nyour username.",
+                          "Start by using signing in your account.",
                           softWrap: true,
                           maxLines: 2,
                           style: TextStyle(

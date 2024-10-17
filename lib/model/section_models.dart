@@ -1,9 +1,30 @@
+class Categories {
+  final String categoryName;
+
+  Categories({
+    required this.categoryName,
+  });
+
+  factory Categories.fromJson(Map<String, dynamic> json) {
+    return Categories(
+      categoryName: json['category_name'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'category_name': categoryName,
+    };
+  }
+}
+
 class AllSectionModel {
   final int zoneID;
   final String image;
   final String title;
   final String description;
   final double rating;
+  final List<Categories> categories;
 
   AllSectionModel({
     required this.zoneID,
@@ -11,6 +32,7 @@ class AllSectionModel {
     required this.title,
     required this.description,
     required this.rating,
+    required this.categories,
   });
 
   factory AllSectionModel.fromJson(Map<String, dynamic> json) {
@@ -19,7 +41,14 @@ class AllSectionModel {
       image: json['image_url'],
       title: json['section_name'],
       description: json['description'],
-      rating: (json['total_rating']).toDouble(),
+      rating: (json['total_rating'] as num).toDouble(),
+      categories: json['categories'] != null
+          ? List<Categories>.from(
+              json['categories'].map(
+                (item) => Categories.fromJson(item),
+              ),
+            )
+          : [],
     );
   }
 
@@ -30,6 +59,7 @@ class AllSectionModel {
       'section_name': title,
       'description': description,
       'total_rating': rating,
+      'categories': categories.map((category) => category.toJson()).toList(),
     };
   }
 }

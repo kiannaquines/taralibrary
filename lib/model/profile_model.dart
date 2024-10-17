@@ -52,6 +52,7 @@ class ProfileModel {
   final String firstName;
   final String lastName;
   final String email;
+  final String? profile;
 
   ProfileModel({
     required this.id,
@@ -59,12 +60,50 @@ class ProfileModel {
     required this.firstName,
     required this.lastName,
     required this.email,
+    this.profile,
   });
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
     return ProfileModel(
+      id: json['id'] as int,
+      username: json['username'] as String,
+      firstName: json['first_name'] as String,
+      lastName: json['last_name'] as String,
+      email: json['email'] as String,
+      profile: json['profile_img'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'username': username,
+      'first_name': firstName,
+      'last_name': lastName,
+      'email': email,
+      'profile_img': profile,
+    };
+  }
+}
+
+
+
+class UpdateProfileModel {
+  final int id;
+  final String firstName;
+  final String lastName;
+  final String email;
+
+  UpdateProfileModel({
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+  });
+
+  factory UpdateProfileModel.fromJson(Map<String, dynamic> json) {
+    return UpdateProfileModel(
       id: json['id'],
-      username: json['username'],
       firstName: json['first_name'],
       lastName: json['last_name'],
       email: json['email'],
@@ -74,7 +113,6 @@ class ProfileModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'username': username,
       'first_name': firstName,
       'last_name': lastName,
       'email': email,

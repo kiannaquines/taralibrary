@@ -13,16 +13,15 @@
 10. SEARCH - DONE
 11. FILTER - (FRONTEND) DONE
 12. CHANGE PASSWORD - (FRONTEND) DONE
-
+13. Add Comment - DONE
+14. Pull Refresh - DONE
+15. Filter by Category - DONE
+16. Added Upload Image - DONE
 
 ### NEW TODO (BACKEND)
 
-1. Add Comment - NOT STARTED
-2. Pull Refresh - NOT STARTED
-3. Filter by Category - NOT STARTED
-4. Edit Profile - NOT STARTED
+4. Edit Profile - IN PROGRESS
 5. Change Password- NOT STARTED
 6. Message - NOT STARTED
-7. Profile Image- NOT STARTED
-8. Push Notification - NOT STARTED
-9. Forgot Password - NOT STARTED
+7. Push Notification - NOT STARTED
+8. Forgot Password - NOT STARTED

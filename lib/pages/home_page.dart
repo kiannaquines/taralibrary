@@ -95,358 +95,166 @@ class _HomePageState extends State<HomePage> {
     return accessToken;
   }
 
+  Future<void> _refreshData() async {
+    String? accessToken = await _loadAccessToken();
+    if (accessToken != null) {
+      await _loadAccessToken();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        SliverToBoxAdapter(
-          child: Container(
-            padding:
-                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text(
-                  'Popular Sections',
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.black,
+    return RefreshIndicator(
+      onRefresh: _refreshData,
+      child: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Container(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Popular Sections',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.black,
+                    ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SectionScreen(),
-                      ),
-                    );
-                  },
-                  child: const Row(
-                    children: [
-                      Text(
-                        'See more',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                      SizedBox(width: 5),
-                      Icon(
-                        Icons.arrow_forward,
-                        color: AppColors.primary,
-                        size: 16,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        SliverToBoxAdapter(
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10.0,
-              horizontal: 20.0,
-            ),
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.25,
-              child: GridView.builder(
-                scrollDirection: Axis.horizontal,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  childAspectRatio: 2 / 2,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
-                ),
-                itemCount: _popularZones.length,
-                itemBuilder: (BuildContext ctx, index) {
-                  final zone = _popularZones[index];
-
-                  return GestureDetector(
+                  GestureDetector(
                     onTap: () {
-                      Navigator.pushReplacement(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => InfoScreen(
-                            zoneID: zone.zoneID,
-                          ),
-                          maintainState: false,
+                          builder: (context) => const SectionScreen(),
                         ),
                       );
                     },
-                    child: Stack(
+                    child: const Row(
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                          child: Container(
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: CachedNetworkImage(
-                              imageUrl: '$staticDir${zone.image}',
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              height: double.infinity,
-                              placeholder: (context, url) => const Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
-                            ),
+                        Text(
+                          'See more',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
                           ),
                         ),
-                        Positioned(
-                          bottom: 35,
-                          left: 5,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(25),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0,
-                                vertical: 4.0,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.imagebackgroundOverlay
-                                    .withOpacity(0.7),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Text(
-                                zone.title,
-                                style: const TextStyle(
-                                  color: AppColors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 5,
-                          left: 5,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(25),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0,
-                                vertical: 4.0,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.imagebackgroundOverlay
-                                    .withOpacity(0.7),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.star,
-                                    color: Colors.yellow,
-                                    size: 15,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    '${zone.rating} Rating',
-                                    style: const TextStyle(
-                                      color: AppColors.white,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                        SizedBox(width: 5),
+                        Icon(
+                          Icons.arrow_forward,
+                          color: AppColors.primary,
+                          size: 16,
                         ),
                       ],
                     ),
-                  );
-                },
+                  ),
+                ],
               ),
             ),
           ),
-        ),
-        SliverToBoxAdapter(
-          child: Container(
-            padding:
-                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-            child: const Text(
-              'Most Visited Sections',
-              style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-                color: AppColors.black,
+          SliverToBoxAdapter(
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                vertical: 10.0,
+                horizontal: 20.0,
               ),
-            ),
-          ),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
-          sliver: SliverGrid(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 2 / 3,
-              crossAxisSpacing: 20,
-              mainAxisSpacing: 20,
-            ),
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                double screenWidth = MediaQuery.of(context).size.width;
-                double baseFontSize = screenWidth * 0.03;
-                RecommendedModel recommenedZone = _recommendedZones[index];
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.25,
+                child: GridView.builder(
+                  scrollDirection: Axis.horizontal,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 1,
+                    childAspectRatio: 2 / 2,
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 20,
+                  ),
+                  itemCount: _popularZones.length,
+                  itemBuilder: (BuildContext ctx, index) {
+                    final zone = _popularZones[index];
 
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const InfoScreen(zoneID: 1),
-                        maintainState: false,
-                      ),
-                    );
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.white,
-                      borderRadius: BorderRadius.circular(15),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withOpacity(0.1),
-                          blurRadius: 8,
-                          spreadRadius: 2,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          flex: 5,
-                          child: Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: CachedNetworkImage(
-                                  imageUrl: '$staticDir${recommenedZone.image}',
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  placeholder: (context, url) => const Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 5,
-                                left: 5,
-                                child: Builder(
-                                  builder: (context) {
-                                    final text = recommenedZone.status;
-                                    final textStyle = TextStyle(
-                                      fontSize: baseFontSize,
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.white,
-                                    );
-
-                                    final textPainter = TextPainter(
-                                      text: TextSpan(
-                                          text: text, style: textStyle),
-                                      textDirection: TextDirection.ltr,
-                                      maxLines: 1,
-                                    )..layout();
-
-                                    double textWidth = textPainter.size.width;
-
-                                    double iconWidth = 10;
-                                    double iconPadding = 5;
-
-                                    double maxWidth =
-                                        textWidth + iconWidth + iconPadding <
-                                                130
-                                            ? textWidth +
-                                                iconWidth +
-                                                iconPadding +
-                                                20
-                                            : 130;
-
-                                    return ConstrainedBox(
-                                      constraints: BoxConstraints(
-                                        maxWidth: maxWidth,
-                                      ),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: AppColors
-                                              .imagebackgroundOverlay
-                                              .withOpacity(0.7),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 4,
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            text,
-                                            style: textStyle,
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => InfoScreen(
+                              zoneID: zone.zoneID,
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: Text(
-                                    recommenedZone.title,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: baseFontSize,
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.black,
-                                    ),
-                                    textAlign: TextAlign.left,
-                                  ),
+                            maintainState: false,
+                          ),
+                        );
+                      },
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: AppColors.primary.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: CachedNetworkImage(
+                                imageUrl: '$staticDir${zone.image}',
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: double.infinity,
+                                placeholder: (context, url) => const Center(
+                                  child: CircularProgressIndicator(),
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  recommenedZone.description,
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 35,
+                            left: 5,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(25),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0,
+                                  vertical: 4.0,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.imagebackgroundOverlay
+                                      .withOpacity(0.7),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  zone.title,
+                                  style: const TextStyle(
+                                    color: AppColors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: baseFontSize * 0.9,
-                                    color: AppColors.dark,
-                                  ),
-                                  textAlign: TextAlign.left,
                                 ),
-                                const SizedBox(height: 4),
-                                Row(
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 5,
+                            left: 5,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(25),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0,
+                                  vertical: 4.0,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.imagebackgroundOverlay
+                                      .withOpacity(0.7),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Row(
                                   children: [
                                     const Icon(
                                       Icons.star,
@@ -455,31 +263,240 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     const SizedBox(width: 5),
                                     Text(
-                                      recommenedZone.rating.toString(),
-                                      style: TextStyle(
-                                        fontSize: baseFontSize * 0.9,
-                                        color: AppColors.black,
+                                      '${zone.rating} Rating',
+                                      style: const TextStyle(
+                                        color: AppColors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
                                       ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+              child: const Text(
+                'Most Visited Sections',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.black,
+                ),
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
+            sliver: SliverGrid(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 2 / 3,
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  double screenWidth = MediaQuery.of(context).size.width;
+                  double baseFontSize = screenWidth * 0.03;
+                  RecommendedModel recommenedZone = _recommendedZones[index];
+
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => InfoScreen(
+                            zoneID: recommenedZone.zoneID,
+                          ),
+                          maintainState: false,
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withOpacity(0.1),
+                            blurRadius: 8,
+                            spreadRadius: 2,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: Stack(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        '$staticDir${recommenedZone.image}',
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    alignment: Alignment.center,
+                                    height: double.infinity,
+                                    placeholder: (context, url) => const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 5,
+                                  left: 5,
+                                  child: Builder(
+                                    builder: (context) {
+                                      final text = recommenedZone.status;
+                                      final textStyle = TextStyle(
+                                        fontSize: baseFontSize,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.white,
+                                      );
+
+                                      final textPainter = TextPainter(
+                                        text: TextSpan(
+                                            text: text, style: textStyle),
+                                        textDirection: TextDirection.ltr,
+                                        maxLines: 1,
+                                      )..layout();
+
+                                      double textWidth = textPainter.size.width;
+
+                                      double iconWidth = 10;
+                                      double iconPadding = 5;
+
+                                      double maxWidth =
+                                          textWidth + iconWidth + iconPadding <
+                                                  130
+                                              ? textWidth +
+                                                  iconWidth +
+                                                  iconPadding +
+                                                  20
+                                              : 130;
+
+                                      return ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                          maxWidth: maxWidth,
+                                        ),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: AppColors
+                                                .imagebackgroundOverlay
+                                                .withOpacity(0.7),
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              text,
+                                              style: textStyle,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                      ],
+                          Expanded(
+                            flex: 2,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: Text(
+                                      recommenedZone.title,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: baseFontSize,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.black,
+                                      ),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    recommenedZone.description,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: baseFontSize * 0.9,
+                                      color: AppColors.dark,
+                                    ),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.star,
+                                        color: Colors.yellow,
+                                        size: 15,
+                                      ),
+                                      const SizedBox(width: 5),
+                                      Text(
+                                        recommenedZone.rating.toString(),
+                                        style: TextStyle(
+                                          fontSize: baseFontSize * 0.9,
+                                          color: AppColors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
-              childCount: _recommendedZones.length,
+                  );
+                },
+                childCount: _recommendedZones.length,
+              ),
             ),
           ),
-        ),
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 15),
-        ),
-      ],
+          const SliverToBoxAdapter(
+            child: SizedBox(
+              height: 15,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

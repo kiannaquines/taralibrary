@@ -5,7 +5,6 @@ import 'package:taralibrary/screens/verification.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:taralibrary/model/auth_models.dart';
 import 'package:taralibrary/service/auth_service.dart';
-import 'package:ionicons/ionicons.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -116,7 +115,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                         top: 100,
                         left: 25,
                         child: Text(
-                          "Sign Up",
+                          "TaraLibrary",
                           style: TextStyle(
                             fontSize: 35,
                             fontWeight: FontWeight.bold,

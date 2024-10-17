@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:taralibrary/model/profile_model.dart';
 import 'package:taralibrary/screens/change_password_account.dart';
@@ -7,8 +10,10 @@ import 'package:taralibrary/service/profile_service.dart';
 import 'package:taralibrary/service/service_app.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:taralibrary/utils/constants.dart';
 import 'package:taralibrary/utils/storage.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -25,8 +30,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _firstName = TextEditingController();
   final TextEditingController _lastName = TextEditingController();
-
+  String get staticDir => ApiSettings.getStaticFileDir();
   MyStorage myStorage = MyStorage();
+  XFile? _image;
 
   Future<ProfileModel?> _loadAccessToken() async {
     Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
@@ -39,23 +45,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            response.errorMessage ?? 'An error occurred',
-          ),
+          content: Text(response.errorMessage ?? 'An error occurred'),
           showCloseIcon: true,
           duration: const Duration(seconds: 5),
           behavior: SnackBarBehavior.floating,
         ),
       );
       if (response.result == ApiResult.loginRequired) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(response.errorMessage ?? 'An error occurred'),
-            showCloseIcon: true,
-            duration: const Duration(seconds: 5),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const LoginScreen()),
         );
@@ -71,6 +67,62 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _firstName.dispose();
     _lastName.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImage() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _image = image;
+    });
+  }
+
+  Future<void> updateProfileData() async {
+    Map<String, dynamic> tokenData = await myStorage.fetchAccessToken();
+    String accessToken = tokenData['accessToken'];
+
+    int userId = _profile!.id;
+    try {
+      final updateProfileModel = UpdateProfileModel(
+        id: _profile!.id,
+        email: _email.text,
+        firstName: _firstName.text,
+        lastName: _lastName.text,
+      );
+
+      final response = await _profileService.updateProfileWithImage(
+        userId,
+        accessToken,
+        updateProfileModel,
+        _image,
+      );
+
+      if (response.result == ApiResult.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Profile updated successfully'),
+            showCloseIcon: true,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to update profile: ${response.errorMessage}'),
+            showCloseIcon: true,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('An error occurred: ${e.toString()}'),
+          showCloseIcon: true,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   @override
@@ -167,33 +219,76 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 ),
                               ],
                             ),
-                            child: const CircleAvatar(
-                              radius: 60,
-                              backgroundImage:
-                                  AssetImage('assets/images/avatar-1.jpg'),
-                            ),
+                            child: _image != null
+                                ? CircleAvatar(
+                                    radius: 50,
+                                    backgroundColor: Colors.transparent,
+                                    child: ClipOval(
+                                      child: Image.file(
+                                        File(_image!.path),
+                                        width: 100,
+                                        height: 100,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  )
+                                : _profile != null &&
+                                        _profile!.profile != null &&
+                                        _profile!.profile!.isNotEmpty
+                                    ? CircleAvatar(
+                                        radius: 50,
+                                        backgroundColor: Colors.transparent,
+                                        child: ClipOval(
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                                '$staticDir${_profile!.profile!}',
+                                            placeholder: (context, url) =>
+                                                const CircularProgressIndicator(),
+                                            errorWidget: (context, url,
+                                                    error) =>
+                                                Image.asset(
+                                                    'assets/images/user.png'),
+                                            width: 100,
+                                            height: 100,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      )
+                                    : CircleAvatar(
+                                        radius:
+                                            50, // Increase the radius for a bigger circular image
+                                        backgroundColor: AppColors.primary,
+                                        child: SvgPicture.asset(
+                                          'assets/images/user.png',
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                      ),
                           ),
                         ),
                         Positioned(
                           bottom: -5,
                           right: 150,
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.dark.withOpacity(0.1),
-                                  blurRadius: 2,
-                                  spreadRadius: 1,
-                                ),
-                              ],
-                            ),
-                            child: const Icon(
-                              Icons.camera_alt,
-                              size: 20,
-                              color: AppColors.primary,
+                          child: GestureDetector(
+                            onTap: _pickImage,
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.dark.withOpacity(0.1),
+                                    blurRadius: 2,
+                                    spreadRadius: 1,
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.camera_alt,
+                                size: 20,
+                                color: AppColors.primary,
+                              ),
                             ),
                           ),
                         ),
@@ -230,22 +325,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             color: AppColors.dark.withOpacity(0.7),
                           ),
                         ),
-                        const SizedBox(
-                          height: 20,
-                        ),
+                        const SizedBox(height: 20),
                         TextField(
+                          readOnly: true,
                           style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.dark.withOpacity(0.9),
-                              fontSize: 16),
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.dark.withOpacity(0.9),
+                            fontSize: 16,
+                          ),
                           controller: _username,
                           maxLines: 1,
                           decoration: InputDecoration(
-                            labelText: 'User Name',
+                            labelText: 'Username',
                             labelStyle: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.dark.withOpacity(0.9),
-                                fontSize: 16),
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.dark.withOpacity(0.9),
+                              fontSize: 16,
+                            ),
                             prefixIcon: const Icon(
                               FeatherIcons.user,
                               color: AppColors.primary,
@@ -266,19 +362,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         const SizedBox(height: 25),
                         TextField(
                           style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.dark.withOpacity(0.9),
-                              fontSize: 16),
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.dark.withOpacity(0.9),
+                            fontSize: 16,
+                          ),
                           controller: _firstName,
                           maxLines: 1,
                           decoration: InputDecoration(
                             labelText: 'First Name',
                             labelStyle: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.dark.withOpacity(0.9),
-                                fontSize: 16),
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.dark.withOpacity(0.9),
+                              fontSize: 16,
+                            ),
                             prefixIcon: const Icon(
-                              FeatherIcons.circle,
+                              FeatherIcons.user,
                               color: AppColors.primary,
                             ),
                             border: OutlineInputBorder(
@@ -297,19 +395,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         const SizedBox(height: 25),
                         TextField(
                           style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.dark.withOpacity(0.9),
-                              fontSize: 16),
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.dark.withOpacity(0.9),
+                            fontSize: 16,
+                          ),
                           controller: _lastName,
                           maxLines: 1,
                           decoration: InputDecoration(
                             labelText: 'Last Name',
                             labelStyle: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.dark.withOpacity(0.9),
-                                fontSize: 16),
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.dark.withOpacity(0.9),
+                              fontSize: 16,
+                            ),
                             prefixIcon: const Icon(
-                              FeatherIcons.circle,
+                              FeatherIcons.user,
                               color: AppColors.primary,
                             ),
                             border: OutlineInputBorder(
@@ -327,18 +427,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         const SizedBox(height: 25),
                         TextField(
+                          readOnly: true,
                           style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.dark.withOpacity(0.9),
-                              fontSize: 16),
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.dark.withOpacity(0.9),
+                            fontSize: 16,
+                          ),
                           controller: _email,
                           maxLines: 1,
                           decoration: InputDecoration(
-                            labelText: 'Email Address',
+                            labelText: 'Email',
                             labelStyle: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.dark.withOpacity(0.9),
-                                fontSize: 16),
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.dark.withOpacity(0.9),
+                              fontSize: 16,
+                            ),
                             prefixIcon: const Icon(
                               FeatherIcons.mail,
                               color: AppColors.primary,
@@ -357,65 +460,45 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                         ),
                         const SizedBox(height: 25),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              updateProfileData();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            child: const Text(
+                              'Update Profile',
+                              style: TextStyle(
+                                color: AppColors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 25),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const ProfileScreen(),
-                                maintainState: false,
+                                builder: (context) =>
+                                    const ChangePasswordAccount(),
                               ),
                             );
                           },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            foregroundColor: AppColors.white,
-                            shadowColor: Colors.transparent,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 14.0, horizontal: 32.0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                          ),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.save,
-                                color: AppColors.white,
-                              ),
-                              SizedBox(width: 8),
-                              Text(
-                                'Save Changes',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ChangePasswordAccount(),
-                                ),
-                              );
-                            },
-                            child: const Text(
-                              'Change Password',
-                              style: TextStyle(
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          child: const Text(
+                            'Change Password',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
