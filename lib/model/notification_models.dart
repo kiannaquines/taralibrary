@@ -1,5 +1,5 @@
 class ZoneData {
-  final int zone;
+  final String zone;
   final int estimatedCount;
   final DateTime firstSeen;
   final DateTime lastSeen;
@@ -15,7 +15,7 @@ class ZoneData {
 
   factory ZoneData.fromJson(Map<String, dynamic> json) {
     return ZoneData(
-      zone: json['zone'] as int,
+      zone: json['zone'] as String,
       estimatedCount: json['estimated_count'] as int,
       firstSeen: DateTime.parse(json['first_seen'] as String),
       lastSeen: DateTime.parse(json['last_seen'] as String),

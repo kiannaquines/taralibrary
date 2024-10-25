@@ -9,6 +9,7 @@ import 'package:taralibrary/utils/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:taralibrary/utils/storage.dart';
 import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/status.dart' as status;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -74,14 +75,23 @@ class _MyAppState extends State<MyApp> {
       },
       onError: (error) {
         debugPrint('WebSocket error: $error');
+        _startReconnectTimer(); // Start reconnect timer on error
       },
       onDone: () {
         debugPrint('WebSocket closed');
-        channel.sink.close();
+        _startReconnectTimer(); // Start reconnect timer on unexpected closure
       },
     );
 
     channel.sink.add('Hello from Flutter');
+  }
+
+  void _startReconnectTimer() {
+    Future.delayed(const Duration(seconds: 5), () {
+      if (channel.closeCode != status.goingAway) {
+        _initializeSocket(); // Reconnect if not closing intentionally
+      }
+    });
   }
 
   Future<Widget> _loadHomeWidget() async {
