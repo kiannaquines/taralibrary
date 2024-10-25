@@ -26,6 +26,8 @@ dependencies:
   flutter_feather_icons: ^2.0.0+1
   image_picker: ^1.1.2
   http_parser: ^4.0.2
+  permission_handler: ^11.3.1
+  web_socket_channel: ^3.0.1
 
 dev_dependencies:
   flutter_test:
@@ -65,11 +67,12 @@ flutter:
     - assets/icons/unlock.svg
     - assets/icons/building-solid.svg
     - assets/icons/building-outline.svg
+    - assets/icons/drawer-empty.svg
 
 
     - assets/images/avatar-1.jpg
+    - assets/images/empty-cart.png
     - assets/images/user.png
-    - assets/images/empty-box.png
     - assets/images/avatar-2.jpg
     - assets/images/avatar-3.jpg
     - assets/images/1.jfif

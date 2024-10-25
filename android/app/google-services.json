@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "888921039056",
+    "project_id": "crowdmonitoring-5c3af",
+    "storage_bucket": "crowdmonitoring-5c3af.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:888921039056:android:d12fdb6f8574f10b01fed5",
+        "android_client_info": {
+          "package_name": "com.example.taralibrary"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFdomWffLC_cAlKsa9pqnNmTTgJrqD7t0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

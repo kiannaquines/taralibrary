@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/widgets.dart';
 import 'package:taralibrary/model/info_model.dart';
 import 'package:taralibrary/model/profile_model.dart';
 import 'package:taralibrary/screens/home.dart';
@@ -549,25 +548,24 @@ class _InfoScreenState extends State<InfoScreen>
                             ),
                           ),
                         )
-                      : SizedBox(
+                      : const SizedBox(
                           width: double.infinity,
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Image.asset(
-                                'assets/images/empty-box.png',
-                                width: 70,
-                                height: 70,
+                              Icon(
+                                Icons.error,
+                                color: AppColors.primary,
                               ),
-                              const Text(
+                              Text(
                                 'Empty Chart Data',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  color: AppColors.dark,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.grey,
+                                  fontSize: 18,
                                 ),
                               ),
                             ],
@@ -622,16 +620,15 @@ class _InfoScreenState extends State<InfoScreen>
                         ),
                         width: MediaQuery.of(context).size.width,
                         padding: const EdgeInsets.all(10.0),
-                        child: Column(
+                        child: const Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Image.asset(
-                              'assets/images/empty-box.png',
-                              width: 70,
-                              height: 70,
+                            Icon(
+                              Icons.error,
+                              color: AppColors.primary,
                             ),
-                            const Text(
+                            Text(
                               'Share your thoughts',
                               textAlign: TextAlign.center,
                               style: TextStyle(

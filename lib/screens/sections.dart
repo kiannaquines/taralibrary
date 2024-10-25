@@ -6,7 +6,6 @@ import 'package:taralibrary/screens/home.dart';
 import 'package:taralibrary/screens/login.dart';
 import 'package:taralibrary/screens/profile.dart';
 import 'package:taralibrary/service/home_service.dart';
-import 'package:taralibrary/service/notification_service.dart';
 import 'package:taralibrary/service/section_service.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -138,10 +137,6 @@ class _SectionScreenState extends State<SectionScreen> {
       onRefresh: _refreshData,
       child: Scaffold(
         appBar: AppBar(
-          leading: const Icon(
-            FeatherIcons.menu,
-            color: AppColors.primary,
-          ),
           title: const Text(
             'Library Facilities',
             style: TextStyle(
@@ -150,21 +145,6 @@ class _SectionScreenState extends State<SectionScreen> {
               color: AppColors.primary,
             ),
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(
-                FeatherIcons.bell,
-                color: AppColors.primary,
-              ),
-              onPressed: () {
-                NotificationService().showNotification(
-                  id: 1,
-                  title: 'Crowd Density Alert',
-                  body: 'The Reference Section has 34 visitors as of 9:43 AM.',
-                );
-              },
-            ),
-          ],
         ),
         body: SafeArea(
           child: CustomScrollView(
@@ -185,7 +165,7 @@ class _SectionScreenState extends State<SectionScreen> {
                         _filterSections(value);
                       },
                       decoration: InputDecoration(
-                        hintText: 'Search library section',
+                        hintText: 'Search section',
                         hintStyle: TextStyle(
                             fontWeight: FontWeight.w500,
                             color: AppColors.dark.withOpacity(0.9),
