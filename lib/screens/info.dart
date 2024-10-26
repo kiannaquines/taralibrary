@@ -768,7 +768,7 @@ class _InfoScreenState extends State<InfoScreen>
               children: [
                 TextField(
                   style: TextStyle(
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.bold,
                       color: AppColors.dark.withOpacity(0.9),
                       fontSize: 16),
                   controller: commentController,
@@ -861,7 +861,12 @@ class _InfoScreenState extends State<InfoScreen>
                       borderRadius: BorderRadius.circular(25),
                     ),
                   ),
-                  child: const Text('Comment'),
+                  child: const Text(
+                    'Comment',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ],
             ),

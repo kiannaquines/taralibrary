@@ -139,6 +139,7 @@ class _SectionScreenState extends State<SectionScreen> {
       onRefresh: _refreshData,
       child: Scaffold(
         appBar: AppBar(
+          leading: null,
           title: const Text(
             'Library Facilities',
             style: TextStyle(
