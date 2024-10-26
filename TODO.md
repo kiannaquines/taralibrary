@@ -21,8 +21,9 @@
 18. Forgot Password - DONE
 19. Change Password- DONE
 20. Push Notification - DONE
+21. Comment Picture (Info) - DONE
+22. Section State (Spacious, Congested, Moderate) - DONE
+23. Call API for Day - DONE
 
 ### NEW TODO (BACKEND)
 
-1. Comment Picture (Info)
-2. 

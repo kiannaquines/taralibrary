@@ -75,21 +75,24 @@ class _CommentWidgetState extends State<CommentWidget> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: List.generate(5, (index) {
-                        return Icon(
-                          index < widget.rating &&
-                                  widget.rating >= 1 &&
-                                  widget.rating <= 5
-                              ? Icons.star
-                              : Icons.star_border,
-                          color: index < widget.rating &&
-                                  widget.rating >= 1 &&
-                                  widget.rating <= 5
-                              ? Colors.yellow
-                              : Colors.grey,
-                          size: 16,
-                        );
-                      }),
+                      children: List.generate(
+                        5,
+                        (index) {
+                          return Icon(
+                            index < widget.rating &&
+                                    widget.rating >= 1 &&
+                                    widget.rating <= 5
+                                ? Icons.star
+                                : Icons.star_border,
+                            color: index < widget.rating &&
+                                    widget.rating >= 1 &&
+                                    widget.rating <= 5
+                                ? Colors.yellow
+                                : Colors.grey,
+                            size: 16,
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),

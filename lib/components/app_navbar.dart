@@ -85,6 +85,23 @@ class _CustomAppBarState extends State<CustomAppBar> {
     return accessToken;
   }
 
+  String getGreetingsMessage() {
+    DateTime now = DateTime.now();
+    int hour = now.hour;
+
+    if (hour >= 5 && hour < 12) {
+      return 'Good Morning 🥳';
+    } else if (hour >= 12 && hour < 17) {
+      return 'Good Noon 🌅';
+    } else if (hour >= 17 && hour < 20) {
+      return 'Good Afternoon ☀️';
+    } else if (hour >= 20 && hour < 24) {
+      return 'Good Evening 🌕';
+    } else {
+      return 'Good Night 🌙';
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -93,6 +110,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   @override
   Widget build(BuildContext context) {
+    String greeting = getGreetingsMessage();
+
     return AppBar(
       backgroundColor: AppColors.white,
       automaticallyImplyLeading: false,
@@ -111,10 +130,11 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.greetingMessage,
+                          greeting,
                           style: const TextStyle(
-                            fontSize: 13.0,
+                            fontSize: 14.0,
                             color: AppColors.dark,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                         const SizedBox(height: 2.0),
@@ -134,8 +154,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       _openLoggedoutDialog(context);
                     },
                     child: Container(
-                      width: 55,
-                      height: 55,
+                      width: 50,
+                      height: 50,
                       decoration: const BoxDecoration(
                         shape: BoxShape.rectangle,
                       ),
@@ -143,7 +163,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                               _profile!.profile != null &&
                               _profile!.profile!.isNotEmpty
                           ? ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(10),
                               child: CachedNetworkImage(
                                 imageUrl: '$staticDir${_profile!.profile!}',
                                 placeholder: (context, url) =>
@@ -161,11 +181,12 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                     Image.asset(
                                   'assets/images/user.png',
                                 ),
-                                height: 55,
-                                width: 55,
+                                height: 50,
+                                width: 50,
                                 fit: BoxFit.cover,
                               ),
-                            ) : const SizedBox.shrink(),
+                            )
+                          : const SizedBox.shrink(),
                     ),
                   ),
                 ],
@@ -200,10 +221,15 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const Text(
+                  const SizedBox(height: 10),
+                  Text(
                     'You are about to leave this page.',
-                    style: TextStyle(fontSize: 15),
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.dark.withOpacity(0.7),
+                    ),
                   ),
                   const SizedBox(height: 20),
                   Row(
@@ -250,6 +276,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           'Cancel',
                           style: TextStyle(
                             fontSize: 15,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
