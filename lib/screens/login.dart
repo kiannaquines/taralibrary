@@ -124,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen>
                         top: 150,
                         left: 25,
                         child: Text(
-                          "Start by using signing in your\naccount.",
+                          "Start by signing in your\naccount.",
                           softWrap: true,
                           maxLines: 2,
                           style: TextStyle(
