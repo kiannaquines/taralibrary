@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:taralibrary/utils/constants.dart';
+import 'package:shimmer/shimmer.dart';
 
-class CommentWidget extends StatelessWidget {
+class CommentWidget extends StatefulWidget {
   final String userName;
   final String userProfile;
   final String commentDate;
@@ -8,13 +11,20 @@ class CommentWidget extends StatelessWidget {
   final int rating;
 
   const CommentWidget({
-    Key? key,
+    super.key,
     required this.userName,
     required this.userProfile,
     required this.commentDate,
     required this.commentText,
     required this.rating,
-  }) : super(key: key);
+  });
+
+  @override
+  State<CommentWidget> createState() => _CommentWidgetState();
+}
+
+class _CommentWidgetState extends State<CommentWidget> {
+  String get staticDir => ApiSettings.getStaticFileDir();
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +33,26 @@ class CommentWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(
-            backgroundImage: AssetImage(userProfile),
-            radius: 20,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: CachedNetworkImage(
+              fit: BoxFit.cover,
+              imageUrl: '$staticDir${widget.userProfile}',
+              width: 40,
+              placeholder: (context, url) => Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+              ),
+              errorWidget: (context, url, error) => const Center(
+                child: Icon(Icons.error),
+              ),
+            ),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -38,7 +65,7 @@ class CommentWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      userName,
+                      widget.userName,
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -50,10 +77,14 @@ class CommentWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: List.generate(5, (index) {
                         return Icon(
-                          index < rating && rating >= 1 && rating <= 5
+                          index < widget.rating &&
+                                  widget.rating >= 1 &&
+                                  widget.rating <= 5
                               ? Icons.star
                               : Icons.star_border,
-                          color: index < rating && rating >= 1 && rating <= 5
+                          color: index < widget.rating &&
+                                  widget.rating >= 1 &&
+                                  widget.rating <= 5
                               ? Colors.yellow
                               : Colors.grey,
                           size: 16,
@@ -65,9 +96,9 @@ class CommentWidget extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      commentDate,
+                      widget.commentDate,
                       style: const TextStyle(
-                        fontSize: 12,
+                        fontSize: 13,
                         color: Colors.grey,
                       ),
                     ),
@@ -75,7 +106,7 @@ class CommentWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  commentText,
+                  widget.commentText,
                   style: const TextStyle(fontSize: 14),
                 ),
               ],

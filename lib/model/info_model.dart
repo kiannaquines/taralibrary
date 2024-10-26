@@ -53,8 +53,9 @@ class CommentModel {
   final String lastName;
   final int rating;
   final String comment;
-  final DateTime dateAdded;
-  final DateTime updateDate;
+  final String dateAdded;
+  final String updateDate;
+  final String profileImg;
 
   CommentModel({
     required this.commentID,
@@ -65,6 +66,7 @@ class CommentModel {
     required this.comment,
     required this.dateAdded,
     required this.updateDate,
+    required this.profileImg,
   });
 
   factory CommentModel.fromJson(Map<String, dynamic> json) {
@@ -75,8 +77,9 @@ class CommentModel {
       lastName: json['last_name'],
       rating: json['rating'],
       comment: json['comment'],
-      dateAdded: DateTime.parse(json['date_added']),
-      updateDate: DateTime.parse(json['update_date']),
+      profileImg: json['profile_img'],
+      dateAdded: json['date_added'],
+      updateDate: json['update_date'],
     );
   }
 
@@ -88,8 +91,9 @@ class CommentModel {
       'last_name': lastName,
       'rating': rating,
       'comment': comment,
-      'date_added': dateAdded.toIso8601String(),
-      'update_date': updateDate.toIso8601String(),
+      'profile_img': profileImg,
+      'date_added': dateAdded,
+      'update_date': updateDate,
     };
   }
 }

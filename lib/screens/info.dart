@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:taralibrary/model/info_model.dart';
 import 'package:taralibrary/model/profile_model.dart';
 import 'package:taralibrary/screens/home.dart';
@@ -184,8 +185,16 @@ class _InfoScreenState extends State<InfoScreen>
                                         width:
                                             MediaQuery.of(context).size.width,
                                         placeholder: (context, url) =>
-                                            const Center(
-                                          child: CircularProgressIndicator(),
+                                            Shimmer.fromColors(
+                                          baseColor: Colors.grey[300]!,
+                                          highlightColor: Colors.grey[100]!,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                            ),
+                                          ),
                                         ),
                                         errorWidget: (context, url, error) =>
                                             const Center(
@@ -605,7 +614,7 @@ class _InfoScreenState extends State<InfoScreen>
                       ...zoneInfo!.comments.map((comment) {
                         return CommentWidget(
                           userName: '${comment.firstName} ${comment.lastName}',
-                          userProfile: 'assets/images/avatar-1.jpg',
+                          userProfile: comment.profileImg,
                           commentDate: comment.dateAdded.toString(),
                           commentText: comment.comment,
                           rating: comment.rating,
