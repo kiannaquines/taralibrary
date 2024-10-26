@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:taralibrary/utils/storage.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
+import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +26,14 @@ void main() async {
   await Permission.mediaLibrary.request();
 
   NotificationService().initNotification();
+
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+    [
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ],
+  );
 
   runApp(const MyApp());
 }
