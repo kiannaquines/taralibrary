@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:taralibrary/model/profile_model.dart';
 import 'package:taralibrary/screens/login.dart';
 import 'package:taralibrary/service/profile_service.dart';

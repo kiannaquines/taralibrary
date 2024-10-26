@@ -142,7 +142,7 @@ class _SectionScreenState extends State<SectionScreen> {
           title: const Text(
             'Library Facilities',
             style: TextStyle(
-              fontSize: 20.0,
+              fontSize: 23.0,
               fontWeight: FontWeight.bold,
               color: AppColors.primary,
             ),
@@ -169,7 +169,7 @@ class _SectionScreenState extends State<SectionScreen> {
                       decoration: InputDecoration(
                         hintText: 'Search section',
                         hintStyle: TextStyle(
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w600,
                             color: AppColors.dark.withOpacity(0.9),
                             fontSize: 16),
                         fillColor: AppColors.searchBarColor.withOpacity(0.1),
