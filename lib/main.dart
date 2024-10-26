@@ -13,14 +13,17 @@ import 'package:web_socket_channel/status.dart' as status;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await Permission.camera.request();
   await Permission.storage.request();
   await Permission.location.request();
   await Permission.notification.request();
   await Permission.criticalAlerts.request();
   await Permission.storage.request();
-  
+  await Permission.audio.request();
+  await Permission.nearbyWifiDevices.request();
+  await Permission.mediaLibrary.request();
+
   NotificationService().initNotification();
 
   runApp(const MyApp());
@@ -42,12 +45,16 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _initializeSocket();
-
+    NotificationService().showNotification(
+      id: 2,
+      title: 'TaraLibrary',
+      body: 'Hey there welcome to taralibrary mobile app.',
+    );
     homeWidgetFuture = _loadHomeWidget();
   }
 
   void _initializeSocket() {
-    channel = IOWebSocketChannel.connect('ws://10.0.0.169:6789');
+    channel = IOWebSocketChannel.connect('ws://10.0.0.135:6789');
 
     channel.stream.listen(
       (message) {
@@ -56,40 +63,35 @@ class _MyAppState extends State<MyApp> {
             try {
               Map<String, dynamic> jsonData = jsonDecode(message);
               ZoneData zoneData = ZoneData.fromJson(jsonData);
-
-              debugPrint('Received ZoneData: $zoneData');
-
               NotificationService().showNotification(
                 id: 1,
                 title: 'Crowd Density Alert',
                 body:
-                    'Zone ${zoneData.zone} has ${zoneData.estimatedCount} detected people.',
+                    'Today ${zoneData.zone} has ${zoneData.estimatedCount} detected people.',
               );
             } catch (e) {
               debugPrint('Error parsing message: $e');
             }
-          } else {
-            debugPrint('Received ping from server');
           }
         }
       },
       onError: (error) {
         debugPrint('WebSocket error: $error');
-        _startReconnectTimer(); // Start reconnect timer on error
+        _startReconnectTimer();
       },
       onDone: () {
         debugPrint('WebSocket closed');
-        _startReconnectTimer(); // Start reconnect timer on unexpected closure
+        _startReconnectTimer();
       },
     );
 
-    channel.sink.add('Hello from Flutter');
+    channel.sink.add('pong');
   }
 
   void _startReconnectTimer() {
     Future.delayed(const Duration(seconds: 5), () {
       if (channel.closeCode != status.goingAway) {
-        _initializeSocket(); // Reconnect if not closing intentionally
+        _initializeSocket();
       }
     });
   }
@@ -135,7 +137,11 @@ class _MyAppState extends State<MyApp> {
         future: homeWidgetFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Material(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
           } else if (snapshot.hasError) {
             return const LoginScreen();
           } else {

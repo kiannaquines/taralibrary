@@ -8,13 +8,13 @@ class CommentWidget extends StatelessWidget {
   final int rating;
 
   const CommentWidget({
-    super.key,
+    Key? key,
     required this.userName,
     required this.userProfile,
     required this.commentDate,
     required this.commentText,
     required this.rating,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,16 +33,36 @@ class CommentWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(
-                  userName,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      userName,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: List.generate(5, (index) {
+                        return Icon(
+                          index < rating && rating >= 1 && rating <= 5
+                              ? Icons.star
+                              : Icons.star_border,
+                          color: index < rating && rating >= 1 && rating <= 5
+                              ? Colors.yellow
+                              : Colors.grey,
+                          size: 16,
+                        );
+                      }),
+                    ),
+                  ],
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       commentDate,
@@ -51,27 +71,9 @@ class CommentWidget extends StatelessWidget {
                         color: Colors.grey,
                       ),
                     ),
-                    const Spacer(),
-                    Row(
-                      children: List.generate(5, (index) {
-                        if (index < rating && rating >= 1 && rating <= 5) {
-                          return const Icon(
-                            Icons.star,
-                            color: Colors.yellow,
-                            size: 16,
-                          );
-                        } else {
-                          return const Icon(
-                            Icons.star_border,
-                            color: Colors.grey,
-                            size: 16,
-                          );
-                        }
-                      }),
-                    ),
                   ],
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 2),
                 Text(
                   commentText,
                   style: const TextStyle(fontSize: 14),

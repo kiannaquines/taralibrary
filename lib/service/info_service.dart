@@ -35,7 +35,7 @@ class InfoService {
     } catch (e) {
       return ApiResponse(
         result: ApiResult.error,
-        errorMessage: 'Error fetching zone information: $e',
+        errorMessage: 'Server is unreachable, please try again later.',
       );
     }
   }

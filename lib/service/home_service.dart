@@ -38,7 +38,7 @@ class HomeService {
       debugPrint('Error fetching data: $e');
       return ApiResponse(
         result: ApiResult.error,
-        errorMessage: 'Error fetching data: $e',
+        errorMessage: 'Server is unreachable, please try again later.',
       );
     }
   }

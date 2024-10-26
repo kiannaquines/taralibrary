@@ -20,7 +20,9 @@
 17. Edit Profile - DONE
 18. Forgot Password - DONE
 19. Change Password- DONE
+20. Push Notification - DONE
 
 ### NEW TODO (BACKEND)
 
-7. Push Notification - NOT STARTED
+1. Comment Picture (Info)
+2. 

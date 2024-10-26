@@ -56,7 +56,7 @@ class CommentService {
     } else {
       return ApiResponse(
         result: ApiResult.error,
-        errorMessage: 'Failed to post comment, status code: ${response.statusCode}',
+        errorMessage: 'Server is unreachable, please try again later.',
       );
     }
   }

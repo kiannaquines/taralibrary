@@ -8,6 +8,7 @@ import 'package:taralibrary/service/service_app.dart';
 import 'package:taralibrary/utils/colors.dart';
 import 'package:taralibrary/utils/constants.dart';
 import 'package:taralibrary/utils/storage.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String greetingMessage;
@@ -135,29 +136,27 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     child: Container(
                       width: 55,
                       height: 55,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.primary.withOpacity(0.2),
-                        border: Border.all(
-                          color: AppColors.primary.withOpacity(0.1),
-                          width: 3.0,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 10,
-                            spreadRadius: 2,
-                          ),
-                        ],
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.rectangle,
                       ),
                       child: _profile != null &&
                               _profile!.profile != null &&
                               _profile!.profile!.isNotEmpty
-                          ? ClipOval(
+                          ? ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
                               child: CachedNetworkImage(
                                 imageUrl: '$staticDir${_profile!.profile!}',
                                 placeholder: (context, url) =>
-                                    const CircularProgressIndicator(),
+                                    Shimmer.fromColors(
+                                  baseColor: Colors.grey[300]!,
+                                  highlightColor: Colors.grey[100]!,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                  ),
+                                ),
                                 errorWidget: (context, url, error) =>
                                     Image.asset(
                                   'assets/images/user.png',
@@ -166,17 +165,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                 width: 55,
                                 fit: BoxFit.cover,
                               ),
-                            )
-                          : CircleAvatar(
-                              radius: 60,
-                              backgroundColor:
-                                  AppColors.primary.withOpacity(0.2),
-                              child: SvgPicture.asset(
-                                'assets/images/user.png',
-                                width: 30,
-                                height: 30,
-                              ),
-                            ),
+                            ) : const SizedBox.shrink(),
                     ),
                   ),
                 ],

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'dart:typed_data'; // Import this for using Int64List
+import 'dart:typed_data';
 
 class NotificationService {
   final FlutterLocalNotificationsPlugin notificationsPlugin =
@@ -28,9 +28,11 @@ class NotificationService {
   NotificationDetails notificationDetails() {
     return NotificationDetails(
       android: AndroidNotificationDetails(
-        'taralibrary_channel_id',
+        'taralibrary_channel_id_1',
         'TaraLibrary Notifications',
-        channelDescription: 'Notification channel for TaraLibrary app.',
+        channelDescription: 'Notification for TaraLibrary Mobile.',
+        subText: 'TaraLibrary Notification',
+        tag: 'testing',
         importance: Importance.max,
         priority: Priority.high,
         showWhen: false,
@@ -40,6 +42,7 @@ class NotificationService {
         enableLights: true,
         showProgress: true,
         vibrationPattern: Int64List.fromList([0, 1000, 500, 1000]),
+        sound: const RawResourceAndroidNotificationSound('notification'),
       ),
     );
   }

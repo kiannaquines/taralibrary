@@ -9,6 +9,7 @@ import 'package:taralibrary/utils/storage.dart';
 import 'package:taralibrary/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:taralibrary/service/service_app.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -105,6 +106,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
+      backgroundColor: AppColors.white,
       onRefresh: _refreshData,
       child: CustomScrollView(
         slivers: [
@@ -156,19 +158,18 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          _popularZones.isNotEmpty
-              ? SliverToBoxAdapter(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 10.0,
-                      horizontal: 20.0,
-                    ),
-                    child: SizedBox(
+          SliverToBoxAdapter(
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                vertical: 10.0,
+                horizontal: 20.0,
+              ),
+              child: _popularZones.isNotEmpty
+                  ? SizedBox(
                       height: MediaQuery.of(context).size.height * 0.25,
                       child: GridView.builder(
                         scrollDirection: Axis.horizontal,
-                        physics:
-                            const BouncingScrollPhysics(), // Add scroll physics
+                        physics: const BouncingScrollPhysics(),
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 1,
@@ -208,8 +209,16 @@ class _HomePageState extends State<HomePage> {
                                       width: double.infinity,
                                       height: double.infinity,
                                       placeholder: (context, url) =>
-                                          const Center(
-                                        child: CircularProgressIndicator(),
+                                          Shimmer.fromColors(
+                                        baseColor: Colors.grey[300]!,
+                                        highlightColor: Colors.grey[100]!,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                          ),
+                                        ),
                                       ),
                                       errorWidget: (context, url, error) =>
                                           const Icon(Icons.error),
@@ -287,37 +296,36 @@ class _HomePageState extends State<HomePage> {
                           );
                         },
                       ),
-                    ),
-                  ),
-                )
-              : SliverToBoxAdapter(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 10.0,
-                      horizontal: 20.0,
-                    ),
-                    height: 200,
-                    child: const Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.error,
-                            color: AppColors.primary,
-                          ),
-                          Text(
-                            'No Available Section',
-                            style: TextStyle(
-                              color: AppColors.dark,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                    )
+                  : SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.25,
+                      child: GridView.builder(
+                        scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 1,
+                          childAspectRatio: 2 / 2,
+                          crossAxisSpacing: 20,
+                          mainAxisSpacing: 20,
+                        ),
+                        itemCount: 5,
+                        itemBuilder: (BuildContext ctx, index) {
+                          return Shimmer.fromColors(
+                            baseColor: Colors.grey[300]!,
+                            highlightColor: Colors.grey[100]!,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                              ),
                             ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
                     ),
-                  ),
-                ),
+            ),
+          ),
           SliverToBoxAdapter(
             child: Container(
               padding:
@@ -392,8 +400,16 @@ class _HomePageState extends State<HomePage> {
                                           alignment: Alignment.center,
                                           height: double.infinity,
                                           placeholder: (context, url) =>
-                                              const Center(
-                                            child: CircularProgressIndicator(),
+                                              Shimmer.fromColors(
+                                            baseColor: Colors.grey[300]!,
+                                            highlightColor: Colors.grey[100]!,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                              ),
+                                            ),
                                           ),
                                           errorWidget: (context, url, error) =>
                                               const Icon(Icons.error),
@@ -421,18 +437,18 @@ class _HomePageState extends State<HomePage> {
                                             double textWidth =
                                                 textPainter.size.width;
 
-                                            double iconWidth = 10;
-                                            double iconPadding = 5;
+                                            double iconWidth = 2;
+                                            double iconPadding = 2;
 
                                             double maxWidth = textWidth +
                                                         iconWidth +
                                                         iconPadding <
-                                                    130
+                                                    120
                                                 ? textWidth +
                                                     iconWidth +
                                                     iconPadding +
                                                     20
-                                                : 130;
+                                                : 120;
 
                                             return ConstrainedBox(
                                               constraints: BoxConstraints(

@@ -144,6 +144,7 @@ class _InfoScreenState extends State<InfoScreen>
     }
 
     return RefreshIndicator(
+      backgroundColor: AppColors.white,
       onRefresh: _refreshData,
       child: Scaffold(
         body: SingleChildScrollView(
@@ -632,9 +633,9 @@ class _InfoScreenState extends State<InfoScreen>
                               'Share your thoughts',
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontSize: 16,
+                                color: AppColors.dark,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.grey,
+                                fontSize: 18,
                               ),
                             ),
                           ],

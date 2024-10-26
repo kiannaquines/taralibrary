@@ -14,6 +14,7 @@ import 'package:taralibrary/utils/constants.dart';
 import 'package:taralibrary/utils/storage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:taralibrary/service/service_app.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SectionScreen extends StatefulWidget {
   const SectionScreen({super.key});
@@ -134,6 +135,7 @@ class _SectionScreenState extends State<SectionScreen> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
+      backgroundColor: AppColors.white,
       onRefresh: _refreshData,
       child: Scaffold(
         appBar: AppBar(
@@ -316,9 +318,19 @@ class _SectionScreenState extends State<SectionScreen> {
                                               width: double.infinity,
                                               height: double.infinity,
                                               placeholder: (context, url) =>
-                                                  const Center(
-                                                      child:
-                                                          CircularProgressIndicator()),
+                                                  Shimmer.fromColors(
+                                                baseColor: Colors.grey[300]!,
+                                                highlightColor:
+                                                    Colors.grey[100]!,
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                  ),
+                                                ),
+                                              ),
                                               errorWidget:
                                                   (context, url, error) =>
                                                       const Icon(Icons.error),

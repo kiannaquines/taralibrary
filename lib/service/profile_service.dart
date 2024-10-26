@@ -113,7 +113,7 @@ class ProfileService {
     } catch (e) {
       return ApiResponse(
         result: ApiResult.error,
-        errorMessage: 'Error updating profile: ${e.toString()}',
+        errorMessage: 'Server is unreachable, please try again later.',
       );
     }
   }

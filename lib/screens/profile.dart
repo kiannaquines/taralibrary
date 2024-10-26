@@ -14,6 +14,7 @@ import 'package:taralibrary/screens/home.dart';
 import 'package:taralibrary/utils/constants.dart';
 import 'package:taralibrary/utils/storage.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -147,6 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
+      backgroundColor: AppColors.white,
       onRefresh: _refreshData,
       child: Scaffold(
         body: _isLoading
@@ -241,7 +243,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           imageUrl:
                                               '$staticDir${_profile!.profile!}',
                                           placeholder: (context, url) =>
-                                              const CircularProgressIndicator(),
+                                              Shimmer.fromColors(
+                                            baseColor: Colors.grey[300]!,
+                                            highlightColor: Colors.grey[100]!,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                              ),
+                                            ),
+                                          ),
                                           errorWidget: (context, url, error) =>
                                               Image.asset(
                                             'assets/images/user.png',
@@ -394,9 +406,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             width: double.infinity,
                                             alignment: Alignment.center,
                                             placeholder: (context, url) =>
-                                                const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
+                                                Shimmer.fromColors(
+                                              baseColor: Colors.grey[300]!,
+                                              highlightColor: Colors.grey[100]!,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                ),
+                                              ),
                                             ),
                                             errorWidget:
                                                 (context, url, error) =>
@@ -417,7 +436,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           borderRadius:
                                               BorderRadius.circular(15),
                                           child: Container(
-                                            padding: const EdgeInsets.all(8.0),
+                                            padding: const EdgeInsets.all(5.0),
                                             color: AppColors
                                                 .imagebackgroundOverlay
                                                 .withOpacity(0.6),
@@ -503,9 +522,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             width: double.infinity,
                                             alignment: Alignment.center,
                                             placeholder: (context, url) =>
-                                                const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
+                                                Shimmer.fromColors(
+                                              baseColor: Colors.grey[300]!,
+                                              highlightColor: Colors.grey[100]!,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                ),
+                                              ),
                                             ),
                                             errorWidget:
                                                 (context, url, error) =>
@@ -524,7 +550,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           borderRadius:
                                               BorderRadius.circular(15),
                                           child: Container(
-                                            padding: const EdgeInsets.all(8.0),
+                                            padding: const EdgeInsets.all(5.0),
                                             color: AppColors
                                                 .imagebackgroundOverlay
                                                 .withOpacity(0.6),
